@@ -1,0 +1,254 @@
+#!/bin/bash
+# Utility functions for benchmark system
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/solver_environment.sh"
+
+# Logging functions
+log_verbose() {
+    [[ $VERBOSE -eq 1 ]] && echo -e "${CYAN}[VERBOSE]${NC} $*">&2
+    return 0
+}
+
+log_info() {
+    [[ $QUIET -eq 0 ]] && echo -e "${BLUE}[INFO]${NC} $*">&2
+    return 0
+}
+
+log_success() {
+    [[ $QUIET -eq 0 ]] && echo -e "${GREEN}[SUCCESS]${NC} $*">&2
+    return 0
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $*" >&2
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $*" >&2
+}
+
+# Stable, timestamped progress lines for CI logs, even when QUIET=1.
+log_progress() {
+    [[ "${BENCH_PROGRESS:-0}" == "1" ]] || return 0
+    printf '[progress] %s %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$*" >&2
+}
+
+# Progress indicator with ETA
+# Args: current total start_time description
+show_progress() {
+    [[ $QUIET -eq 1 ]] && return
+    
+    local current=$1
+    local total=$2
+    local start_time=$3
+    local description="${4:-Processing}"
+    
+    local elapsed=$(($(date +%s) - start_time))
+    local percentage=$((current * 100 / total))
+    
+    if [[ $current -gt 0 && $elapsed -gt 0 ]]; then
+        local rate=$((current * 1000 / elapsed))
+        local remaining=$((total - current))
+        local eta=$((remaining * 1000 / rate / 1000))
+        
+        printf "\r${BLUE}%s:${NC} %d/%d (%.1f%%) ETA: %ds    " \
+            "$description" "$current" "$total" "$percentage" "$eta"
+    else
+        printf "\r${BLUE}%s:${NC} %d/%d (%.1f%%)    " \
+            "$description" "$current" "$total" "$percentage"
+    fi
+}
+
+clear_progress() {
+    [[ $QUIET -eq 1 ]] && return
+    printf "\r%80s\r" " "
+}
+
+# File hash for caching
+# Args: file_path
+get_file_hash() {
+    local file="$1"
+    if command -v md5sum &> /dev/null; then
+        md5sum "$file" 2>/dev/null | cut -d' ' -f1
+    elif command -v md5 &> /dev/null; then
+        md5 -q "$file" 2>/dev/null
+    else
+        echo "no-hash-$(stat -f%m "$file" 2>/dev/null || stat -c%Y "$file" 2>/dev/null)"
+    fi
+}
+
+# Check if cached result is valid
+# Args: cache_key
+check_cache() {
+    [[ $ENABLE_CACHE -eq 0 || "${NO_CACHE:-0}" == 1 || "$1" == *"__solver_unknown" ]] && return 1
+
+    local cache_key="$1"
+    local cache_file="${CACHE_DIR}/${cache_key}"
+
+    [[ -f "$cache_file" ]] && cat "$cache_file" && return 0
+    return 1
+}
+
+# Store result in cache with file locking for thread safety
+# Args: cache_key result
+store_cache() {
+    [[ $ENABLE_CACHE -eq 0 || "${NO_CACHE:-0}" == 1 || "$1" == *"__solver_unknown" ]] && return 0
+
+    local cache_key="$1"
+    local result="$2"
+    local cache_file="${CACHE_DIR}/${cache_key}"
+    local lock_file="${CACHE_DIR}/.lock_${cache_key}"
+
+    mkdir -p "$CACHE_DIR"
+
+    # Use flock for atomic write with locking (if available)
+    if command -v flock &> /dev/null; then
+        {
+            flock -x 200
+            # Double-check: another process might have written while waiting for lock
+            if [[ ! -f "$cache_file" ]]; then
+                echo "$result" > "$cache_file.tmp.$$"
+                mv "$cache_file.tmp.$$" "$cache_file"
+            fi
+        } 200>"$lock_file"
+        rm -f "$lock_file"
+    else
+        # Fallback: atomic write with temp file (less safe but better than direct write)
+        echo "$result" > "$cache_file.tmp.$$"
+        mv "$cache_file.tmp.$$" "$cache_file"
+    fi
+}
+
+# Generate cache key
+# Args: benchmark theorem tactic file_hash
+generate_cache_key() {
+    local key="$1_$2_$3_$4"
+    if solver_uses_z3 "$3"; then
+        # Direct function callers also fail closed when initialization was skipped.
+        key+="__solver_${SOLVER_CACHE_ID:-unknown}"
+    fi
+    echo "$key" | sed 's/[^a-zA-Z0-9_-]/_/g'
+}
+
+# Extract context (imports, abbrevs, opens) from Lean file
+# Args: file_path
+extract_context() {
+    local file="$1"
+    local context=""
+    
+    while IFS= read -r line; do
+        [[ $line =~ ^[[:space:]]*theorem[[:space:]]+ ]] && break
+        [[ $line =~ ^[[:space:]]*(import|abbrev|open)[[:space:]]+ ]] && \
+            context="$context$line"$'\n'
+    done < "$file"
+    
+    echo "$context"
+}
+
+# Extract theorem information from Lean file
+# Args: file_path theorem_name
+# Returns: Theorem statement
+extract_theorem_info() {
+    local file="$1"
+    local theorem_name="$2"
+    local in_theorem=0
+    local statement=""
+    
+    # The char right after the name must be a boundary ([space:({]) so a name is not
+    # matched as a prefix of a longer one (e.g. mathd_numbertheory_5 vs _559). The
+    # boundary char (a leading ':' / '(' / '{') is kept — it belongs to the statement
+    # and is harmless in `example <stmt> := by ...`. Regexes live in vars so bash does
+    # not mis-parse the parentheses inside [[ =~ ]].
+    local re_inline="^[[:space:]]*theorem[[:space:]]+${theorem_name}([[:space:]:({].*):="
+    local re_start="^[[:space:]]*theorem[[:space:]]+${theorem_name}([[:space:]:({].*)"
+    while IFS= read -r line; do
+        if [[ $line =~ $re_inline ]]; then
+            statement="${BASH_REMATCH[1]}"
+            echo "$statement"
+            return 0
+        elif [[ $line =~ $re_start ]]; then
+            statement="${BASH_REMATCH[1]}"
+            in_theorem=1
+        elif [[ $in_theorem -eq 1 && $line =~ :=[[:space:]]*by ]]; then
+            statement="$statement ${line%:=*}"
+            echo "${statement%% :=*}"
+            return 0
+        elif [[ $in_theorem -eq 1 ]]; then
+            statement="$statement $line"
+        fi
+    done < "$file"
+    
+    return 1
+}
+
+# Get all theorems from a Lean file
+# Args: file_path
+get_all_theorems() {
+    grep -E "^[[:space:]]*theorem[[:space:]]+" "$1" | \
+        awk '{print $2}' | \
+        sed 's/[[:space:]:({].*$//'
+}
+
+# List available benchmarks
+list_benchmarks() {
+    log_info "Available benchmarks:"
+    for spec in "${BENCHMARK_FILES[@]}"; do
+        IFS=':' read -r import_path file_path display_name timeout mode <<< "$spec"
+        if [[ "$mode" == "taskdir" && -d "$file_path" ]]; then
+            local theorem_count
+            theorem_count=$(find "$file_path" -maxdepth 1 -type f -name '*.lean' | wc -l | tr -d ' ')
+            echo -e "  ${GREEN}✓${NC} $display_name (${theorem_count} tasks, timeout: ${timeout}s)"
+            log_verbose "    Directory: $file_path"
+        elif [[ -f "$file_path" ]]; then
+            local theorem_count=$(get_all_theorems "$file_path" | grep -c '^' || echo 0)
+            echo -e "  ${GREEN}✓${NC} $display_name (${theorem_count} theorems, timeout: ${timeout}s)"
+            log_verbose "    File: $file_path"
+            log_verbose "    Import: $import_path"
+        else
+            echo -e "  ${RED}✗${NC} $display_name (file not found: $file_path)"
+        fi
+    done
+}
+
+# Archive previous results
+archive_previous_results() {
+    [[ $ARCHIVE_RESULTS -eq 0 ]] && return
+    [[ ! -d "$OUTPUT_DIR" ]] && return
+    
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+    local archive_path="${ARCHIVE_DIR}/${timestamp}"
+    
+    mkdir -p "$archive_path"
+    
+    if ls "${OUTPUT_DIR}"/*.{csv,json,tex} &>/dev/null; then
+        log_verbose "Archiving previous results to $archive_path"
+        mv "${OUTPUT_DIR}"/*.{csv,json,tex} "$archive_path/" 2>/dev/null || true
+    fi
+}
+
+# Parse benchmark specification
+# Args: spec_string  (import:file:display:timeout[:mode])
+# Returns: import_path file_path display_name timeout mode (space-separated)
+#   mode = "stmt" (default; one file, many theorems, statement extracted) or
+#          "taskdir" (file_path is a directory of one-theorem task files whose
+#          spec proof is swapped for the tactic — for verification suites)
+parse_benchmark_spec() {
+    local spec="$1"
+    IFS=':' read -r import_path file_path display_name timeout mode <<< "$spec"
+    timeout="${timeout:-$TIMEOUT}"
+    mode="${mode:-stmt}"
+    echo "$import_path $file_path $display_name $timeout $mode"
+}
+
+# Format time with color based on threshold
+# Args: time_ms
+format_time_colored() {
+    local time=$1
+    
+    if [[ $time -lt $FAST_THRESHOLD ]]; then
+        echo -e "${GREEN}${time}ms${NC}"
+    elif [[ $time -lt $SLOW_THRESHOLD ]]; then
+        echo -e "${YELLOW}${time}ms${NC}"
+    else
+        echo -e "${RED}${time}ms${NC}"
+    fi
+}
