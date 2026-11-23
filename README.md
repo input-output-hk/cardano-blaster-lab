@@ -31,9 +31,18 @@ independent ledger and CEK replay.
 
 | Tier | When | Scope |
 | --- | --- | --- |
-| Smoke | Every lab PR | Fixed stratified sample |
-| Clusters | Manual | One script per structural family |
-| Full | Manual | All 2,250 exact scripts |
+| Smoke | Every lab PR | Fixed 48-script sample across versions, purposes, and sizes |
+| Clusters | Manual for promising PRs | One script per structural family |
+| Full | Manual for finalists and release baselines | All 2,250 exact scripts |
+
+The smoke and cluster passes are screening tools. Report headline coverage only
+from a full run on the same frozen cohort and runner configuration as its
+baseline. The hard timeout puts an upper bound of roughly five minutes of case
+time on smoke, 1.7 hours on clusters, and 3.9 hours on full at four workers;
+build time and runner overhead are additional. Escalate only changes that show
+a useful signal on the cheaper pass, and inspect regressions before the next
+tier. To test one affected script, use `python3 LiveScripts/benchmark.py
+--script HASH --z3 /path/to/z3` from `benchmark/`.
 
 Run locally after installing Lean 4.24 and Z3 5.4 or newer:
 

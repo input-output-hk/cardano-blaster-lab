@@ -1,0 +1,64 @@
+name: Agent benchmark experiment
+description: Plan a bounded change and record where a successful patch belongs upstream.
+title: "[Experiment] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Work in this lab first. The PR smoke cohort is the default check; request a cluster or full run only when it answers a specific question. A solver candidate is not a verified replay.
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis and proposed change
+      description: What bottleneck or missing behavior will you change, and why should it help?
+      placeholder: Describe the concrete change and expected effect.
+    validations:
+      required: true
+  - type: dropdown
+    id: upstream_targets
+    attributes:
+      label: Upstream repositories that would need the change
+      description: Select every source repository that a successful lab patch must update.
+      multiple: true
+      options:
+        - Lean-blaster
+        - PlutusCoreBlaster
+        - CardanoLedgerApiBlaster
+        - Blaster-benchmarking
+        - Unknown until investigation
+    validations:
+      required: true
+  - type: textarea
+    id: affected_cases
+    attributes:
+      label: Affected scripts or clusters
+      description: Give exact script hashes or cluster IDs when known.
+      placeholder: Script hashes, cluster IDs, versions, purposes, and observed failure stage.
+    validations:
+      required: true
+  - type: dropdown
+    id: benchmark_tier
+    attributes:
+      label: Smallest benchmark tier needed initially
+      options:
+        - Smoke (default PR check)
+        - Cluster representatives (manual)
+        - Full exact-script cohort (manual)
+    validations:
+      required: true
+  - type: textarea
+    id: success_criteria
+    attributes:
+      label: Success criteria
+      description: State the measurable result and how it will be checked.
+      placeholder: Example - fewer elaboration timeouts on the fixed cohort; candidate gains need concrete replay before verified credit.
+    validations:
+      required: true
+  - type: textarea
+    id: upstream_handoff
+    attributes:
+      label: Upstream handoff plan
+      description: Which paths will be moved to each upstream PR if the experiment succeeds?
+      placeholder: Map lab paths to the target repositories and name any dependency order.
+    validations:
+      required: true

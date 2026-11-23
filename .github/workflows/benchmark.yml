@@ -1,0 +1,78 @@
+name: Cardano script benchmark
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: Benchmark scope
+        type: choice
+        required: true
+        default: smoke
+        options:
+          - smoke
+          - clusters
+          - full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cardano-benchmark-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: benchmark
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+
+      - name: Check frozen smoke cohort
+        run: python3 scripts/make_smoke_cohort.py --check
+
+      - name: Build shared Lean dependencies
+        working-directory: benchmark
+        run: lake build CardanoLedgerApi
+
+      - name: Install pinned Z3
+        run: |
+          mkdir -p .tools
+          curl -fL --retry 3 --silent --show-error -o .tools/z3.zip \
+            https://github.com/Z3Prover/z3/releases/download/z3-5.4.1/z3-5.4.1-x64-glibc-2.39.zip
+          echo 'b548bac48ef2452b4e09ea2945cf4b011d5f43fcf39e4799df268ee7e0769d85  .tools/z3.zip' | sha256sum -c -
+          unzip -q .tools/z3.zip -d .tools
+          .tools/z3-5.4.1-x64-glibc-2.39/bin/z3 -version
+
+      - name: Run selected tier
+        env:
+          BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
+        run: |
+          python3 scripts/bench.py "$BENCH_TIER" \
+            --z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3" \
+            --workers 4 --timeout 25
+
+      - name: Summarize results
+        if: always()
+        env:
+          BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
+        run: python3 scripts/summary.py "$BENCH_TIER" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload raw results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cardano-benchmark-${{ github.run_id }}
+          path: |
+            benchmark/LiveScripts/results/*.jsonl
+            benchmark/LiveScripts/results/latest.json
+            benchmark/LiveScripts/results/active-config.json
+          if-no-files-found: warn

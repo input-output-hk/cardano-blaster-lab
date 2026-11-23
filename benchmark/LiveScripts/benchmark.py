@@ -142,12 +142,24 @@ def main() -> None:
     latest_path = results_dir / "latest.json"
     latest = json.loads(latest_path.read_text()) if latest_path.exists() else {}
     manifest = json.loads((REPO / "lake-manifest.json").read_text())
-    package_revs = {item["name"]: item["rev"] for item in manifest["packages"]
+    package_revs = {item["name"]: item.get("rev", f"path:{item.get('dir', '')}") for item in manifest["packages"]
                     if item["name"] in ("Blaster", "PlutusCore", "CardanoLedgerApi")}
+    lab_root = REPO.parent if (REPO.parent / "upstreams.json").is_file() else None
+    lab_fingerprint = None
+    if lab_root:
+        lab_revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=lab_root,
+                                      capture_output=True, text=True, check=True).stdout.strip()
+        lab_diff = subprocess.run(
+            ["git", "diff", "--binary", "HEAD", "--", "packages", "benchmark/lakefile.lean",
+             "benchmark/LiveScripts", ":(exclude)benchmark/LiveScripts/results"],
+            cwd=lab_root, capture_output=True, check=True).stdout
+        lab_fingerprint = {"revision": lab_revision,
+                           "tracked_diff": hashlib.sha256(lab_diff).hexdigest()}
     config = hashlib.sha256(json.dumps({
         "packages": package_revs, "z3": version.strip(), "wall_timeout": args.timeout,
         "generator": hashlib.sha256((REPO / "LiveScripts/import_corpus.py").read_bytes()).hexdigest(),
         "runner": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "lab": lab_fingerprint,
     }, sort_keys=True).encode()).hexdigest()
     (results_dir / "active-config.json").write_text(json.dumps({
         "config": config, "packages": package_revs, "z3": version.strip(),
