@@ -556,7 +556,9 @@ def getNativeModel (sess : Blaster.Smt.FFI.Z3Session) : TranslateEnvT (List Stri
 private partial def instantiateNativeWitnesses (sess : Blaster.Smt.FFI.Z3Session)
     (prop : Expr) (vars : List TopLevelVar) : TranslateEnvT (Option Expr) := do
   match vars, prop with
-  | [], .forallE .. => return none
+  | [], .forallE _ binderType _ _ =>
+      -- Proof binders encode implications; they need no solver value.
+      if ← isPropEnv binderType then return some prop else return none
   | [], _ => return some prop
   | v :: rest, .forallE name binderType body _ =>
       if name != v.userName then return none

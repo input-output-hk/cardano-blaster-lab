@@ -83,6 +83,19 @@ info: ✅ Expected Falsified
 ---
 info: Counterexample:
 ---
+info:  - n: (0 : Nat)
+---
+info: ✅ Replay: the instantiated Lean proposition evaluates to false
+-/
+#guard_msgs (info) in
+#blaster (backend: ffi) (replay: 1) (solve-result: 1)
+  [∀ (n : Nat), n = 0 → n = 1]
+
+/--
+info: ✅ Expected Falsified
+---
+info: Counterexample:
+---
 info:  - xs: ([2] : List Int)
 ---
 info: ✅ Replay: the instantiated Lean proposition evaluates to false
