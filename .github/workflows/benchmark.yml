@@ -2,6 +2,13 @@ name: Cardano script benchmark
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/benchmark.yml'
+      - 'packages/**'
+      - 'benchmark/**'
+      - '!benchmark/cardano-dashboard/**'
+      - '!benchmark/LiveScripts/results/**'
+      - 'scripts/**'
   workflow_dispatch:
     inputs:
       tier:
