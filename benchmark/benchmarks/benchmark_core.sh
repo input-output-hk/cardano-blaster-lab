@@ -1,0 +1,653 @@
+#!/bin/bash
+# Core benchmark testing functions
+
+# Test a single tactic on a theorem
+# Args: import_path benchmark_name theorem_name statement tactic context file_hash timeout
+# Returns: time_ms|status
+test_tactic() {
+    local import_path="$1"
+    local benchmark_name="$2"
+    local theorem_name="$3"
+    local statement="$4"
+    local tactic="$5"
+    local context="$6"
+    local file_hash="$7"
+    local timeout="${8:-$TIMEOUT}"
+    
+    # Check cache first
+    local cache_key=$(generate_cache_key "$benchmark_name" "$theorem_name" "$tactic" "$file_hash")
+    local cached_result=$(check_cache "$cache_key")
+    if [[ -n "$cached_result" ]]; then
+        log_verbose "Cache hit: $benchmark_name/$theorem_name/$tactic"
+        echo "$cached_result"
+        return 0
+    fi
+    
+    # Dry run mode
+    if [[ $DRY_RUN -eq 1 ]]; then
+        echo "0|DRY_RUN"
+        return 0
+    fi
+
+    # Create test file (sanitize tactic name for filesystem safety)
+    local safe_tactic="${tactic//[^a-zA-Z0-9_-]/_}"
+    local test_file="$TEMP_DIR/Test_${benchmark_name}_${theorem_name}_${safe_tactic}.lean"
+    local tactic_import=$(get_tactic_import "$tactic")
+    local tactic_preamble=$(get_tactic_preamble "$tactic")
+    
+    {
+        [[ -n "$tactic_import" ]] && echo "import $tactic_import" && echo ""
+        [[ -n "$context" ]] && echo "$context" && echo ""
+        [[ -n "$tactic_preamble" ]] && echo "$tactic_preamble" && echo ""
+        echo "-- Standalone proof attempt for $theorem_name"
+        echo "example $statement := by $tactic"
+    } > "$test_file"
+    
+    # Run test with timeout
+    local start=$(date +%s%N)
+    local error_log="$TEMP_DIR/error_${benchmark_name}_${theorem_name}_${safe_tactic}.log"
+    local result
+
+    if timeout "${timeout}s" lake env lean ${LEAN_EXTRA_ARGS:-} "$test_file" > "$error_log" 2>&1; then
+        local elapsed=$(( ($(date +%s%N) - start) / 1000000 ))
+        result="${elapsed}|OK"
+    else
+        local exit_code=$?
+        if [[ $exit_code -eq 124 ]]; then
+            result="timeout|TIMEOUT"
+        else
+            # Distinguish a genuine tactic failure from an environment error:
+            # a theorem whose statement does not even elaborate on this toolchain
+            # (mathlib API drift, or a mangled extraction) must not be blamed on
+            # the tactic. Lazily re-check only on failure (cached per theorem).
+            local env_cache_key=$(generate_cache_key "$benchmark_name" "$theorem_name" "__ENV__" "$file_hash")
+            local env_status=$(check_cache "$env_cache_key")
+            if [[ -z "$env_status" ]]; then
+                local env_file="$TEMP_DIR/Env_${benchmark_name}_${theorem_name}.lean"
+                {
+                    [[ -n "$context" ]] && echo "$context" && echo ""
+                    echo "example $statement := by sorry"
+                } > "$env_file"
+                local env_log="$TEMP_DIR/env_${benchmark_name}_${theorem_name}.log"
+                if timeout "${timeout}s" lake env lean ${LEAN_EXTRA_ARGS:-} "$env_file" > "$env_log" 2>&1; then
+                    env_status="OK"
+                else
+                    env_status="ENV"
+                    # Record the actual elaboration error (first `error:` line, with the
+                    # file:line:col prefix stripped) so the report can show it on hover.
+                    local emsg
+                    emsg=$(grep -m1 'error:' "$env_log" 2>/dev/null \
+                           | sed -E 's/^[^ ]+:[0-9]+:[0-9]+: *//' | tr '\t\r\n' '   ' | cut -c1-300)
+                    [[ -z "$emsg" ]] && emsg="statement failed to elaborate"
+                    printf '%s\t%s\t%s\n' "$benchmark_name" "$theorem_name" "$emsg" \
+                        >> "$OUTPUT_DIR/env_errors.tsv"
+                fi
+                store_cache "$env_cache_key" "$env_status"
+            fi
+            if [[ "$env_status" == "ENV" ]]; then
+                result="env|ENV"
+            else
+                result="fail|FAIL"
+            fi
+        fi
+    fi
+
+    # Store in cache
+    store_cache "$cache_key" "$result"
+
+    echo "$result"
+}
+
+# Process a single theorem with all tactics
+# Args: benchmark_name file_path theorem_name file_hash timeout
+process_theorem() {
+    local benchmark_name="$1"
+    local file_path="$2"
+    local theorem_name="$3"
+    local file_hash="$4"
+    local timeout="$5"
+    
+    # Extract theorem statement and context
+    local statement=$(extract_theorem_info "$file_path" "$theorem_name")
+    if [[ -z "$statement" ]]; then
+        echo "  ${RED}✗${NC} Could not extract statement" >&2
+        return 1
+    fi
+    
+    local context=$(extract_context "$file_path")
+    
+    # Test each tactic
+    local results=""
+    for tactic in "${TACTICS[@]}"; do
+        local tactic_start=$(date +%s)
+        log_progress "suite=$benchmark_name theorem=$theorem_name tactic=$tactic start timeout=${timeout}s"
+        local result=$(test_tactic "" "$benchmark_name" "$theorem_name" \
+                                   "$statement" "$tactic" "$context" \
+                                   "$file_hash" "$timeout" 2>&1)
+
+        IFS='|' read -r time status <<< "$result"
+        log_progress "suite=$benchmark_name theorem=$theorem_name tactic=$tactic done status=$status elapsed=$(($(date +%s)-tactic_start))s"
+        results="${results},${time},${status}"
+
+        # Show result immediately (always show unless quiet)
+        if [[ $QUIET -eq 0 ]]; then
+            case "$status" in
+                OK)
+                    echo -e "    ${tactic}: ${GREEN}✓${NC} ${time}ms" >&2
+                    ;;
+                TIMEOUT)
+                    echo -e "    ${tactic}: ${RED}✗ TIMEOUT${NC} (>${timeout}s)" >&2
+                    ;;
+                FAIL)
+                    echo -e "    ${tactic}: ${RED}✗ FAIL${NC}" >&2
+                    ;;
+                ENV)
+                    echo -e "    ${tactic}: ${YELLOW}⊘ ENV${NC} (statement does not elaborate)" >&2
+                    ;;
+                DRY_RUN)
+                    echo -e "    ${tactic}: ${CYAN}[DRY RUN]${NC}" >&2
+                    ;;
+            esac
+        fi
+    done
+
+    # Return CSV row
+    echo "$benchmark_name,$theorem_name,\"$statement\"$results"
+}
+
+# Note: Functions are available in main script context
+# For parallel execution, the subshell will need to source the modules
+
+# Run benchmarks for a single benchmark file
+# Args: spec
+# Emit a task file with the spec theorem's proof (everything from ':= by') replaced
+# by ':= by <replacement>', dropping the original proof body.
+# Args: task_file replacement   (replacement is a tactic, or "sorry" for env-check)
+swap_proof() {
+    awk -v tac="$2" '
+        swapped { next }
+        /^theorem / { seen=1 }
+        seen && index($0, ":= by") { print substr($0, 1, index($0, ":= by")+4) " " tac; swapped=1; next }
+        { print }
+    ' "$1"
+}
+
+# Run a single tactic on a one-theorem task file by swapping its proof for the
+# tactic (verification-suite mode). Returns time_ms|status.
+# Args: display_name task_file task_name tactic file_hash timeout
+test_task_file() {
+    local display_name="$1" task_file="$2" task_name="$3" tactic="$4"
+    local file_hash="$5" timeout="${6:-$TIMEOUT}"
+
+    local cache_key=$(generate_cache_key "$display_name" "$task_name" "$tactic" "$file_hash")
+    local cached=$(check_cache "$cache_key")
+    [[ -n "$cached" ]] && { echo "$cached"; return 0; }
+    [[ $DRY_RUN -eq 1 ]] && { echo "0|DRY_RUN"; return 0; }
+
+    local tactic_import=$(get_tactic_import "$tactic")
+    local tactic_preamble=$(get_tactic_preamble "$tactic")
+    local safe_tactic="${tactic//[^a-zA-Z0-9_-]/_}"
+    local test_file="$TEMP_DIR/Task_${display_name}_${task_name}_${safe_tactic}.lean"
+    # Prepend the tactic import + preamble (e.g. auto's `set_option auto.smt …`), then
+    # the whole task file with the spec theorem's proof (everything from ':= by')
+    # replaced by the chosen tactic.
+    {
+        [[ -n "$tactic_import" ]] && echo "import $tactic_import"
+        [[ -n "$tactic_preamble" ]] && echo "$tactic_preamble"
+        swap_proof "$task_file" "$tactic"
+    } > "$test_file"
+
+    local start=$(date +%s%N)
+    local error_log="$TEMP_DIR/error_${display_name}_${task_name}_${safe_tactic}.log"
+    local result
+    if timeout "${timeout}s" lake env lean ${LEAN_EXTRA_ARGS:-} "$test_file" > "$error_log" 2>&1; then
+        result="$(( ($(date +%s%N) - start) / 1000000 ))|OK"
+    else
+        local ec=$?
+        if [[ $ec -eq 124 ]]; then
+            result="timeout|TIMEOUT"
+        else
+            # ENV vs FAIL: does the file elaborate at all (proof = sorry)?
+            local env_key=$(generate_cache_key "$display_name" "$task_name" "__ENV__" "$file_hash")
+            local env_status=$(check_cache "$env_key")
+            if [[ -z "$env_status" ]]; then
+                local ef="$TEMP_DIR/EnvTask_${display_name}_${task_name}.lean"
+                swap_proof "$task_file" "sorry" > "$ef"
+                local etlog="$TEMP_DIR/envtask_${display_name}_${task_name}.log"
+                if timeout "${timeout}s" lake env lean ${LEAN_EXTRA_ARGS:-} "$ef" > "$etlog" 2>&1; then
+                    env_status="OK"
+                else
+                    env_status="ENV"
+                    local emsg=$(grep -m1 'error:' "$etlog" 2>/dev/null \
+                                 | sed -E 's/^[^ ]+:[0-9]+:[0-9]+: *//' | tr '\t\r\n' '   ' | cut -c1-300)
+                    [[ -z "$emsg" ]] && emsg="statement failed to elaborate"
+                    printf '%s\t%s\t%s\n' "$display_name" "$task_name" "$emsg" >> "$OUTPUT_DIR/env_errors.tsv"
+                fi
+                store_cache "$env_key" "$env_status"
+            fi
+            [[ "$env_status" == "ENV" ]] && result="env|ENV" || result="fail|FAIL"
+        fi
+    fi
+    store_cache "$cache_key" "$result"
+    echo "$result"
+}
+
+# Run a "taskdir" verification suite: each *.lean under the dir is one task whose
+# spec proof is swapped for each tactic.
+run_task_dir_benchmark() {
+    local dir="$1" display_name="$2" timeout="$3"
+    local csv="$OUTPUT_DIR/${display_name}_results.csv"
+    generate_csv_header > "$csv"
+    local files=("$dir"/*.lean)
+    [[ -e "${files[0]}" ]] || { log_warning "No task files in $dir"; return 1; }
+    log_info "Found ${#files[@]} tasks in $display_name"
+    local current=0
+    for tf in "${files[@]}"; do
+        current=$((current+1))
+        local task_name=$(basename "$tf" .lean)
+        local file_hash=$(get_file_hash "$tf")
+        local task_start=$(date +%s)
+        log_progress "suite=$display_name goal=$current/${#files[@]} theorem=$task_name start"
+        [[ $QUIET -eq 0 ]] && echo -e "${BLUE}[$current/${#files[@]}]${NC} ${YELLOW}$task_name${NC}"
+        local results=""
+        for tactic in "${TACTICS[@]}"; do
+            local tactic_start=$(date +%s)
+            log_progress "suite=$display_name theorem=$task_name tactic=$tactic start timeout=${timeout}s"
+            local r=$(test_task_file "$display_name" "$tf" "$task_name" "$tactic" "$file_hash" "$timeout")
+            IFS='|' read -r time status <<< "$r"
+            log_progress "suite=$display_name theorem=$task_name tactic=$tactic done status=$status elapsed=$(($(date +%s)-tactic_start))s"
+            results="${results},${time},${status}"
+            [[ $QUIET -eq 0 ]] && echo -e "    ${tactic}: ${status} ${time}" >&2
+        done
+        echo "$display_name,$task_name,\"$task_name\"$results" >> "$csv"
+        log_progress "suite=$display_name goal=$current/${#files[@]} theorem=$task_name done elapsed=$(($(date +%s)-task_start))s"
+    done
+    log_success "Completed $display_name: ${#files[@]} tasks processed"
+}
+
+run_benchmark_file() {
+    local spec="$1"
+    read -r import_path file_path display_name timeout mode <<< "$(parse_benchmark_spec "$spec")"
+
+    if [[ "$mode" == "taskdir" ]]; then
+        if [[ ! -d "$file_path" ]]; then
+            log_warning "Skipping $display_name: task dir not found ($file_path)"
+            return 1
+        fi
+        log_info "Running benchmark: $display_name (taskdir)"
+        run_task_dir_benchmark "$file_path" "$display_name" "$timeout"
+        return $?
+    fi
+
+    if [[ ! -f "$file_path" ]]; then
+        log_warning "Skipping $display_name: file not found ($file_path)"
+        return 1
+    fi
+    
+    log_info "Running benchmark: $display_name"
+    
+    # Setup output file
+    local csv="$OUTPUT_DIR/${display_name}_results.csv"
+    generate_csv_header > "$csv"
+    
+    # Get file hash for caching
+    local file_hash=$(get_file_hash "$file_path")
+    
+    # Get all theorems
+    local theorems=($(get_all_theorems "$file_path"))
+    local total=${#theorems[@]}
+    
+    log_info "Found $total theorems in $display_name"
+    
+    if [[ $total -eq 0 ]]; then
+        log_warning "No theorems found in $file_path"
+        return 1
+    fi
+    
+    log_verbose "First few theorems: ${theorems[@]:0:3}"
+    
+    local start_time=$(date +%s)
+    
+    # Run tests (parallel or sequential)
+    if [[ $PARALLEL_JOBS -gt 1 ]]; then
+        log_info "Running with $PARALLEL_JOBS parallel jobs"
+
+        # Create a wrapper script for parallel execution
+        local wrapper_script="$TEMP_DIR/process_wrapper_${display_name}.sh"
+
+        # Serialize tactic imports and preambles for the wrapper
+        local tactic_imports_serialized=""
+        local tactic_preambles_serialized=""
+        for key in "${!TACTIC_IMPORTS[@]}"; do
+            tactic_imports_serialized+="[\"$key\"]=\"${TACTIC_IMPORTS[$key]}\""$'\n'
+        done
+        for key in "${!TACTIC_PREAMBLES[@]}"; do
+            tactic_preambles_serialized+="[\"$key\"]=\"${TACTIC_PREAMBLES[$key]}\""$'\n'
+        done
+
+        cat > "$wrapper_script" <<WRAPPER_EOF
+#!/bin/bash
+# Wrapper script for parallel execution
+SCRIPT_DIR="${SCRIPT_DIR}"
+WRAPPER_EOF
+        cat >> "$wrapper_script" <<'WRAPPER_EOF'
+
+# Source required modules
+source "${SCRIPT_DIR}/benchmark_config.sh"
+source "${SCRIPT_DIR}/benchmark_utils.sh"
+
+# Re-export color codes
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+BLUE='\033[0;34m'; CYAN='\033[0;36m'; NC='\033[0m'
+
+# Recreate associative arrays from serialized data
+declare -A TACTIC_IMPORTS
+declare -A TACTIC_PREAMBLES
+WRAPPER_EOF
+
+        # Add the serialized array data
+        echo "$tactic_imports_serialized" | while IFS= read -r line; do
+            [[ -n "$line" ]] && echo "TACTIC_IMPORTS$line" >> "$wrapper_script"
+        done
+        echo "$tactic_preambles_serialized" | while IFS= read -r line; do
+            [[ -n "$line" ]] && echo "TACTIC_PREAMBLES$line" >> "$wrapper_script"
+        done
+
+        # Continue with the rest of the wrapper script
+        cat >> "$wrapper_script" <<'WRAPPER_EOF2'
+
+# Define test_tactic function
+test_tactic() {
+    local import_path="$1"
+    local benchmark_name="$2"
+    local theorem_name="$3"
+    local statement="$4"
+    local tactic="$5"
+    local context="$6"
+    local file_hash="$7"
+    local timeout="${8:-$TIMEOUT}"
+
+    # Check cache first
+    local cache_key=$(generate_cache_key "$benchmark_name" "$theorem_name" "$tactic" "$file_hash")
+    local cached_result=$(check_cache "$cache_key")
+    if [[ -n "$cached_result" ]]; then
+        echo "$cached_result"
+        return 0
+    fi
+
+    # Dry run mode
+    if [[ $DRY_RUN -eq 1 ]]; then
+        echo "0|DRY_RUN"
+        return 0
+    fi
+
+    # Create test file with unique name
+    local test_file="$TEMP_DIR/Test_${benchmark_name}_${theorem_name}_${tactic}_$$.lean"
+    local tactic_import=$(get_tactic_import "$tactic")
+    local tactic_preamble=$(get_tactic_preamble "$tactic")
+
+    {
+        [[ -n "$tactic_import" ]] && echo "import $tactic_import" && echo ""
+        [[ -n "$context" ]] && echo "$context" && echo ""
+        [[ -n "$tactic_preamble" ]] && echo "$tactic_preamble" && echo ""
+        echo "-- Standalone proof attempt for $theorem_name"
+        echo "example $statement := by $tactic"
+    } > "$test_file"
+
+    # Run test with timeout
+    local start=$(date +%s%N)
+    local error_log="$TEMP_DIR/error_${benchmark_name}_${theorem_name}_${tactic}_$$.log"
+    local result
+
+    if timeout "${timeout}s" lake env lean ${LEAN_EXTRA_ARGS:-} "$test_file" > "$error_log" 2>&1; then
+        local elapsed=$(( ($(date +%s%N) - start) / 1000000 ))
+        result="${elapsed}|OK"
+    else
+        local exit_code=$?
+        if [[ $exit_code -eq 124 ]]; then
+            result="timeout|TIMEOUT"
+        else
+            result="fail|FAIL"
+        fi
+    fi
+
+    # Store in cache
+    store_cache "$cache_key" "$result"
+
+    echo "$result"
+}
+
+# Execute: test single tactic
+test_tactic "$@"
+WRAPPER_EOF2
+
+        chmod +x "$wrapper_script"
+
+        # Process theorems in parallel
+        local current=0
+        for theorem in "${theorems[@]}"; do
+            current=$((current + 1))
+            local goal_start=$(date +%s)
+            log_progress "suite=$display_name goal=$current/$total theorem=$theorem start"
+
+            # Show theorem being processed
+            if [[ $QUIET -eq 0 ]]; then
+                clear_progress
+                echo -e "${BLUE}[$current/$total]${NC} ${YELLOW}$theorem${NC}"
+            fi
+
+            # Extract theorem info
+            local statement=$(extract_theorem_info "$file_path" "$theorem")
+            if [[ -z "$statement" ]]; then
+                log_warning "  Could not extract statement for $theorem"
+                continue
+            fi
+
+            local context=$(extract_context "$file_path")
+
+            # Start parallel jobs for all tactics and collect results
+            local tactic_pids=()
+            local tactic_outputs=()
+
+            for i in "${!TACTICS[@]}"; do
+                local tactic="${TACTICS[$i]}"
+                local output_file="$TEMP_DIR/result_${display_name}_${theorem}_${i}_$$.txt"
+                tactic_outputs[$i]="$output_file"
+
+                # Run tactic test in background
+                bash "$wrapper_script" "" "$display_name" "$theorem" \
+                    "$statement" "$tactic" "$context" "$file_hash" "$timeout" \
+                    > "$output_file" 2>&1 &
+                tactic_pids[$i]=$!
+            done
+
+            # Wait for all tactics to complete and collect results
+            local results=""
+            for i in "${!TACTICS[@]}"; do
+                wait "${tactic_pids[$i]}" 2>/dev/null || true
+                local result=$(cat "${tactic_outputs[$i]}" 2>/dev/null || echo "fail|FAIL")
+
+                IFS='|' read -r time status <<< "$result"
+                results="${results},${time},${status}"
+
+                # Show result immediately (always show unless quiet)
+                if [[ $QUIET -eq 0 ]]; then
+                    local tactic="${TACTICS[$i]}"
+                    case "$status" in
+                        OK)
+                            echo -e "    ${tactic}: ${GREEN}✓${NC} ${time}ms" >&2
+                            ;;
+                        TIMEOUT)
+                            echo -e "    ${tactic}: ${RED}✗ TIMEOUT${NC} (>${timeout}s)" >&2
+                            ;;
+                        FAIL)
+                            echo -e "    ${tactic}: ${RED}✗ FAIL${NC}" >&2
+                            ;;
+                        DRY_RUN)
+                            echo -e "    ${tactic}: ${CYAN}[DRY RUN]${NC}" >&2
+                            ;;
+                    esac
+                fi
+
+                # Clean up temp file
+                rm -f "${tactic_outputs[$i]}"
+            done
+
+            # Write CSV row atomically
+            echo "$display_name,$theorem,\"$statement\"$results" >> "$csv"
+            log_progress "suite=$display_name goal=$current/$total theorem=$theorem done elapsed=$(($(date +%s)-goal_start))s"
+
+            # Blank line between theorems
+            [[ $QUIET -eq 0 ]] && echo ""
+        done
+
+        log_verbose "Completed processing all theorems in parallel mode"
+    else
+        # Sequential processing with progress
+        local current=0
+
+        for theorem in "${theorems[@]}"; do
+            current=$((current + 1))
+            local goal_start=$(date +%s)
+            log_progress "suite=$display_name goal=$current/$total theorem=$theorem start"
+
+            # Show theorem being processed (always show, not just verbose)
+            if [[ $QUIET -eq 0 ]]; then
+                clear_progress
+                echo -e "${BLUE}[$current/$total]${NC} ${YELLOW}$theorem${NC}"
+            fi
+
+            # Process theorem - capture stdout (CSV row) and let stderr (results) display
+            local row
+            row=$(process_theorem "$display_name" "$file_path" "$theorem" \
+                                 "$file_hash" "$timeout") || {
+                log_warning "  Failed to process theorem: $theorem"
+                continue
+            }
+
+            if [[ -n "$row" ]]; then
+                echo "$row" >> "$csv"
+            else
+                log_warning "  Empty result for theorem: $theorem"
+            fi
+            log_progress "suite=$display_name goal=$current/$total theorem=$theorem done elapsed=$(($(date +%s)-goal_start))s"
+
+            # Blank line between theorems (not in quiet mode)
+            [[ $QUIET -eq 0 ]] && echo ""
+        done
+
+        log_verbose "Completed processing all theorems"
+    fi
+    
+    log_success "Completed $display_name: $total theorems processed"
+}
+
+# Run all benchmarks
+run_benchmarks() {
+    archive_previous_results
+
+    # Fresh ENV-error sidecar for this run (appended to per-theorem in test_tactic).
+    rm -f "$OUTPUT_DIR/env_errors.tsv"
+
+    log_info "Starting benchmark suite"
+    log_info "Configuration:"
+    log_info "  Timeout: ${TIMEOUT}s"
+    log_info "  Parallel jobs: $PARALLEL_JOBS"
+    log_info "  Cache: $([ $ENABLE_CACHE -eq 1 ] && echo 'enabled' || echo 'disabled')"
+    log_info "  Dry run: $([ $DRY_RUN -eq 1 ] && echo 'yes' || echo 'no')"
+    echo ""
+    
+    for spec in "${BENCHMARK_FILES[@]}"; do
+        local _imp _file display_name _timeout _mode
+        IFS=':' read -r _imp _file display_name _timeout _mode <<< "$spec"
+        local suite_start=$(date +%s)
+        log_progress "suite=$display_name start"
+        run_benchmark_file "$spec" || log_warning "Benchmark failed, continuing..."
+        log_progress "suite=$display_name done elapsed=$(($(date +%s)-suite_start))s"
+    done
+    
+    log_success "All benchmarks complete"
+}
+
+# Test a single theorem with a specific tactic
+# Args: benchmark_name theorem_name tactic
+test_single() {
+    local target_benchmark="$1"
+    local target_theorem="$2"
+    local target_tactic="$3"
+    
+    for spec in "${BENCHMARK_FILES[@]}"; do
+        read -r import_path file_path display_name timeout _mode <<< "$(parse_benchmark_spec "$spec")"
+        
+        [[ "$display_name" != "$target_benchmark" ]] && continue
+        
+        if [[ ! -f "$file_path" ]]; then
+            log_error "Benchmark file not found: $file_path"
+            exit 1
+        fi
+        
+        local statement=$(extract_theorem_info "$file_path" "$target_theorem")
+        if [[ -z "$statement" ]]; then
+            log_error "Theorem not found: $target_theorem"
+            echo ""
+            echo "Available theorems in $display_name:"
+            get_all_theorems "$file_path" | while read -r thm; do
+                echo "  - $thm"
+            done
+            exit 1
+        fi
+        
+        log_info "Testing: $display_name / $target_theorem / $target_tactic"
+        log_verbose "Statement: $statement"
+        
+        local context=$(extract_context "$file_path")
+        local file_hash=$(get_file_hash "$file_path")
+        
+        local result=$(test_tactic "" "$display_name" "$target_theorem" \
+                                   "$statement" "$target_tactic" "$context" \
+                                   "$file_hash" "$timeout")
+        
+        IFS='|' read -r time status <<< "$result"
+        
+        case "$status" in
+            OK)
+                echo -e "${GREEN}✓ SUCCESS${NC} (${time}ms)"
+                ;;
+            TIMEOUT)
+                echo -e "${RED}✗ TIMEOUT${NC} (>${timeout}s)"
+                ;;
+            ENV)
+                echo -e "${YELLOW}⊘ ENV${NC} (statement does not elaborate on this toolchain)"
+                ;;
+            FAIL)
+                echo -e "${RED}✗ FAILED${NC}"
+                local safe_target_tactic="${target_tactic//[^a-zA-Z0-9_-]/_}"
+                local error_log="$TEMP_DIR/error_${display_name}_${target_theorem}_${safe_target_tactic}.log"
+                if [[ -f "$error_log" ]]; then
+                    echo ""
+                    echo "Error output:"
+                    cat "$error_log"
+                fi
+                ;;
+        esac
+        
+        exit 0
+    done
+    
+    log_error "Benchmark not found: $target_benchmark"
+    exit 1
+}
+
+# Generate all output formats
+generate_all_outputs() {
+    log_info "Generating output formats..."
+    generate_latex_output
+    generate_json_output
+    show_summary
+    # Generate interactive HTML dashboard if python3 is available
+    local dash_script="${SCRIPT_DIR}/dashboard.py"
+    if command -v python3 &>/dev/null && [[ -f "$dash_script" ]]; then
+        python3 "$dash_script" "$OUTPUT_DIR" "$OUTPUT_DIR/dashboard.html" || true
+    fi
+    log_success "Output generation complete"
+}
