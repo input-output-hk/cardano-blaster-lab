@@ -1,0 +1,507 @@
+import Lean
+import Tests.Utils
+
+
+namespace Test.NormChoiceApp
+/-! ## Test objectives to validate normalization rules on choice application.
+    This covers mainly normalization rules pushing function application
+    over ite, dite and match.
+-/
+
+/-! Test cases to validate when normalization of function application on ite. -/
+
+
+-- ∀ (c : Prop) (x y : Nat), [Decidable c] → x > y → (if c then Nat.add x else Nat.sub x) y > 0 ===>
+-- ∀ (c : Prop) (x y : Nat), y < x →
+--   0 < Blaster.dite' c (fun _ : c =>  Nat.add x y) (fun _ : ¬ c => Nat.sub x y)
+#testOptimize [ "NormChoiceAppIte_1" ] (norm-result: 1)
+  ∀ (c : Prop) (x y : Nat), [Decidable c] → x > y → (if c then Nat.add x else Nat.sub x) y > 0 ===>
+  ∀ (c : Prop) (x y : Nat), y < x →
+    0 < Blaster.dite' c (fun _ => Nat.add x y) (fun _ => Nat.sub x y)
+
+
+-- ∀ (α : Type) (c : Prop) (x y : α) (f : α → α → Nat) (g : α → α → Nat), [Decidable c] →
+--   (if c then f x else g x) y > 0 ===>
+-- ∀ (α : Type) (c : Prop) (x y : α) (f : α → α → Nat) (g : α → α → Nat),
+--   0 < Blaster.dite' c (fun _ : c => f x y) (fun _ : ¬ c => g x y)
+#testOptimize [ "NormChoiceAppIte_2" ] (norm-result: 1)
+  ∀ (α : Type) (c : Prop) (x y : α) (f : α → α → Nat) (g : α → α → Nat), [Decidable c] →
+    (if c then f x else g x) y > 0 ===>
+  ∀ (α : Type) (c : Prop) (x y : α) (f : α → α → Nat) (g : α → α → Nat),
+    0 < Blaster.dite' c (fun _ => f x y) (fun _ => g x y)
+
+
+-- ∀ (α : Type) (c : Prop) (w x y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat),
+--   [Decidable c] → (if c then f w else g w) x y z > 0 ===>
+-- ∀ (α : Type) (c : Prop) (w x y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat),
+--   0 < Blaster.dite' c (fun _ : c => f w x y z) (fun _ : ¬ c => g w x y z)
+#testOptimize [ "NormChoiceAppIte_3" ] (norm-result: 1)
+  ∀ (α : Type) (c : Prop) (w x y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat),
+    [Decidable c] → (if c then f w else g w) x y z > 0 ===>
+  ∀ (α : Type) (c : Prop) (w x y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat),
+    0 < Blaster.dite' c (fun _ => f w x y z) (fun _ => g w x y z)
+
+-- ∀ (α : Type) (c : Prop) (w y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat) (h : α → Nat),
+--   [Decidable c] → (if c then f w else g w) y z = h ===>
+-- ∀ (α : Type) (c : Prop) (w y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat) (h : α → Nat),
+--   h = Blaster.dite' c (fun _ : c => λ k => f w y z k) (fun _ : ¬ c => λ k => g w y z k)
+-- NOTE: Test case to validate partially applied function
+#testOptimize [ "NormChoiceAppIte_4" ]
+  ∀ (α : Type) (c : Prop) (w y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat) (h : α → Nat),
+    [Decidable c] → (if c then f w else g w) y z = h ===>
+  ∀ (α : Type) (c : Prop) (w y z : α) (f : α → α → α → α → Nat) (g : α → α → α → α → Nat) (h : α → Nat),
+    h = Blaster.dite' c (fun _ => λ k => f w y z k) (fun _ => λ k => g w y z k)
+
+
+def getValue (xs : Array Nat) (i : USize) (h : i.toNat < xs.size) (y : Nat) : Nat :=
+  let v := xs.uget i h
+  if v < y then v else y
+
+-- ∀ (c : Prop) (x y : Nat), [Decidable c] → x > y → (if c ∨ ¬ c then Nat.add x else Nat.sub x) y > 0 ===>
+-- ∀ (x y : Nat), y < x → 0 < Nat.add x y
+-- NOTE: Test case to validate that the extra arguments are considered properly when condition is reduced to True/False.
+-- NOTE: Test cases reduced to true due to relational simplification and hypothesis fact 0 < x deduced from y < x
+#testOptimize [ "NormChoiceAppIte_5" ] (norm-result: 1)
+  ∀ (c : Prop) (x y : Nat), [Decidable c] → x > y → (if c ∨ ¬ c then Nat.add x else Nat.sub x) y > 0 ===> True
+
+-- ∀ (c : Prop) (x y : Nat), [Decidable c] → x > y → (if c ∧ ¬ c then Nat.add x else Nat.sub x) y > 0 ===>
+-- ∀ (x y : Nat), y < x → 0 < Nat.sub x y
+-- NOTE: Test case to validate that the extra arguments are considered properly when
+-- condition is reduced to True/False.
+#testOptimize [ "NormChoiceAppIte_6" ] (norm-result: 1)
+  ∀ (c : Prop) (x y : Nat), [Decidable c] → x > y → (if c ∧ ¬ c then Nat.add x else Nat.sub x) y > 0 ===>
+  ∀ (x y : Nat), y < x → 0 < Nat.sub x y
+
+
+/-! Test cases to validate when normalization of function application on dite. -/
+
+-- ∀ (x : USize) (xs : Array Nat) (y : Nat) (f : Nat → Nat),
+--   (if h : x.toNat < xs.size then getValue xs x h else f) y > 0 →
+--   (0 < if h : x.toNat < xs.size then if xs.uget x h < y then xs.uget x h else y else f y) ===> True
+-- NOTE: We prefer to check for equivalence here, as opposed to verify the resulting optimized expression,
+-- mainly to avoid having to provide the unfolded definition for xs.uget.
+#testOptimize [ "NormChoiceAppDite_1" ] (norm-result: 1)
+  ∀ (x : USize) (xs : Array Nat) (y : Nat) (f : Nat → Nat),
+    (if h : x.toNat < xs.size then getValue xs x h else f) y > 0 →
+    (0 < if h : x.toNat < xs.size then if xs.uget x h < y then xs.uget x h else y else f y) ===> True
+
+
+def getValuePolyOne [LT α] [DecidableLT α] (xs : Array α) (i : USize) (h : i.toNat < xs.size) (y : α) : α :=
+  let v := xs.uget i h
+  if v < y then v else y
+
+-- ∀ (α : Type) (x : USize) (xs : Array α) (y : α) (f : α → α), [LT α] → [DecidableLT α] →
+--   (if h : x.toNat < xs.size then getValuePolyOne xs x h else f) y > y →
+--   (y < if h : x.toNat < xs.size then if xs.uget x h < y then xs.uget x h else y else f y) ===> True
+-- NOTE: We prefer to check for equivalence here, as opposed to verify the resulting optimized expression,
+-- mainly to avoid having to provide the unfolded definition for xs.uget.
+#testOptimize [ "NormChoiceAppDite_2" ] (norm-result: 1)
+  ∀ (α : Type) (x : USize) (xs : Array α) (y : α) (f : α → α), [LT α] → [DecidableLT α] →
+    (if h : x.toNat < xs.size then getValuePolyOne xs x h else f) y > y →
+    (y < if h : x.toNat < xs.size then if xs.uget x h < y then xs.uget x h else y else f y) ===> True
+
+
+def getValuePolyTwo
+  [LT α] [DecidableLT α]
+  (xs : Array α) (i : USize) (h : i.toNat < xs.size) (f : α → α → α → α) (w y z : α) : α :=
+  let v := xs.uget i h
+  if v < y then v else f w y z
+
+-- ∀ (α : Type) (x : USize) (xs : Array α) (w y z : α) (f : α → α → α → α), [LT α] → [DecidableLT α] →
+--    (if h : x.toNat < xs.size then getValuePolyTwo xs x h f else f) w y z > y →
+--    (y < if h : x.toNat < xs.size then if xs.uget x h < y then xs.uget x h else f w y z else f w y z) ===> True
+-- NOTE: We prefer to check for equivalence here, as opposed to verify the resulting optimized expression,
+-- mainly to avoid having to provide the unfolded definition for xs.uget.
+#testOptimize [ "NormChoiceAppDite_3" ] (norm-result: 1)
+  ∀ (α : Type) (x : USize) (xs : Array α) (w y z : α) (f : α → α → α → α), [LT α] → [DecidableLT α] →
+    (if h : x.toNat < xs.size then getValuePolyTwo xs x h f else f) w y z > y →
+    (y < if h : x.toNat < xs.size then if xs.uget x h < y then xs.uget x h else f w y z else f w y z) ===> True
+
+-- ∀ (α : Type) (x : USize) (xs : Array α) (w y : α) (f : α → α → α → α) (h : α → α), [LT α] → [DecidableLT α] →
+--   (if h : x.toNat < xs.size then getValuePolyTwo xs x h f else f) w y = h →
+--   h = if h : x.toNat < xs.size
+--        then ( λ z => if xs.uget x h < y then xs.uget x h else f w y z)
+--        else (λ z => f w y z) ===> True
+-- NOTE: We prefer to check for equivalence here, as opposed to verify the resulting optimized expression,
+-- mainly to avoid having to provide the unfolded definition for xs.uget.
+-- NOTE: Test case to validate partially applied function
+#testOptimize [ "NormChoiceAppDite_4" ] (norm-result: 1)
+  ∀ (α : Type) (x : USize) (xs : Array α) (w y : α) (f : α → α → α → α) (h : α → α), [LT α] → [DecidableLT α] →
+    (if hs : x.toNat < xs.size then getValuePolyTwo xs x hs f else f) w y = h →
+    h = if hs : x.toNat < xs.size
+         then ( λ z => if xs.uget x hs < y then xs.uget x hs else f w y z)
+         else (λ z => f w y z) ===> True
+
+-- ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat) (g : ¬ c → Nat → Nat), [Decidable c] →
+--   (if h : c then f h else g h) x > 0 ===>
+-- ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat) (g : ¬ c → Nat → Nat),
+--   0 < Blaster.dite' c (fun h : c => f h x) (fun h : ¬ c => g h x)
+-- NOTE: Test case to validate quantified function in dite.
+#testOptimize [ "NormChoiceAppDite_5" ] (norm-result: 1)
+  ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat) (g : ¬ c → Nat → Nat), [Decidable c] →
+    (if h : c then f h else g h) x > 0 ===>
+  ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat) (g : ¬ c → Nat → Nat),
+    0 < Blaster.dite' c (fun h : c => f h x) (fun h : ¬ c => g h x)
+
+-- ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat → Nat) (g : ¬ c → Nat → Nat), [Decidable c] →
+--   (if h : c then f h x else g h) x > 0 ===>
+-- ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat → Nat) (g : ¬ c → Nat → Nat),
+--   0 < Blaster.dite' c (fun h : c => f h x x) (fun h : ¬ c => g h x)
+-- NOTE: Test case to validate quantified function in dite.
+#testOptimize [ "NormChoiceAppDite_6" ] (norm-result: 1)
+  ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat → Nat) (g : ¬ c → Nat → Nat), [Decidable c] →
+    (if h : c then f h x else g h) x > 0 ===>
+  ∀ (c : Prop) (x : Nat) (f : c → Nat → Nat → Nat) (g : ¬ c → Nat → Nat),
+    0 < Blaster.dite' c (fun h : c => f h x x) (fun h : ¬ c => g h x)
+
+-- ∀ (α : Type) (c : Prop) (x : Nat) (w : α) (f : c → α → Nat → Nat) (g : ¬ c → α → Nat → Nat), [Decidable c] →
+--   (if h : c then f h else g h) w x > 0 ===>
+-- ∀ (α : Type) (c : Prop) (x : Nat) (w : α) (f : c → α → Nat → Nat) (g : ¬ c → α → Nat → Nat),
+--   0 < Blaster.dite' c (fun h : c => f h w x) (fun h : ¬ c => g h w x)
+-- NOTE: Test case to validate quantified function in dite.
+#testOptimize [ "NormChoiceAppDite_7" ] (norm-result: 1)
+  ∀ (α : Type) (c : Prop) (x : Nat) (w : α) (f : c → α → Nat → Nat) (g : ¬ c → α → Nat → Nat), [Decidable c] →
+    (if h : c then f h else g h) w x > 0 ===>
+  ∀ (α : Type) (c : Prop) (x : Nat) (w : α) (f : c → α → Nat → Nat) (g : ¬ c → α → Nat → Nat),
+    0 < Blaster.dite' c (fun h : c => f h w x) (fun h : ¬ c => g h w x)
+
+-- ∀ (α : Type) (c : Prop) (w : α) (f : c → α → Nat → Nat)
+--   (g : ¬ c → α → Nat → Nat) (h : Nat → Nat), [Decidable c] →
+--   (if h : c then f h else g h) w = h ===>
+-- ∀ (α : Type) (c : Prop) (w : α) (f : c → α → Nat → Nat)
+--   (g : ¬ c → α → Nat → Nat) (h : Nat → Nat),
+--   h = Blaster.dite' c (fun h : c => λ x => f h w x) (fun h : ¬ c => λ x => g h w x)
+-- NOTE: Test case to validate quantified function in dite.
+-- NOTE: Test case to validate partially applied function
+#testOptimize [ "NormChoiceAppDite_8" ] (norm-result: 1)
+  ∀ (α : Type) (c : Prop) (w : α) (f : c → α → Nat → Nat)
+    (g : ¬ c → α → Nat → Nat) (h : Nat → Nat), [Decidable c] →
+    (if h : c then f h else g h) w = h ===>
+  ∀ (α : Type) (c : Prop) (w : α) (f : c → α → Nat → Nat)
+    (g : ¬ c → α → Nat → Nat) (h : Nat → Nat),
+    h = Blaster.dite' c (fun h : c => λ x => f h w x) (fun h : ¬ c => λ x => g h w x)
+
+-- ∀ (x : Nat) (f : True → Nat → Nat) (g : ¬ True → Nat → Nat),
+--   (if h : True then f h else g h) x > 0 ===>
+-- ∀ (x : Nat) (f : True → Nat → Nat), 0 < f True.intro x
+-- NOTE: Test case to validate that the extra arguments are considered properly when
+-- condition is reduced to True/False.
+#testOptimize [ "NormChoiceAppDite_9" ] (norm-result: 1)
+  ∀ (x : Nat) (f : True → Nat → Nat) (g : ¬ True → Nat → Nat),
+    (if h : True then f h else g h) x > 0 ===>
+  ∀ (x : Nat) (f : True → Nat → Nat), 0 < f True.intro x
+
+-- ∀ (x : Nat) (f : False → Nat → Nat) (g : ¬ False → Nat → Nat),
+--   (if h : False then f h else g h) x > 0 ===>
+-- ∀ (x : Nat) (g : True → Nat → Nat), 0 < g not_false x
+-- NOTE: Test case to validate that the extra arguments are considered properly when
+-- condition is reduced to True/False.
+#testOptimize [ "NormChoiceAppDite_10" ] (norm-result: 1)
+  ∀ (x : Nat) (f : False → Nat → Nat) (g : ¬ False → Nat → Nat),
+    (if h : False then f h else g h) x > 0 ===>
+  ∀ (x : Nat) (g : True → Nat → Nat), 0 < g True.intro x
+
+/-! Test cases to validate when normalization of function application on match. -/
+
+inductive Color where
+  | red : Color → Color
+  | transparent : Color
+  | blue : Color → Color
+  | black : Color
+
+def toWeight (x : Color) (y : Nat) : Nat :=
+  match x with
+  | .red _ => 10 * y
+  | .transparent => 1
+  | .blue _ => 12 * y
+  | .black => 0
+
+def toNat (x : Color) : Nat → Nat :=
+ match x with
+ | .red c => toWeight c
+ | .transparent => λ x => 5 * x
+ | .blue c => toWeight c
+ | .black => λ x => x + 1
+
+-- ∀ (c : Color) (factor : Nat), factor > 0 → toNat c factor > factor ===>
+-- ∀ (c : Color) (factor : Nat), 0 < factor  →
+-- factor <
+--   ( match c with
+--     | .red x =>
+--         match x with
+--         | .red _ => Nat.mul 10 factor
+--         | .transparent => 1
+--         | .blue _ => Nat.mul 12 factor
+--         | .black => 0
+--     | .transparent => Nat.mul 5 factor
+--     | .blue x =>
+--          match x with
+--          | .red _ => Nat.mul 10 factor
+--          | .transparent => 1
+--          | .blue _ => Nat.mul 12 factor
+--          | .black => 0
+--     | .black => Nat.add 1 factor )
+#testOptimize [ "NormChoiceAppMatch_1" ] (norm-result: 1)
+  ∀ (c : Color) (factor : Nat), factor > 0 → toNat c factor > factor ===>
+  ∀ (c : Color) (factor : Nat), 0 < factor  →
+    factor <
+      ( match c with
+        | .red x =>
+            match x with
+            | .red _ => Nat.mul 10 factor
+            | .transparent => 1
+            | .blue _ => Nat.mul 12 factor
+            | .black => 0
+        | .transparent => Nat.mul 5 factor
+        | .blue x =>
+             match x with
+             | .red _ => Nat.mul 10 factor
+             | .transparent => 1
+             | .blue _ => Nat.mul 12 factor
+             | .black => 0
+        | .black => Nat.add 1 factor )
+
+def listToNatOne (x : List α) : Nat → Nat :=
+ match x with
+ | [] => λ _x => 0
+ | _ :: [] => λ x => 2 * x
+ | _ :: _ :: [] => λ x => 3 * x
+ | _ :: _ :: _ :: [] => λ x => 4 * x
+ | _ => λ x => x * x
+
+-- ∀ (α : Type) (xs : List α) (factor : Nat), xs.length > 0 → listToNat xs factor ≥ factor ===>
+-- ∀ (α : Type) (xs : List α) (factor : Nat),
+--   0 < xs.length →
+--    ¬ ( listToNat.match_1 (fun ( _ : List α) => Nat) xs
+--        (fun (_ : Unit) => 0)
+--        (fun (_ : α) => Nat.mul 2 factor)
+--        (fun (_ : α) (_ : α) => Nat.mul 3 factor)
+--        (fun (_ : α) (_ : α) (_ : α) => Nat.mul 4 factor)
+--        (fun (_ : List α) => Nat.mul factor factor) < factor )
+#testOptimize [ "NormChoiceAppMatch_2" ] (norm-result: 1)
+  ∀ (α : Type) (xs : List α) (factor : Nat), xs.length > 0 → listToNatOne xs factor ≥ factor ===>
+  ∀ (α : Type) (xs : List α) (factor : Nat),
+    0 < xs.length →
+     ¬ ( listToNatOne.match_1 (fun ( _ : List α) => Nat) xs
+         (fun (_ : Unit) => 0)
+         (fun (_ : α) => Nat.mul 2 factor)
+         (fun (_ : α) (_ : α) => Nat.mul 3 factor)
+         (fun (_ : α) (_ : α) (_ : α) => Nat.mul 4 factor)
+         (fun (_ : List α) => Nat.mul factor factor) < factor )
+
+def listToNatTwo (x : List α) : Nat → Nat → Nat → Nat :=
+ match x with
+ | [] => λ _x _y _z => 0
+ | _ :: [] => λ x y z => (2 * x) + z - y
+ | _ :: _ :: [] => λ x y z  => ((3 * x) + z) * y
+ | _ :: _ :: _ :: [] => λ x y z => 4 * x * y * z
+ | _ => λ x y z => x * x * y * z
+
+
+-- ∀ (α : Type) (xs : List α) (x y z : Nat), xs.length > 0 → listToNatTwo xs x y z ≥ 2 * x ===>
+-- ∀ (α : Type) (xs : List α) (x y z : Nat),
+--   0 < xs.length →
+--    ¬ ( listToNatOne.match_1 (fun ( _ : List α) => Nat) xs
+--        (fun (_ : Unit) => 0)
+--        (fun (_ : α) => Nat.sub (Nat.add z (Nat.mul 2 x)) y)
+--        (fun (_ : α) (_ : α) => Nat.mul y (Nat.add z (Nat.mul 3 x)))
+--        (fun (_ : α) (_ : α) (_ : α) => Nat.mul z (Nat.mul y (Nat.mul 4 x)))
+--        (fun (_ : List α) => Nat.mul z (Nat.mul y (Nat.mul x x))) < Nat.mul 2 x)
+-- NOTE: listToNatTwo.match_1 is equivalent to listToNatOne.match_1 and therefore
+-- has been replaced by Lean at compilation time
+#testOptimize [ "NormChoiceAppMatch_3" ] (norm-result: 1)
+  ∀ (α : Type) (xs : List α) (x y z : Nat), xs.length > 0 → listToNatTwo xs x y z ≥ 2 * x ===>
+  ∀ (α : Type) (xs : List α) (x y z : Nat),
+    0 < xs.length →
+     ¬ ( listToNatOne.match_1 (fun ( _ : List α) => Nat) xs
+         (fun (_ : Unit) => 0)
+         (fun (_ : α) => Nat.sub (Nat.add z (Nat.mul 2 x)) y)
+         (fun (_ : α) (_ : α) => Nat.mul y (Nat.add z (Nat.mul 3 x)))
+         (fun (_ : α) (_ : α) (_ : α) => Nat.mul z (Nat.mul y (Nat.mul 4 x)))
+         (fun (_ : List α) => Nat.mul z (Nat.mul y (Nat.mul x x))) < Nat.mul 2 x)
+
+
+-- ∀ (α : Type) (xs : List α) (x y : Nat) (f : Nat → Nat), listToNatTwo xs x y = f ===>
+-- ∀ (α : Type) (xs : List α) (x y : Nat) (f : Nat → Nat),
+-- f = fun a =>
+--       listToNatOne.match_1 (fun ( _ : List α) => Nat) xs
+--       (fun (_ : Unit) => 0)
+--       (fun (_ : α) => Nat.sub (Nat.add a (Nat.mul 2 x)) y)
+--       (fun (_ : α) (_ : α) => Nat.mul y (Nat.add a (Nat.mul 3 x)))
+--       (fun (_ : α) (_ : α) (_ : α) => Nat.mul a (Nat.mul y (Nat.mul 4 x)))
+--       (fun (_ : List α) => Nat.mul a (Nat.mul y (Nat.mul x x)))
+-- NOTE: listToNatTwo.match_1 is equivalent to listToNatOne.match_1 and therefore
+-- has been replaced by Lean at compilation time
+-- NOTE: Test case to validate partially applied function
+#testOptimize [ "NormChoiceAppMatch_4" ] (norm-result: 1)
+  ∀ (α : Type) (xs : List α) (x y : Nat) (f : Nat → Nat), listToNatTwo xs x y = f ===>
+  ∀ (α : Type) (xs : List α) (x y : Nat) (f : Nat → Nat),
+    f = fun a =>
+          listToNatOne.match_1 (fun ( _ : List α) => Nat) xs
+          (fun (_ : Unit) => 0)
+          (fun (_ : α) => Nat.sub (Nat.add a (Nat.mul 2 x)) y)
+          (fun (_ : α) (_ : α) => Nat.mul y (Nat.add a (Nat.mul 3 x)))
+          (fun (_ : α) (_ : α) (_ : α) => Nat.mul a (Nat.mul y (Nat.mul 4 x)))
+          (fun (_ : List α) => Nat.mul a (Nat.mul y (Nat.mul x x)))
+
+
+def listMap (x : List α) (a : β) (b : β) : Nat → Nat → β :=
+ match x with
+ | [] => λ x y => if x < y then a else b
+ | _ :: [] => λ x y => if 2 * x < y then a else b
+ | _ :: _ :: [] => λ x y  => if 3 * x < y then a else b
+ | _ :: _ :: _ :: [] => λ x y => if 4 * x < y then a else b
+ | _ => λ x y => if x * x < y then a else b
+
+
+-- ∀ (α : Type) (xs : List α) (x y z : Nat), xs.length > 0 → listToNatTwo xs x y z ≥ 2 * x ===>
+-- ∀ (α : Type) (xs : List α) (x y z : Nat),
+--   0 < xs.length →
+--    ¬ ( listToNatOne.match_1 (fun ( _ : List α) => Nat) xs
+--        (fun (_ : Unit) => 0)
+--        (fun (_ : α) => Nat.sub (Nat.add z (Nat.mul 2 x)) y)
+--        (fun (_ : α) (_ : α) => Nat.mul y (Nat.add z (Nat.mul 3 x)))
+--        (fun (_ : α) (_ : α) (_ : α) => Nat.mul z (Nat.mul y (Nat.mul 4 x)))
+--        (fun (_ : List α) => Nat.mul z (Nat.mul y (Nat.mul x x))) < Nat.mul 2 x)
+-- NOTE: listMap.match_1 is equivalent to listToNatOne.match_1 and therefore
+-- has been replaced by Lean at compilation time
+-- NOTE: Test case to validate polymorphic return type
+#testOptimize [ "NormChoiceAppMatch_5" ] (norm-result: 1)
+  ∀ (α : Type) (β : Type) (xs : List α) (a b : β) (x y : Nat),
+     x > y → listMap xs a b x y = b ===>
+  ∀ (α : Type) (β : Type) (xs : List α) (a b : β) (x y : Nat),
+     y < x →
+       b = listToNatOne.match_1 (fun (_ : List α) => β) xs
+           (fun (_ : Unit) => b) -- simplified due to hypothesis simp rule as we have y < x in hyp
+           (fun (_ : α) =>
+             Blaster.dite' (Nat.mul 2 x < y) (fun _ => a) (fun _ => b))
+           (fun (_ : α) (_ : α) =>
+             Blaster.dite' (Nat.mul 3 x < y) (fun _ => a) (fun _ => b))
+           (fun (_ : α) (_ : α) (_ : α) =>
+             Blaster.dite' (Nat.mul 4 x < y) (fun _ => a) (fun _ => b))
+           (fun (_ : List α) =>
+             Blaster.dite' (Nat.mul x x < y) (fun _ => a) (fun _ => b))
+
+/-! Test cases to validate normalization of a match application when the match type is a dependent
+    lambda (indexed inductive datatype in the discriminators and/or in the return type). The pushed
+    match must keep the binder types of the original motive (`v : FnIdx n`) and, when the return type
+    depends on a discriminator (`Nat → FnIdx n`), the new return type must refer to the motive's own
+    binder. -/
+
+inductive FnIdx : Nat → Type where
+  | z : FnIdx 0
+  | s : FnIdx 1
+
+def fnFun (n : Nat) (v : FnIdx n) : Nat → Nat :=
+  match n, v with
+  | .(0), .z => fun x => x + 1
+  | .(1), .s => fun x => x * 2
+
+def fnOutF (n : Nat) (v : FnIdx n) : Nat → FnIdx n :=
+  match n, v with
+  | .(0), .z => fun _ => .z
+  | .(1), .s => fun _ => .s
+
+-- ∀ (k : Nat) (w : FnIdx k) (m : Nat), fnFun k w m = m ===>
+-- ∀ (k : Nat) (w : FnIdx k) (m : Nat),
+--   m = fnFun.match_1 (fun (n : Nat) (_ : FnIdx n) => Nat) k w
+--       (fun (_ : Unit) => Nat.add 1 m)
+--       (fun (_ : Unit) => Nat.mul 2 m)
+-- NOTE: Test case to validate that the match type with a dependent binder (`v : FnIdx n`) is kept
+-- when the extra argument is pushed in the alternatives (the return type `Nat → Nat` is closed).
+#testOptimize [ "NormChoiceAppMatch_6" ] (norm-result: 1)
+  ∀ (k : Nat) (w : FnIdx k) (m : Nat), fnFun k w m = m ===>
+  ∀ (k : Nat) (w : FnIdx k) (m : Nat),
+    m = match k, w with
+        | .(0), .z => Nat.add 1 m
+        | .(1), .s => Nat.mul 2 m
+
+-- ∀ (k : Nat) (w : FnIdx k) (m : Nat), fnOutF k w m = w ===>
+-- ∀ (k : Nat) (w : FnIdx k) (m : Nat),
+--   w = fnFun.match_1 (fun (n : Nat) (_ : FnIdx n) => FnIdx n) k w
+--       (fun (_ : Unit) => FnIdx.z)
+--       (fun (_ : Unit) => FnIdx.s)
+-- NOTE: Test case to validate that the return type of the match (`Nat → FnIdx n`, which depends on
+-- the first discriminator) is properly updated to `FnIdx n` when the extra argument is pushed in the
+-- alternatives: the discriminator `k` instantiating the index is abstracted again by the motive's
+-- own binder `n` (as done by Lean's `match` elaborator with `kabstract`).
+#testOptimize [ "NormChoiceAppMatch_7" ]
+  ∀ (k : Nat) (w : FnIdx k) (m : Nat), fnOutF k w m = w ===>
+  ∀ (k : Nat) (w : FnIdx k),
+    w = match k, w with
+        | .(0), .z => FnIdx.z
+        | .(1), .s => FnIdx.s
+
+/-! ## Universe level of the applied `Blaster.dite'`
+
+When a `dite'` of functions is applied to arguments, the sort of the resulting `dite'` is the
+return type of the functions, whose level may differ from the level of the function type: for
+`f g : Type → Nat` the original `dite'` is over `Type → Nat` (level `2`) and the applied one is
+over `Nat` (level `1`); for `Type 1 → Type` the levels are `3` and `2`. The constant must be
+rebuilt with the level of the new sort, otherwise the result is ill-typed. -/
+
+-- ∀ (c : Bool) (f g : Type → Nat) (x : Type), (if c then f else g) x = f x ===>
+-- ∀ (c : Bool) (f g : Type → Nat) (x : Type), f x = Blaster.dite'.{1} (true = c) (fun _ => f x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_1" ]
+  ∀ (c : Bool) (f g : Type → Nat) (x : Type), (if c then f else g) x = f x ===>
+  ∀ (c : Bool) (f g : Type → Nat) (x : Type), f x = Blaster.dite' (true = c) (fun _ => f x) (fun _ => g x)
+
+-- ∀ (c : Prop) [Decidable c] (f g : Type → Nat) (x : Type), (if c then f else g) x = f x ===>
+-- ∀ (c : Prop) (f g : Type → Nat) (x : Type), f x = Blaster.dite'.{1} c (fun _ => f x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_2" ]
+  ∀ (c : Prop) [Decidable c] (f g : Type → Nat) (x : Type), (if c then f else g) x = f x ===>
+  ∀ (c : Prop) (f g : Type → Nat) (x : Type), f x = Blaster.dite' c (fun _ => f x) (fun _ => g x)
+
+-- ∀ (c : Bool) (f g : Type 1 → Type) (x : Type 1), (if c then f else g) x = f x ===>
+-- ∀ (c : Bool) (f g : Type 1 → Type) (x : Type 1), f x = Blaster.dite'.{2} (true = c) (fun _ => f x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_3" ]
+  ∀ (c : Bool) (f g : Type 1 → Type) (x : Type 1), (if c then f else g) x = f x ===>
+  ∀ (c : Bool) (f g : Type 1 → Type) (x : Type 1), f x = Blaster.dite' (true = c) (fun _ => f x) (fun _ => g x)
+
+-- ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), (if c then f else g) x y = f x y ===>
+-- ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), f x y = Blaster.dite'.{1} (true = c) (fun _ => f x y) (fun _ => g x y)
+#testOptimize [ "NormChoiceAppLevel_4" ]
+  ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), (if c then f else g) x y = f x y ===>
+  ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), f x y = Blaster.dite' (true = c) (fun _ => f x y) (fun _ => g x y)
+
+-- ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), (if c then f x else g x) y = f x y ===>
+-- ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), f x y = Blaster.dite'.{1} (true = c) (fun _ => f x y) (fun _ => g x y)
+#testOptimize [ "NormChoiceAppLevel_5" ]
+  ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), (if c then f x else g x) y = f x y ===>
+  ∀ (c : Bool) (f g : Type → Type → Nat) (x y : Type), f x y = Blaster.dite' (true = c) (fun _ => f x y) (fun _ => g x y)
+
+-- ∀ (c : Bool) (f : c → Type → Nat) (g : Type → Nat) (x : Type), (if hc : c then f hc else g) x = g x ===>
+-- ∀ (c : Bool) (f : true = c → Type → Nat) (g : Type → Nat) (x : Type),
+--   g x = Blaster.dite'.{1} (true = c) (fun hc => f hc x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_6" ]
+  ∀ (c : Bool) (f : c → Type → Nat) (g : Type → Nat) (x : Type), (if hc : c then f hc else g) x = g x ===>
+  ∀ (c : Bool) (f : true = c → Type → Nat) (g : Type → Nat) (x : Type),
+    g x = Blaster.dite' (true = c) (fun hc => f hc x) (fun _ => g x)
+
+-- ∀ (c : Prop) [Decidable c] (f : c → Type → Nat) (g : Type → Nat) (x : Type), (if hc : c then f hc else g) x = g x ===>
+-- ∀ (c : Prop) (f : c → Type → Nat) (g : Type → Nat) (x : Type), g x = Blaster.dite'.{1} c (fun hc => f hc x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_7" ]
+  ∀ (c : Prop) [Decidable c] (f : c → Type → Nat) (g : Type → Nat) (x : Type), (if hc : c then f hc else g) x = g x ===>
+  ∀ (c : Prop) (f : c → Type → Nat) (g : Type → Nat) (x : Type), g x = Blaster.dite' c (fun hc => f hc x) (fun _ => g x)
+
+-- the match is first normalized to a `dite'` over `Type → Nat` (level 2), then applied (level 1):
+-- ∀ (c : Bool) (f g : Type → Nat) (x : Type), (match c with | true => f | false => g) x = f x ===>
+-- ∀ (c : Bool) (f g : Type → Nat) (x : Type), f x = Blaster.dite'.{1} (true = c) (fun _ => f x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_8" ]
+  ∀ (c : Bool) (f g : Type → Nat) (x : Type), (match c with | true => f | false => g) x = f x ===>
+  ∀ (c : Bool) (f g : Type → Nat) (x : Type), f x = Blaster.dite' (true = c) (fun _ => f x) (fun _ => g x)
+
+-- same level before and after application (2 and 2):
+-- ∀ (c : Bool) (f g : Type → Type) (x : Type), (if c then f else g) x = f x ===>
+-- ∀ (c : Bool) (f g : Type → Type) (x : Type), f x = Blaster.dite'.{2} (true = c) (fun _ => f x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_9" ]
+  ∀ (c : Bool) (f g : Type → Type) (x : Type), (if c then f else g) x = f x ===>
+  ∀ (c : Bool) (f g : Type → Type) (x : Type), f x = Blaster.dite' (true = c) (fun _ => f x) (fun _ => g x)
+
+-- level 1 control: ∀ (c : Bool) (f g : Nat → Nat) (x : Nat), (if c then f else g) x = f x ===>
+-- ∀ (c : Bool) (f g : Nat → Nat) (x : Nat), f x = Blaster.dite'.{1} (true = c) (fun _ => f x) (fun _ => g x)
+#testOptimize [ "NormChoiceAppLevel_10" ]
+  ∀ (c : Bool) (f g : Nat → Nat) (x : Nat), (if c then f else g) x = f x ===>
+  ∀ (c : Bool) (f g : Nat → Nat) (x : Nat), f x = Blaster.dite' (true = c) (fun _ => f x) (fun _ => g x)
+
+end Test.NormChoiceApp
