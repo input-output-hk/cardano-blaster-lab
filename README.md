@@ -41,7 +41,8 @@ baseline. Worker count affects per-case latency and is part of the recorded
 configuration. The hard timeout puts an upper bound of roughly 20 minutes of
 case time on the one-worker PR smoke check. At four workers, the corresponding
 case-time bounds are five minutes for smoke, 1.7 hours for clusters, and 3.9
-hours for full; build time and runner overhead are additional. Escalate only changes that show
+hours for full; build time and runner overhead are additional. GitHub Actions
+caches the compiled shared packages across runs. Escalate only changes that show
 a useful signal on the cheaper pass, and inspect regressions before the next
 tier. A hosted full run reuses cached cluster results from the same commit and
 configuration when available, so those cases do not run twice. To test one

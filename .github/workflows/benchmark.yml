@@ -53,6 +53,16 @@ jobs:
       - name: Check frozen smoke cohort
         run: python3 scripts/make_smoke_cohort.py --check
 
+      - name: Restore shared package builds
+        uses: actions/cache@v4
+        with:
+          path: |
+            packages/Lean-blaster/.lake/build
+            packages/PlutusCoreBlaster/.lake/build
+            packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-shared-build-${{ runner.os }}-${{ hashFiles('benchmark/lean-toolchain', 'benchmark/lake-manifest.json', 'packages/**/*.lean', 'packages/**/lakefile.lean') }}
+          restore-keys: cardano-shared-build-${{ runner.os }}-
+
       - name: Build shared Lean dependencies
         working-directory: benchmark
         run: lake build CardanoLedgerApi
