@@ -1,0 +1,25 @@
+# Mac OS
+
+**/.DS_Store
+
+# Lake
+.venv/
+.lake/
+
+# Logs
+build.log
+
+# vscode
+/.vscode/
+*.orig
+
+# Plutus repo symlink
+
+.plutus-conformance
+
+# lake manifest
+lake-manifest.json
+
+# Benchmark outputs
+/Benchmark/PrepUplc/Generated/
+/Benchmark/results/
