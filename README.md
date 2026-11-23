@@ -45,9 +45,16 @@ hours for full; build time and runner overhead are additional. GitHub Actions
 caches the compiled shared packages across runs. Escalate only changes that show
 a useful signal on the cheaper pass, and inspect regressions before the next
 tier. A hosted full run reuses cached cluster results from the same commit and
-configuration when available, so those cases do not run twice. To test one
-affected script, use `python3 LiveScripts/benchmark.py
---script HASH --z3 /path/to/z3` from `benchmark/`.
+configuration when available, so those cases do not run twice.
+
+The standard hosted runner needs one script worker: a four-worker run timed out
+on 47 of 48 cases during elaboration, while a one-worker pilot reached Blaster
+on both tested cases. See the [four-worker run](https://github.com/input-output-hk/cardano-blaster-lab/actions/runs/45226647701)
+and [one-worker pilot](https://github.com/input-output-hk/cardano-blaster-lab/actions/runs/45230525215).
+Use a calibrated machine for cluster and full sweeps; only compare results from
+the same hardware class, worker count, timeout, cohort, and source revisions.
+The hosted manual heavy tiers are available for experiments, but the standard
+runner's 300-minute job cap can end a one-worker full sweep early.
 
 Run locally after installing Lean 4.24 and Z3 5.4 or newer:
 
@@ -56,6 +63,11 @@ python3 scripts/bench.py smoke --z3 /path/to/z3
 python3 scripts/bench.py clusters --z3 /path/to/z3
 python3 scripts/bench.py full --z3 /path/to/z3
 ```
+
+For an affected script, run `python3 LiveScripts/benchmark.py --script HASH
+--z3 /path/to/z3` from `benchmark/`. For a local heavy sweep, add `--limit 100`
+and repeat the command on the same checkout. The runner skips cases already
+recorded with the same configuration, so each chunk advances the sweep.
 
 See `benchmark/LiveScripts/README.md` for corpus and result semantics. The
 public dashboard source is `benchmark/cardano-dashboard/`.
