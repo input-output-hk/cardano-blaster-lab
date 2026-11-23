@@ -77,7 +77,11 @@ and repeat the command on the same checkout. The runner skips cases already
 recorded with the same configuration, so each chunk advances the sweep.
 
 See `benchmark/LiveScripts/README.md` for corpus and result semantics. The
-public dashboard source is `benchmark/cardano-dashboard/`.
+[public Cardano Scripts dashboard](https://input-output-hk.github.io/cardano-blaster-lab/)
+is built from `benchmark/cardano-dashboard/`. Its grid reads the committed
+`benchmark/LiveScripts/results/latest.json` snapshot selected by
+`active-config.json`. A push to `main` that changes those files redeploys the
+site through GitHub Pages.
 
 ## Automatic error reports
 

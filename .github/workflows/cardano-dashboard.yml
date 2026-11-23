@@ -1,0 +1,60 @@
+name: Publish Cardano Scripts dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/cardano-dashboard.yml
+      - benchmark/cardano-dashboard/**
+      - benchmark/LiveScripts/catalog.json
+      - benchmark/LiveScripts/cohorts/**
+      - benchmark/LiveScripts/results/latest.json
+      - benchmark/LiveScripts/results/active-config.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cardano-dashboard-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Build dashboard
+        run: python3 benchmark/cardano-dashboard/build.py
+      - name: Check published seven-day cohort
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path("benchmark/cardano-dashboard/dist/data/dashboard.json").read_text())
+          cohort = next(c for c in payload["cohorts"] if c["name"] == "2026-11-23")
+          statuses = {script["script_hash"]: script["status"] for script in payload["scripts"]}
+          missing = [script_hash for script_hash in cohort["script_hashes"]
+                     if statuses.get(script_hash, "unrun") == "unrun"]
+          if len(cohort["script_hashes"]) != 2250 or missing:
+              raise SystemExit(f"Incomplete seven-day dashboard: {len(missing)} unrun scripts")
+          print(payload["counts"])
+          PY
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: benchmark/cardano-dashboard/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
