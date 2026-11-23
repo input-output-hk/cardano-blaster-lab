@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const NS = "http://www.w3.org/2000/svg";
-const repoBase = "https://github.com/input-output-hk/Blaster-benchmarking/blob/main/";
+const repoBase = "https://github.com/input-output-hk/cardano-blaster-lab/blob/main/benchmark/";
 let data = { scripts: [], cohorts: [], events: [] };
 let filters = { search: "", network: "", version: "", status: "", purpose: "" };
 let shown = 120;
