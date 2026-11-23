@@ -63,10 +63,6 @@ jobs:
           key: cardano-shared-build-${{ runner.os }}-${{ hashFiles('benchmark/lean-toolchain', 'benchmark/lake-manifest.json', 'packages/**/*.lean', 'packages/**/lakefile.lean') }}
           restore-keys: cardano-shared-build-${{ runner.os }}-
 
-      - name: Build shared Lean dependencies
-        working-directory: benchmark
-        run: lake build CardanoLedgerApi
-
       - name: Install pinned Z3
         run: |
           mkdir -p .tools
@@ -75,6 +71,15 @@ jobs:
           echo 'b548bac48ef2452b4e09ea2945cf4b011d5f43fcf39e4799df268ee7e0769d85  .tools/z3.zip' | sha256sum -c -
           unzip -q .tools/z3.zip -d .tools
           .tools/z3-5.4.1-x64-glibc-2.39/bin/z3 -version
+          z3_root="$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39"
+          test -f "$z3_root/bin/libz3.a"
+          test -f "$z3_root/include/z3.h"
+          echo "Z3_LIB_PATH=$z3_root/bin" >> "$GITHUB_ENV"
+          echo "Z3_INC_PATH=$z3_root/include" >> "$GITHUB_ENV"
+
+      - name: Build shared Lean dependencies
+        working-directory: benchmark
+        run: lake build CardanoLedgerApi
 
       - name: Reuse cluster results for full run
         if: github.event_name == 'workflow_dispatch' && inputs.tier == 'full'

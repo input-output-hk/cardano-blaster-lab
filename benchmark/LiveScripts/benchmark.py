@@ -15,6 +15,7 @@ import re
 import shutil
 import signal
 import subprocess
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
@@ -77,9 +78,12 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
             code, output, errors, timed_out = None, "", "", True
             status, stage = "timeout", "script_build"
         else:
-            path = f"LiveScripts/S_{script_hash}/Properties.lean"
+            property_module = f"LiveScripts.S_{script_hash}.Properties"
+            property_olean = REPO / ".lake/build/lib/lean/LiveScripts" / f"S_{script_hash}" / "Properties.olean"
+            # Force a fresh solver run even when Lake has cached this module.
+            property_olean.unlink(missing_ok=True)
             code, output, errors, timed_out = run_command(
-                ["lake", "env", "lean", path], remaining, env)
+                ["lake", "build", property_module], remaining, env)
             status = classify(code, output + errors, timed_out)
             stage = active_stage(output) if timed_out else None
     return {
@@ -129,6 +133,19 @@ def main() -> None:
         if not z3.is_file():
             parser.error(f"Z3 executable not found: {z3}")
         env["PATH"] = str(z3.parent) + os.pathsep + env["PATH"]
+        z3_include = z3.parent.parent / "include"
+        z3_library = next(
+            (directory for directory in (z3.parent, z3.parent.parent / "lib")
+             if (directory / "libz3.a").is_file() or (directory / "libz3.dylib").is_file()),
+            None,
+        )
+        if not (z3_include / "z3.h").is_file() or z3_library is None:
+            parser.error("--z3 must belong to an installation with z3.h and libz3")
+        env["Z3_INC_PATH"] = str(z3_include)
+        env["Z3_LIB_PATH"] = str(z3_library)
+        if os.name == "posix":
+            library_var = "DYLD_LIBRARY_PATH" if sys.platform == "darwin" else "LD_LIBRARY_PATH"
+            env[library_var] = str(z3_library) + os.pathsep + env.get(library_var, "")
     else:
         z3_path = shutil.which("z3")
         if not z3_path:
