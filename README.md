@@ -71,3 +71,22 @@ recorded with the same configuration, so each chunk advances the sweep.
 
 See `benchmark/LiveScripts/README.md` for corpus and result semantics. The
 public dashboard source is `benchmark/cardano-dashboard/`.
+
+## Automatic error reports
+
+After each benchmark workflow, the [error agent](scripts/error_agent.py) reads
+the raw result artifact and files one `benchmark-error` issue per script with
+status `error`. It includes the exact diagnostic, generated Lean sources,
+corpus and transaction metadata, source revision, configuration, and a replay
+command. A later sighting adds evidence to the same issue. The workflow can
+also be dispatched manually with a benchmark Actions run ID.
+
+The reporter works without an OpenAI key. To add a bounded model analysis of
+up to 20 distinct errors per run, set the repository Actions secret
+`OPENAI_API_KEY`; the default model is `gpt-6.2-sol`. To notify a Slack channel
+when new or reopened issues appear, create an incoming webhook for that channel
+and set the repository Actions secret `SLACK_WEBHOOK_URL`. The agent sends one
+digest per run, and repeat sightings do not alert again. Create both secrets
+under **Settings → Secrets and variables → Actions**; never put them in an
+issue, PR, or tracked file. The webhook remains tied to the selected Slack
+channel.

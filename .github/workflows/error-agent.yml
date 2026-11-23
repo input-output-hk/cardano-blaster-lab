@@ -1,0 +1,63 @@
+name: Report Cardano script errors
+
+on:
+  workflow_run:
+    workflows:
+      - Cardano script benchmark
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Benchmark Actions run ID to inspect
+        type: string
+        required: true
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: cardano-error-agent-${{ github.event.workflow_run.id || inputs.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      # workflow_run uses this trusted default-branch code, never the triggering PR's code.
+      - uses: actions/checkout@v4
+
+      - name: Check error-agent parsing and deduplication
+        run: python3 -m unittest discover -s tests -p test_error_agent.py
+
+      - name: Download benchmark evidence
+        id: artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id || inputs.run_id }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" > "$RUNNER_TEMP/benchmark-run.json"
+          mkdir -p "$RUNNER_TEMP/benchmark-artifact"
+          if gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" \
+              -n "cardano-benchmark-$RUN_ID" -D "$RUNNER_TEMP/benchmark-artifact"; then
+            echo 'found=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'No benchmark result artifact was produced.'
+            echo 'found=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Investigate and report errors
+        if: steps.artifact.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          OPENAI_TRIAGE_MODEL: ${{ vars.OPENAI_TRIAGE_MODEL || 'gpt-6.2-sol' }}
+        run: |
+          python3 scripts/error_agent.py \
+            --artifact-dir "$RUNNER_TEMP/benchmark-artifact" \
+            --run-metadata "$RUNNER_TEMP/benchmark-run.json" \
+            --repo "$GITHUB_REPOSITORY"
