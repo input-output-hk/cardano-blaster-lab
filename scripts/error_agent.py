@@ -316,19 +316,14 @@ def post_issue(repo: str, data: dict, body: str, known: dict[str, dict]) -> tupl
         path.unlink(missing_ok=True)
 
 
-def notify_slack(events: list[tuple[str, dict, str]]) -> None:
+def post_slack(message: str) -> None:
     webhook = os.environ.get("SLACK_WEBHOOK_URL")
-    if not webhook or not events:
-        return
+    if not webhook:
+        raise ValueError("SLACK_WEBHOOK_URL is not configured")
     parsed = urllib.parse.urlparse(webhook)
     if parsed.scheme != "https" or parsed.hostname not in ("hooks.slack.com", "hooks.slack-gov.com"):
         raise ValueError("SLACK_WEBHOOK_URL must be a Slack HTTPS incoming webhook")
-    heading = f"Cardano script benchmark: {len(events)} new error issue{'s' if len(events) != 1 else ''}"
-    entries = [f"• <{url}|{data['script_hash'][:12]}> — {data['signature'][:120].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')}"
-               for _, data, url in events[:12]]
-    if len(events) > 12:
-        entries.append(f"…and {len(events) - 12} more in GitHub Issues")
-    payload = json.dumps({"text": heading + "\n" + "\n".join(entries)}).encode()
+    payload = json.dumps({"text": message}).encode()
     request = urllib.request.Request(webhook, data=payload,
                                      headers={"Content-Type": "application/json"}, method="POST")
     try:
@@ -339,6 +334,17 @@ def notify_slack(events: list[tuple[str, dict, str]]) -> None:
         raise RuntimeError(f"Slack webhook returned HTTP {exc.code}") from None
     except urllib.error.URLError:
         raise RuntimeError("Slack webhook request failed") from None
+
+
+def notify_slack(events: list[tuple[str, dict, str]]) -> None:
+    if not os.environ.get("SLACK_WEBHOOK_URL") or not events:
+        return
+    heading = f"Cardano script benchmark: {len(events)} new error issue{'s' if len(events) != 1 else ''}"
+    entries = [f"• <{url}|{data['script_hash'][:12]}> — {data['signature'][:120].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')}"
+               for _, data, url in events[:12]]
+    if len(events) > 12:
+        entries.append(f"…and {len(events) - 12} more in GitHub Issues")
+    post_slack(heading + "\n" + "\n".join(entries))
 
 
 def main() -> None:

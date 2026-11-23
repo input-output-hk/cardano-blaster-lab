@@ -91,4 +91,5 @@ under **Settings → Secrets and variables → Actions**; never put them in an
 issue, PR, or tracked file. The webhook remains tied to the selected Slack
 channel. After adding an OpenAI key, manually rerun **Report Cardano script
 errors** with the original benchmark run ID and `refresh_analysis=true` to
-enrich an existing issue without duplicating its report.
+enrich an existing issue without duplicating its report. Set `test_slack=true`
+on a manual run to send a connection check to the configured channel.

@@ -17,6 +17,11 @@ on:
         type: boolean
         required: false
         default: false
+      test_slack:
+        description: Send a test message to the configured Slack channel
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   actions: read
@@ -37,6 +42,13 @@ jobs:
 
       - name: Check error-agent parsing and deduplication
         run: python3 -m unittest discover -s tests -p test_error_agent.py
+
+      - name: Test Slack notification
+        if: inputs.test_slack == true
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          python3 -c 'from scripts.error_agent import post_slack; post_slack("Cardano script error agent connected. Future new error issues from input-output-hk/cardano-blaster-lab will be reported here.")'
 
       - name: Download benchmark evidence
         id: artifact
