@@ -13,6 +13,20 @@ on:
           - smoke
           - clusters
           - full
+      workers:
+        description: Concurrent script processes (PR checks always use one)
+        type: choice
+        required: true
+        default: '1'
+        options:
+          - '1'
+          - '2'
+          - '4'
+      limit:
+        description: Diagnostic case limit; 0 runs the whole selected tier
+        type: number
+        required: true
+        default: 0
 
 permissions:
   contents: read
@@ -57,22 +71,27 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: benchmark/LiveScripts/results/latest.json
-          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-25s-z3-5.4.1
+          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-${{ inputs.workers }}w-25s-z3-5.4.1
 
       - name: Run selected tier
         env:
           BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
+          BENCH_WORKERS: ${{ github.event_name == 'pull_request' && '1' || inputs.workers }}
+          BENCH_LIMIT: ${{ github.event_name == 'pull_request' && '0' || inputs.limit }}
         run: |
-          python3 scripts/bench.py "$BENCH_TIER" \
-            --z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3" \
-            --workers 4 --timeout 25
+          args=(--z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
+                --workers "$BENCH_WORKERS" --timeout 25)
+          if [[ "$BENCH_LIMIT" -gt 0 ]]; then
+            args+=(--limit "$BENCH_LIMIT")
+          fi
+          python3 scripts/bench.py "$BENCH_TIER" "${args[@]}"
 
       - name: Save cluster results for full run
-        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'clusters'
+        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'clusters' && inputs.limit == 0
         uses: actions/cache/save@v4
         with:
           path: benchmark/LiveScripts/results/latest.json
-          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-25s-z3-5.4.1
+          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-${{ inputs.workers }}w-25s-z3-5.4.1
 
       - name: Summarize results
         if: always()

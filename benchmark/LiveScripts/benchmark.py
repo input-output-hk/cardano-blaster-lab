@@ -157,13 +157,14 @@ def main() -> None:
                            "tracked_diff": hashlib.sha256(lab_diff).hexdigest()}
     config = hashlib.sha256(json.dumps({
         "packages": package_revs, "z3": version.strip(), "wall_timeout": args.timeout,
+        "workers": args.workers,
         "generator": hashlib.sha256((REPO / "LiveScripts/import_corpus.py").read_bytes()).hexdigest(),
         "runner": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "lab": lab_fingerprint,
     }, sort_keys=True).encode()).hexdigest()
     (results_dir / "active-config.json").write_text(json.dumps({
         "config": config, "packages": package_revs, "z3": version.strip(),
-        "wall_timeout": args.timeout, "cohort": args.cohort,
+        "wall_timeout": args.timeout, "workers": args.workers, "cohort": args.cohort,
     }, indent=2, sort_keys=True) + "\n")
     if args.skip_existing:
         hashes = [h for h in hashes if latest.get(h, {}).get("config") != config]

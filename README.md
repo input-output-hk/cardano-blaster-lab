@@ -31,15 +31,17 @@ independent ledger and CEK replay.
 
 | Tier | When | Scope |
 | --- | --- | --- |
-| Smoke | Every lab PR | Fixed 48-script sample across versions, purposes, and sizes |
+| Smoke | Every lab PR, one worker | Fixed 48-script sample across versions, purposes, and sizes |
 | Clusters | Manual for promising PRs | One script per structural family |
 | Full | Manual for finalists and release baselines | All 2,250 exact scripts |
 
 The smoke and cluster passes are screening tools. Report headline coverage only
 from a full run on the same frozen cohort and runner configuration as its
-baseline. The hard timeout puts an upper bound of roughly five minutes of case
-time on smoke, 1.7 hours on clusters, and 3.9 hours on full at four workers;
-build time and runner overhead are additional. Escalate only changes that show
+baseline. Worker count affects per-case latency and is part of the recorded
+configuration. The hard timeout puts an upper bound of roughly 20 minutes of
+case time on the one-worker PR smoke check. At four workers, the corresponding
+case-time bounds are five minutes for smoke, 1.7 hours for clusters, and 3.9
+hours for full; build time and runner overhead are additional. Escalate only changes that show
 a useful signal on the cheaper pass, and inspect regressions before the next
 tier. A hosted full run reuses cached cluster results from the same commit and
 configuration when available, so those cases do not run twice. To test one
