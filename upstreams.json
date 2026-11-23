@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "sources": {
+    "Lean-blaster": {
+      "path": "packages/Lean-blaster",
+      "url": "https://github.com/input-output-hk/Lean-blaster.git",
+      "ref": "blaster-extension",
+      "rev": "e029d8d3d5f795f1e35d5190448f356202aac169"
+    },
+    "PlutusCoreBlaster": {
+      "path": "packages/PlutusCoreBlaster",
+      "url": "https://github.com/input-output-hk/PlutusCoreBlaster.git",
+      "ref": "main",
+      "rev": "79fce4ac2c74d376c2576edab19a9ba2e7dd5c1b"
+    },
+    "CardanoLedgerApiBlaster": {
+      "path": "packages/CardanoLedgerApiBlaster",
+      "url": "https://github.com/input-output-hk/CardanoLedgerApiBlaster.git",
+      "ref": "main",
+      "rev": "3dd048e3eb8619007a4bd7e2f5f9c03e18f2bf74"
+    },
+    "Blaster-benchmarking": {
+      "path": "benchmark",
+      "url": "https://github.com/input-output-hk/Blaster-benchmarking.git",
+      "ref": "codex/live-scripts-dashboard",
+      "rev": "9b319099e1cde6e6e61d06f5c8a2ba6c24d5a33b"
+    }
+  }
+}

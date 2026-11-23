@@ -1,0 +1,6 @@
+**/.lake/
+**/__pycache__/
+.tools/
+benchmark/cardano-dashboard/dist/
+benchmark/LiveScripts/results/*.log
+benchmark/LiveScripts/results/*.pid
