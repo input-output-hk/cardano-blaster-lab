@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -45,6 +46,29 @@ class ErrorAgentTests(unittest.TestCase):
         with patch.object(error_agent, "gh", side_effect=AssertionError("unexpected GitHub write")):
             action, url = error_agent.post_issue("o/r", data, "body", {script_hash: issue})
         self.assertEqual((action, url), ("unchanged", issue["html_url"]))
+
+    def test_slack_digest_only_contains_new_issue_links(self):
+        class Response:
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return b"ok"
+
+        event = ("created", {"script_hash": "c" * 56,
+                             "signature": "maximum recursion depth has been reached"},
+                 "https://github.com/o/r/issues/1")
+        with patch.dict(os.environ, {"SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/test"}), \
+                patch.object(error_agent.urllib.request, "urlopen", return_value=Response()) as send:
+            error_agent.notify_slack([event])
+        payload = json.loads(send.call_args.args[0].data)
+        self.assertIn("https://github.com/o/r/issues/1", payload["text"])
+        self.assertIn("maximum recursion depth", payload["text"])
 
 
 if __name__ == "__main__":

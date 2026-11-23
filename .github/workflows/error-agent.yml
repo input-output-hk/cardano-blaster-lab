@@ -12,6 +12,11 @@ on:
         description: Benchmark Actions run ID to inspect
         type: string
         required: true
+      refresh_analysis:
+        description: Add model analysis to existing issues from this run
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   actions: read
@@ -56,8 +61,12 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           OPENAI_TRIAGE_MODEL: ${{ vars.OPENAI_TRIAGE_MODEL || 'gpt-6.2-sol' }}
+          REFRESH_ANALYSIS: ${{ inputs.refresh_analysis || 'false' }}
         run: |
-          python3 scripts/error_agent.py \
-            --artifact-dir "$RUNNER_TEMP/benchmark-artifact" \
-            --run-metadata "$RUNNER_TEMP/benchmark-run.json" \
-            --repo "$GITHUB_REPOSITORY"
+          args=(--artifact-dir "$RUNNER_TEMP/benchmark-artifact"
+                --run-metadata "$RUNNER_TEMP/benchmark-run.json"
+                --repo "$GITHUB_REPOSITORY")
+          if [[ "$REFRESH_ANALYSIS" == 'true' ]]; then
+            args+=(--refresh-analysis)
+          fi
+          python3 scripts/error_agent.py "${args[@]}"

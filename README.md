@@ -89,4 +89,6 @@ and set the repository Actions secret `SLACK_WEBHOOK_URL`. The agent sends one
 digest per run, and repeat sightings do not alert again. Create both secrets
 under **Settings → Secrets and variables → Actions**; never put them in an
 issue, PR, or tracked file. The webhook remains tied to the selected Slack
-channel.
+channel. After adding an OpenAI key, manually rerun **Report Cardano script
+errors** with the original benchmark run ID and `refresh_analysis=true` to
+enrich an existing issue without duplicating its report.

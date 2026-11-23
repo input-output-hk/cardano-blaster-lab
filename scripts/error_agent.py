@@ -37,6 +37,8 @@ def parse_time(value: str) -> datetime:
 def redact(value: str) -> str:
     value = re.sub(r"(?i)(?:mainnet|preprod)[A-Za-z0-9]{32,}", "[redacted API key]", value)
     value = re.sub(r"sk-[A-Za-z0-9_-]{20,}", "[redacted API key]", value)
+    value = re.sub(r"(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,})",
+                   "[redacted GitHub token]", value)
     value = re.sub(r"https://hooks\.slack(?:-gov)?\.com/services/[^\s\"']+",
                    "[redacted Slack webhook]", value)
     return value
@@ -110,6 +112,17 @@ def evidence(row: dict, catalog: dict[str, dict], active: dict, run: dict, repo:
                 raw = bytes.fromhex(path.read_text().strip())
                 files[name]["sha256"] = hashlib.sha256(raw).hexdigest()
                 files[name]["bytes"] = len(raw)
+    if "maximum recursion depth" in first_error(row).lower():
+        related = {
+            "UPLC importer": ("packages/PlutusCoreBlaster/PlutusCore/UPLC/ScriptEncoding/Basic.lean", 149, 165),
+            "UPLC term conversion": ("packages/PlutusCoreBlaster/PlutusCore/UPLC/Term/ToExpr.lean", 190, 208),
+        }
+        for name, (relative, start, end) in related.items():
+            path = ROOT / relative
+            if path.is_file():
+                snippet = "\n".join(path.read_text().splitlines()[start - 1:end])
+                files[name] = {"url": github_url(source_repo, revision, relative) + f"#L{start}-L{end}",
+                               "content": snippet}
     return {
         "script_hash": script_hash,
         "signature": first_error(row),
@@ -147,7 +160,7 @@ def model_analysis(data: dict) -> str | None:
             "stdout_tail": redact(data["row"].get("stdout", "")[-MAX_LOG:]),
             "stderr_tail": redact(data["row"].get("stderr", "")[-2000:]),
             "lean_sources": {name: item.get("content") for name, item in data["files"].items()
-                             if name.endswith(".lean")},
+                             if item.get("content")},
         }, ensure_ascii=False),
     }
     request = urllib.request.Request(
@@ -173,7 +186,8 @@ def initial_investigation(data: dict) -> str:
     if "maximum recursion depth" in signature and "#import_uplc" in data["files"].get("Script.lean", {}).get("content", ""):
         return (
             "**Observed:** Lean reports `maximum recursion depth has been reached` while building "
-            "the generated `#import_uplc` module, before the property runs. "
+            "the generated `#import_uplc` module, before the property runs. The linked "
+            "`termToExpr` source already notes a recursion-depth problem with large decoded scripts. "
             "**Hypothesis:** decoding or elaborating this large UPLC term exceeds Lean's default "
             "recursion limit. First try a higher `maxRecDepth` for this module and record whether "
             "the import then completes. If it does, inspect the importer in `PlutusCoreBlaster` "
@@ -224,7 +238,8 @@ def issue_body(data: dict, analysis: str | None) -> str:
         fixture = github_url(data["source_repo"], data["revision"], "benchmark/" + example["context_path"])
         lines.append(f"- Example: `{example.get('network')}` tx `{example.get('tx_hash')}` index `{example.get('tx_index')}` purpose `{example.get('purpose')}`; [transaction fixture]({fixture})")
     lines += ["", "## Sources and reproduction"]
-    for name in ("Script.lean", "Properties.lean", "metadata.json"):
+    for name in ("Script.lean", "Properties.lean", "metadata.json",
+                 "UPLC importer", "UPLC term conversion"):
         if name in files:
             lines.append(f"- [{name}]({files[name]['url']})")
     lines += [
@@ -267,6 +282,12 @@ def already_reported(repo: str, issue: dict, run_url: str) -> bool:
     text = gh("api", "--paginate", f"repos/{repo}/issues/{issue['number']}/comments?per_page=100",
               "--jq", ".[] | {body}")
     return any(run_url in json.loads(line).get("body", "") for line in text.splitlines() if line.strip())
+
+
+def has_analysis_comment(repo: str, issue: dict, marker: str) -> bool:
+    text = gh("api", "--paginate", f"repos/{repo}/issues/{issue['number']}/comments?per_page=100",
+              "--jq", ".[] | {body}")
+    return any(marker in json.loads(line).get("body", "") for line in text.splitlines() if line.strip())
 
 
 def body_file(content: str) -> Path:
@@ -326,6 +347,8 @@ def main() -> None:
     parser.add_argument("--run-metadata", type=Path, required=True)
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "input-output-hk/cardano-blaster-lab"))
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--refresh-analysis", action="store_true",
+                        help="Add model analysis to an already reported run, if the API key is set")
     args = parser.parse_args()
     run = json.loads(args.run_metadata.read_text())
     rows, active = current_errors(args.artifact_dir, run)
@@ -337,6 +360,19 @@ def main() -> None:
         data = evidence(row, catalog, active, run, args.repo)
         issue = known.get(data["script_hash"])
         if issue and already_reported(args.repo, issue, data["run_url"]):
+            if args.refresh_analysis and index < MAX_MODEL_CASES and os.environ.get("OPENAI_API_KEY"):
+                marker = f"<!-- cardano-model-analysis:{run['id']}:{data['script_hash']} -->"
+                if not has_analysis_comment(args.repo, issue, marker):
+                    analysis = model_analysis(data)
+                    if analysis:
+                        path = body_file(f"{marker}\n## Model analysis for {data['run_url']}\n\n{analysis}\n")
+                        try:
+                            gh("issue", "comment", str(issue["number"]), "-R", args.repo,
+                               "--body-file", str(path))
+                        finally:
+                            path.unlink(missing_ok=True)
+                        print(f"enriched: {data['script_hash']} {issue['html_url']}")
+                        continue
             print(f"unchanged: {data['script_hash']} {issue['html_url']}")
             continue
         analysis = model_analysis(data) if index < MAX_MODEL_CASES and not args.dry_run else None
