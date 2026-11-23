@@ -41,7 +41,9 @@ baseline. The hard timeout puts an upper bound of roughly five minutes of case
 time on smoke, 1.7 hours on clusters, and 3.9 hours on full at four workers;
 build time and runner overhead are additional. Escalate only changes that show
 a useful signal on the cheaper pass, and inspect regressions before the next
-tier. To test one affected script, use `python3 LiveScripts/benchmark.py
+tier. A hosted full run reuses cached cluster results from the same commit and
+configuration when available, so those cases do not run twice. To test one
+affected script, use `python3 LiveScripts/benchmark.py
 --script HASH --z3 /path/to/z3` from `benchmark/`.
 
 Run locally after installing Lean 4.24 and Z3 5.4 or newer:

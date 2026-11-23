@@ -52,6 +52,13 @@ jobs:
           unzip -q .tools/z3.zip -d .tools
           .tools/z3-5.4.1-x64-glibc-2.39/bin/z3 -version
 
+      - name: Reuse cluster results for full run
+        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'full'
+        uses: actions/cache/restore@v4
+        with:
+          path: benchmark/LiveScripts/results/latest.json
+          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-25s-z3-5.4.1
+
       - name: Run selected tier
         env:
           BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
@@ -59,6 +66,13 @@ jobs:
           python3 scripts/bench.py "$BENCH_TIER" \
             --z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3" \
             --workers 4 --timeout 25
+
+      - name: Save cluster results for full run
+        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'clusters'
+        uses: actions/cache/save@v4
+        with:
+          path: benchmark/LiveScripts/results/latest.json
+          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-25s-z3-5.4.1
 
       - name: Summarize results
         if: always()
