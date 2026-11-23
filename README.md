@@ -9,12 +9,18 @@ repositories.
 
 | Directory | Upstream | Starting ref |
 | --- | --- | --- |
-| `packages/Lean-blaster/` | `input-output-hk/Lean-blaster` | `blaster-extension` |
+| `packages/Lean-blaster/` | `input-output-hk/Lean-blaster` | `blaster-extension` merged with `codex/libz3-typed-cex` |
 | `packages/PlutusCoreBlaster/` | `input-output-hk/PlutusCoreBlaster` | `main` |
 | `packages/CardanoLedgerApiBlaster/` | `input-output-hk/CardanoLedgerApiBlaster` | `main` |
 | `benchmark/` | `input-output-hk/Blaster-benchmarking` | `codex/live-scripts-dashboard` |
 
-Each source tree is imported as a Git subtree. Exact starting commits are in
+Each source tree is imported as a Git subtree. The Lean-blaster tree merges the
+Blaster extension with the native libz3 backend and typed counterexamples from
+[Lean-blaster PR #480](https://github.com/input-output-hk/Lean-blaster/pull/480).
+It retains the extension rules and supports `(replay: 1)` for Lean-side
+counterexample checking. This replay is diagnostic; an independently validated
+ledger context and CEK execution are still required for a verified benchmark
+result. Exact source and integration commits are in
 [`upstreams.json`](upstreams.json). The Lake dependencies inside the lab point
 to these local trees, so an agent's changes are tested together. Upstream
 repositories remain the release source; a lab PR records which of them need a
@@ -56,7 +62,8 @@ the same hardware class, worker count, timeout, cohort, and source revisions.
 The hosted manual heavy tiers are available for experiments, but the standard
 runner's 300-minute job cap can end a one-worker full sweep early.
 
-Run locally after installing Lean 4.24 and Z3 5.4 or newer:
+Run locally after installing Lean 4.24 and Z3 5.4 or newer with its C headers
+and library. The `--z3` path must belong to that installation:
 
 ```sh
 python3 scripts/bench.py smoke --z3 /path/to/z3

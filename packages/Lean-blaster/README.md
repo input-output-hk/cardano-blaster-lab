@@ -98,7 +98,7 @@ require «Blaster» from git
   - `only-smt-lib`: only translating unsolved goals to smt-lib without invoking the backend solver (default: 0)
   - `only-optimize`: only perform optimization on lean specification and do not translate to smt-lib (default: 0)
   - `dump-smt-lib`: display the smt lib query to stdout (default: 0)
-  - `random-seed`: seed for the random number generator (default: none)
+  - `random-seed`: seed for the random number generator (default: 1; `0` selects Z3's seed 0)
   - `gen-cex`: generate counterexample for falsified theorems (default: 1)
   - `solve-result`: specify the expected result from the #blaster command, i.e.,
                     0 for 'Valid', 1 for 'Falsified' and 2 for 'Undetermined'. (default: 0)
@@ -424,26 +424,26 @@ Users with repository write access can comment `/benchmark` on an open PR to run
 
 | Tactic | Version | ITL4 | MiniF2F | NNG4 | STG4 | UPLCDepth | UPLCWidth | Verina | **Shared solved** |
 |:--|:--|--:|--:|--:|--:|--:|--:|--:|--:|
-| `hammer` | `v4.34.0` @ `93734d624` _(cached)_ | 44/44 | 40/96 | 103/108 | 47/52 | 6/7 | 6/6 | 7/108 | **253/421** |
-| `blaster` | `v4.24.0` @ `a16614e5e` | 44/44 | 54/96 | 103/108 | 49/52 | 7/7 | 6/6 | 26/108 | **289/421** |
-| `grind` | `v4.35.0` @ `(core)` _(cached)_ | 44/44 | 35/96 | 93/108 | 41/52 | 0/7 | 0/6 | 1/108 | **214/421** |
-| `auto` | `v4.35.0` @ `30f46ddb9` | 44/44 | 32/96 | 100/108 | 4/52 | 0/7 | 6/6 | 4/108 | **190/421** |
-| `aesop` | `v4.35.0` @ `(via mathlib)` _(cached)_ | 44/44 | 23/96 | 67/108 | 35/52 | 7/7 | 6/6 | 2/108 | **184/421** |
-| `blaster (only-optimize: 1)` | `v4.24.0` @ `a16614e5e` | 26/44 | 17/96 | 59/108 | 13/52 | 7/7 | 6/6 | 11/108 | **139/421** |
-| `simp` | `v4.35.0` @ `(core)` _(cached)_ | 5/44 | 17/96 | 37/108 | 15/52 | 0/7 | 0/6 | 0/108 | **74/421** |
-| `smt +model` | `v4.34.0` @ `db545bebe` _(cached)_ | 6/44 | 9/96 | 17/108 | 0/52 | 0/7 | 0/6 | 1/108 | **33/421** |
-| `omega` | `v4.35.0` @ `(core)` _(cached)_ | 1/44 | 30/96 | 7/108 | 1/52 | 0/7 | 0/6 | 1/108 | **40/421** |
+| `hammer` | `v4.35.0` @ `4e2a7deda` | 44/44 | 42/96 | 104/108 | 47/52 | 6/7 | 6/6 | 5/108 | **254/421** |
+| `grind` | `v4.35.0` @ `(core)` | 44/44 | 35/96 | 93/108 | 41/52 | 0/7 | 0/6 | 1/108 | **214/421** |
+| `auto` | `v4.35.0` @ `af766b1ee` | 44/44 | 32/96 | 100/108 | 4/52 | 0/7 | 6/6 | 4/108 | **190/421** |
+| `aesop` | `v4.35.0` @ `(via mathlib)` | 44/44 | 23/96 | 67/108 | 35/52 | 7/7 | 6/6 | 2/108 | **184/421** |
+| `blaster` | `v4.24.0` @ `0df4a469c` | 26/44 | 22/96 | 59/108 | 14/52 | 6/7 | 6/6 | 11/108 | **144/421** |
+| `blaster (only-optimize: 1)` | `v4.24.0` @ `0df4a469c` | 26/44 | 22/96 | 59/108 | 14/52 | 6/7 | 6/6 | 11/108 | **144/421** |
+| `simp` | `v4.35.0` @ `(core)` | 5/44 | 17/96 | 37/108 | 15/52 | 0/7 | 0/6 | 0/108 | **74/421** |
+| `smt +model` | `v4.35.0` @ `cbec5bd22` | 6/44 | 9/96 | 17/108 | 0/52 | 0/7 | 0/6 | 1/108 | **33/421** |
+| `omega` | `v4.35.0` @ `(core)` | 1/44 | 30/96 | 7/108 | 1/52 | 0/7 | 0/6 | 1/108 | **40/421** |
 
 ### Home turf · 50 goals per source
 
 | Tactic | Aesop | lean-auto | Blaster | LeanHammer + Duper | lean-smt | **Home solved** | **All solved** |
 |:--|--:|--:|--:|--:|--:|--:|--:|
-| `hammer` | 47/50 | 46/50 | 48/50 | 45/50 | 47/50 | **233/250** | **486/671** |
-| `blaster` | 28/50 | 36/50 | 47/50 | 37/50 | 41/50 | **189/250** | **478/671** |
+| `hammer` | 47/50 | 46/50 | 48/50 | 43/50 | 46/50 | **230/250** | **484/671** |
 | `grind` | 44/50 | 38/50 | 37/50 | 34/50 | 42/50 | **195/250** | **409/671** |
 | `auto` | 28/50 | 46/50 | 37/50 | 38/50 | 41/50 | **190/250** | **380/671** |
 | `aesop` | 40/50 | 40/50 | 38/50 | 36/50 | 39/50 | **193/250** | **377/671** |
-| `blaster (only-optimize: 1)` | 10/50 | 23/50 | 25/50 | 33/50 | 23/50 | **114/250** | **253/671** |
+| `blaster` | 11/50 | 27/50 | 28/50 | 33/50 | 23/50 | **122/250** | **266/671** |
+| `blaster (only-optimize: 1)` | 11/50 | 27/50 | 28/50 | 33/50 | 23/50 | **122/250** | **266/671** |
 | `simp` | 13/50 | 25/50 | 25/50 | 10/50 | 17/50 | **90/250** | **164/671** |
 | `smt +model` | 5/50 | 14/50 | 17/50 | 5/50 | 40/50 | **81/250** | **114/671** |
 | `omega` | 6/50 | 12/50 | 17/50 | 0/50 | 5/50 | **40/250** | **80/671** |
@@ -592,7 +592,7 @@ Z3 releases are tagged on GitHub; the tag you want is `z3-5.4.0`.
 
 ```bash
 sudo apt update
-sudo apt install -y build-essential python3 git
+sudo apt install -y build-essential cmake python3 git
 ```
 
 **1.2 Clone the 5.4.0 tag**
@@ -610,16 +610,18 @@ git describe --tags
 
 **1.3 Configure build with a safe prefix**
 
-By default, `mk_make.py` uses a prefix like `/usr`, which can clash with files installed by
-package managers (e.g., `apt`).  The Z3 README documentation recommends using
-`--prefix` to choose a custom install directory, typically `/usr/local`, as follows:
+Use CMake to install the static library required by Blaster on Linux into a
+prefix that does not conflict with the system Z3 package:
 
 ```bash
-python3 scripts/mk_make.py --prefix=/usr/local
-cd build
-make -j"$(nproc)"
-sudo make install
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_SHARED_LIBS=OFF
+cmake --build build -j"$(nproc)"
+sudo cmake --install build
 ```
+
+On macOS, use `-DBUILD_SHARED_LIBS=ON` because the native backend loads
+`libz3.dylib` there.
 
 This installs
 
@@ -652,11 +654,24 @@ Then reload your shell and re-run `which z3`.
 
 ### 3. Make sure Lean 4 uses the right Z3
 
-Lean just calls `z3` as an external process (via `IO.Process` or tactics that use Z3).
+The default backend uses libz3 in process. The optional
+`(backend: smtlib)` backend calls `z3` as an external process. Point Lake at
+the Z3 5.4.0 headers and libraries from the same installation:
 
-It doesn’t have its own embedded Z3. So:
+```bash
+export Z3_INC_PATH=/usr/local/include
+export Z3_LIB_PATH=/usr/local/lib
+test -f "$Z3_LIB_PATH/libz3.a"  # required on Linux
+lake build
+```
 
-**If the shell you run `lake` from sees `/usr/local/bin/z3` (5.4.0), then Lean will also use 5.4.0.**
+On Linux, install `g++` and its static runtime archives along with `libz3.a`.
+Lake links them into the native shim so Z3's internal C++ exceptions work with
+Lean's Linux runtime. The shared `libz3.so` alone is insufficient. On macOS,
+Lake uses the shared library; set `DYLD_LIBRARY_PATH` to its directory at
+runtime. Use the installation's `include` and library directories if they
+differ from `/usr/local`. For a typed counterexample and Lean-side replay, use
+`#blaster (backend: ffi) (replay: 1) [∀ (n : Nat), n = 0]`.
 
 Just to be sure, you can run the simple test we provide in this repository, as follows:
 

@@ -5,7 +5,10 @@
       "path": "packages/Lean-blaster",
       "url": "https://github.com/input-output-hk/Lean-blaster.git",
       "ref": "blaster-extension",
-      "rev": "e029d8d3d5f795f1e35d5190448f356202aac169"
+      "rev": "e029d8d3d5f795f1e35d5190448f356202aac169",
+      "merged_ref": "codex/libz3-typed-cex",
+      "merged_rev": "0b488511a8f4e618dfeeab704def70a2df855b0b",
+      "integration_rev": "9cc2dfcd6cee0dd9966b176125b384d6778a7a06"
     },
     "PlutusCoreBlaster": {
       "path": "packages/PlutusCoreBlaster",
