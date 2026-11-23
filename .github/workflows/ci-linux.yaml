@@ -1,0 +1,113 @@
+name: ci-linux
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches: [ staging, main ]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LEAN_VERSION: "4.24.0"
+  Z3_VERSION: "5.4.0"
+  GLIBC_Z3: "2.39"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "/home/runner/.elan/bin" >> $GITHUB_PATH
+          chmod +x /home/runner/.elan/bin/*
+
+      - name: Fix Elan version
+        run: |
+          elan toolchain install ${{ env.LEAN_VERSION }}
+          elan default ${{ env.LEAN_VERSION }}
+
+      - name: Install Z3 (release)
+        if: env.Z3_VERSION != 'master'
+        run: |
+          cd /home/runner/
+          wget -q https://github.com/Z3Prover/z3/releases/download/z3-${{ env.Z3_VERSION }}/z3-${{ env.Z3_VERSION }}-x64-glibc-${{ env.GLIBC_Z3 }}.zip
+          unzip -q z3-${{ env.Z3_VERSION }}-x64-glibc-${{ env.GLIBC_Z3 }}.zip
+          chmod +x z3-${{ env.Z3_VERSION }}-x64-glibc-${{ env.GLIBC_Z3 }}.zip
+          echo "/home/runner/z3-${{ env.Z3_VERSION }}-x64-glibc-${{ env.GLIBC_Z3 }}/bin" >> $GITHUB_PATH
+
+      - name: Resolve Z3 master commit
+        if: env.Z3_VERSION == 'master'
+        id: z3-master
+        run: |
+          sha=$(git ls-remote https://github.com/Z3Prover/z3.git refs/heads/master | cut -f1)
+          echo "sha=$sha" >> $GITHUB_OUTPUT
+
+      - name: Restore cached Z3 master build
+        if: env.Z3_VERSION == 'master'
+        id: z3-master-cache
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/z3-master
+          key: z3-master-${{ runner.os }}-${{ steps.z3-master.outputs.sha }}
+
+      - name: Build Z3 from master
+        if: env.Z3_VERSION == 'master' && steps.z3-master-cache.outputs.cache-hit != 'true'
+        run: |
+          cd /home/runner/
+          git clone --depth 1 --branch master https://github.com/Z3Prover/z3.git z3-src
+          cmake -S z3-src -B z3-src/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DZ3_BUILD_LIBZ3_SHARED=OFF \
+            -DZ3_BUILD_PYTHON_BINDINGS=OFF \
+            -DZ3_BUILD_TEST_EXECUTABLES=OFF \
+            -DCMAKE_INSTALL_PREFIX=/home/runner/z3-master
+          cmake --build z3-src/build -j"$(nproc)"
+          cmake --install z3-src/build
+
+      - name: Save Z3 master build
+        if: env.Z3_VERSION == 'master' && steps.z3-master-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: /home/runner/z3-master
+          key: ${{ steps.z3-master-cache.outputs.cache-primary-key }}
+
+      - name: Add Z3 master to PATH
+        if: env.Z3_VERSION == 'master'
+        run: echo "/home/runner/z3-master/bin" >> $GITHUB_PATH
+
+      - name: Tools version
+        run: |
+          elan --version
+          lake --version
+          lean --version
+          z3 --version
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build and Validate CardanoLedgerApi
+        run: make check_cardano_ledger_api
+
+      - name: Upload CardanoLedgerApi build log
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: cardano-ledger-api-build
+          path: build.log
+
+      - name: Execute and Validate Tests
+        run: make check_tests
+
+      - name: Upload Tests log
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: tests-build
+          path: build.log
