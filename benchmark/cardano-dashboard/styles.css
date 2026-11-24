@@ -12,3 +12,8 @@
 
 .result-links{line-height:1.7}
 .error-message{white-space:pre-wrap;overflow-wrap:anywhere;background:#fff4f3;border:1px solid #f0d5d2;border-radius:8px;padding:12px;color:#8f3339;font-size:13px;line-height:1.5}
+
+.legend-dot.open-pr { background: #fff; border: 2px solid #2963a8; }
+.chart-dot.open-pr { fill: #fff; stroke: #2963a8; }
+.chart-dot.open-pr:hover, .chart-dot.open-pr:focus-visible { fill: #deecfb; stroke-width: 3; }
+.chart-open-pr-line { stroke: #2963a8; stroke-width: 1.5; stroke-dasharray: 4 5; }

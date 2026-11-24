@@ -65,7 +65,11 @@ function inspectRun(run, index, total) {
     (run.pr_url ? [{url: run.pr_url, number: run.pr_number}] : []);
   const links = prs.length ? prs.map((pr) =>
     `<a href="${esc(safeUrl(pr.url))}" target="_blank" rel="noopener noreferrer">${esc(pr.repo || "PR")} #${esc(pr.number || "view")}</a>`).join(" · ") : "No PR linked";
-  panel.innerHTML = `<strong>Run #${index + 1} · ${esc(run.title || "Benchmark run")}</strong><br>${esc(run.author || "Contributor")} · ${esc(run.solved_count || 0)} of ${total} scripts solved · ${esc(run.gained || 0)} gained · ${esc(run.regressed || 0)} regressed · ${links}<br><span>${esc(run.summary || "No run note provided.")}</span>`;
+  const replay = run.open_pr
+    ? ` · <a href="${esc(safeUrl(run.replay_url))}" target="_blank" rel="noopener noreferrer">Replay checks</a>`
+    : "";
+  const label = run.open_pr ? "Open PR" : "Run";
+  panel.innerHTML = `<strong>${label} #${run.open_pr ? esc(prs[0]?.number) : index + 1} · ${esc(run.title || "Benchmark run")}</strong><br>${esc(run.author || "Contributor")} · ${esc(run.solved_count || 0)} of ${total} scripts solved · ${esc(run.gained || 0)} gained · ${esc(run.regressed || 0)} regressed · ${links}${replay}<br><span>${esc(run.summary || "No run note provided.")}</span>`;
   panel.hidden = false;
 }
 function renderChart() {
@@ -73,12 +77,21 @@ function renderChart() {
   const total = cohort?.script_hashes.length || 0;
   const runs = data.events.filter((event) => event.cohort === cohort?.name && event.verified_run !== false)
     .sort((a, b) => String(a.timestamp).localeCompare(String(b.timestamp)) || String(a.run_id).localeCompare(String(b.run_id)));
-  const kept = []; let best = 0;
-  runs.forEach((run) => { const score = Number(run.solved_count || 0); kept.push(score > best); best = Math.max(best, score); });
+  const mergedBest = [];
+  const kept = [];
+  let best = 0, previews = 0;
+  runs.forEach((run) => {
+    const score = Number(run.solved_count || 0);
+    kept.push(!run.open_pr && score > best);
+    if (run.open_pr) previews++;
+    else best = Math.max(best, score);
+    mergedBest.push(best);
+  });
   $("#scope-note").textContent = cohort
     ? `Fixed benchmark scope: ${cohort.name} · ${total.toLocaleString()} unique scripts. The live corpus may grow, but this cohort's denominator stays fixed so PR gains remain comparable.`
     : "A fixed cohort is needed before benchmark runs can be compared.";
-  $("#chart-total").textContent = `${runs.length.toLocaleString()} verified runs · ${kept.filter(Boolean).length} breakthroughs · best ${best.toLocaleString()} / ${total.toLocaleString()} (${(best * 100 / Math.max(1, total)).toFixed(2)}%)`;
+  const openPrCount = previews ? ` · ${previews} open PR ${previews === 1 ? "gain" : "gains"}` : "";
+  $("#chart-total").textContent = `${(runs.length - previews).toLocaleString()} published runs · ${kept.filter(Boolean).length} breakthroughs · best ${best.toLocaleString()} / ${total.toLocaleString()} (${(best * 100 / Math.max(1, total)).toFixed(2)}%)${openPrCount}`;
   $("#chart-empty").hidden = runs.length > 0;
   const W = 1200, H = 500, L = 76, R = 35, T = 65, B = 67, iw = W - L - R, ih = H - T - B;
   const values = runs.map((run) => chartValue(run, total));
@@ -99,16 +112,20 @@ function renderChart() {
   }
   const marks = [...new Set([0, Math.floor((runs.length - 1) / 4), Math.floor((runs.length - 1) / 2), Math.floor(3 * (runs.length - 1) / 4), runs.length - 1])];
   marks.forEach((i) => chart.append(svg("text", {x: x(i), y: H - 41, "text-anchor": "middle", class: "chart-axis"}, `#${i + 1}`)));
-  let previous = 0, path = `M ${L} ${y(0)}`;
-  runs.forEach((run, i) => {
-    const next = Math.max(previous, chartValue(run, total));
-    path += ` H ${x(i)} V ${y(next)}`;
-    previous = next;
+  let path = `M ${L} ${y(0)}`;
+  mergedBest.forEach((score, i) => {
+    path += ` H ${x(i)} V ${y(chartValue({solved_count: score}, total))}`;
   });
   path += ` H ${W - R}`;
   chart.append(svg("path", {d: path, class: "chart-line"}));
   runs.forEach((run, i) => {
-    const circle = svg("circle", {cx: x(i), cy: y(values[i]), r: kept[i] ? 7 : 5, class: `chart-dot ${kept[i] ? "kept" : "discarded"}`, tabindex: 0, role: "button", "aria-label": `Run ${i + 1}, ${run.solved_count || 0} scripts solved`});
+    const kind = run.open_pr ? "open-pr" : kept[i] ? "kept" : "discarded";
+    const label = run.open_pr ? `Open PR #${run.prs[0].number}` : `Run ${i + 1}`;
+    if (run.open_pr) {
+      chart.append(svg("line", {x1: x(i), x2: x(i), y1: y(chartValue({solved_count: mergedBest[i]}, total)),
+        y2: y(values[i]), class: "chart-open-pr-line"}));
+    }
+    const circle = svg("circle", {cx: x(i), cy: y(values[i]), r: kept[i] || run.open_pr ? 7 : 5, class: `chart-dot ${kind}`, tabindex: 0, role: "button", "aria-label": `${label}, ${run.solved_count || 0} scripts solved`});
     circle.addEventListener("click", () => inspectRun(run, i, total));
     circle.addEventListener("mouseenter", () => inspectRun(run, i, total));
     circle.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") {event.preventDefault(); inspectRun(run, i, total);} });
