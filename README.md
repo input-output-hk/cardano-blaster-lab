@@ -83,6 +83,13 @@ is built from `benchmark/cardano-dashboard/`. Its grid reads the committed
 `active-config.json`. A push to `main` that changes those files redeploys the
 site through GitHub Pages.
 
+An open lab PR gets a hollow point on the frontier graph when its current
+head passes concrete replay in the benchmark workflow and verifies more
+scripts than the published best for the same frozen cohort. Select the
+point to see the PR and replay check. The green line follows published
+results. Completed benchmarks, new PR commits, and closures refresh the
+open-PR points.
+
 ## Sending a lab PR upstream
 
 The **Upstream handoff** GitHub Action lets a lab repository admin comment

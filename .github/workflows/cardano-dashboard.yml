@@ -13,9 +13,17 @@ on:
       - benchmark/LiveScripts/results/verified.json
       - benchmark/LiveScripts/results/errors/**
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Cardano script benchmark"]
+    types: [completed]
+  pull_request_target:
+    branches: [main]
+    types: [closed, reopened, synchronize]
 
 permissions:
   contents: read
+  actions: read
+  pull-requests: read
 
 concurrency:
   group: cardano-dashboard-pages
@@ -26,9 +34,20 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
       - uses: actions/configure-pages@v5
+      - name: Collect open PR replay results
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/open_pr_frontier.py --repository "$GITHUB_REPOSITORY" \
+            --output "$RUNNER_TEMP/open-pr-frontier.json"
       - name: Build dashboard
-        run: python3 benchmark/cardano-dashboard/build.py
+        run: |
+          python3 benchmark/cardano-dashboard/build.py \
+            --open-pr-frontier "$RUNNER_TEMP/open-pr-frontier.json"
       - name: Check published seven-day cohort
         run: |
           python3 - <<'PY'
