@@ -78,6 +78,13 @@
       "cohort": "2026-11-23",
       "gained": 1,
       "pinned": true,
+      "prs": [
+        {
+          "number": 36,
+          "repo": "cardano-blaster-lab",
+          "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/36"
+        }
+      ],
       "regressed": 0,
       "run_id": "verified-replay-20261124-fuel-10000",
       "solved_count": 51,
