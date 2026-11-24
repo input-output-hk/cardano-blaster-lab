@@ -26,6 +26,101 @@ to these local trees, so an agent's changes are tested together. Upstream
 repositories remain the release source; a lab PR records which of them need a
 follow-up PR.
 
+## Use this version in another Lean project
+
+Clone the lab next to your existing Lean project. The example below assumes
+`my-project/` and `cardano-blaster-lab/` are sibling directories:
+
+```sh
+cd /path/to/workspace
+git clone https://github.com/input-output-hk/cardano-blaster-lab.git
+```
+
+In `my-project/lakefile.lean`, replace any existing Git dependency on Blaster
+with this local path dependency. Add the other two packages only when your
+examples use their types:
+
+```lean
+require Blaster from "../cardano-blaster-lab/packages/Lean-blaster"
+require PlutusCore from "../cardano-blaster-lab/packages/PlutusCoreBlaster"
+require CardanoLedgerApi from "../cardano-blaster-lab/packages/CardanoLedgerApiBlaster"
+```
+
+For a `lakefile.toml`, use the equivalent entries (omit packages you do not
+need):
+
+```toml
+[[require]]
+name = "Blaster"
+path = "../cardano-blaster-lab/packages/Lean-blaster"
+
+[[require]]
+name = "PlutusCore"
+path = "../cardano-blaster-lab/packages/PlutusCoreBlaster"
+
+[[require]]
+name = "CardanoLedgerApi"
+path = "../cardano-blaster-lab/packages/CardanoLedgerApiBlaster"
+```
+
+Set your project's `lean-toolchain` to `leanprover/lean4:v4.24.0` to match the
+lab packages, and use Z3 5.4.x with its
+headers and library. See the [Blaster Z3 setup](packages/Lean-blaster/README.md#installing-the-z3-solver)
+for platform-specific linking requirements. From `my-project/`, run
+`lake update` and `lake build` after changing dependencies.
+
+To profile existing examples, create a small file in your project that imports
+their module and calls Blaster on named declarations. For example:
+
+```lean
+import MyProject.Examples
+import Blaster
+
+#blaster (backend: ffi) (verbose: 1) (timeout: 10) [MyProject.someTheorem]
+```
+
+Run `lake env lean MyProject/ProfileExamples.lean` from `my-project/`.
+`verbose: 1` prints timings for phases such as optimization, translation, and
+solving. `#blaster` can inspect an existing theorem by name without adding an
+attribute to that theorem. Use `(solve-result: 1)` for a property you expect
+to be falsified.
+To compare a new implementation with `@[blaster]` theorem tagging, run the
+same example file with the same Lean, Z3, solver options, and machine, and
+record both the outcome and phase times. The `(timeout: 10)` option bounds the
+solver, so use a separate whole-process limit if optimization can run long.
+The lab's `scripts/bench.py` runs its fixed Cardano script cohort; your own
+Lean files can be profiled directly in your project.
+
+### Try other package branches locally
+
+The directories under `packages/` are Git subtrees. In your lab clone, create
+an experiment branch and pull each selected upstream branch into its subtree:
+
+```sh
+cd /path/to/workspace/cardano-blaster-lab
+git switch -c experiment/my-package-branches
+
+LEAN_REF=my-lean-branch
+PLUTUS_REF=my-plutus-branch
+LEDGER_REF=my-ledger-branch
+
+git subtree pull --prefix=packages/Lean-blaster \
+  https://github.com/input-output-hk/Lean-blaster.git "$LEAN_REF" --squash
+git subtree pull --prefix=packages/PlutusCoreBlaster \
+  https://github.com/input-output-hk/PlutusCoreBlaster.git "$PLUTUS_REF" --squash
+git subtree pull --prefix=packages/CardanoLedgerApiBlaster \
+  https://github.com/input-output-hk/CardanoLedgerApiBlaster.git "$LEDGER_REF" --squash
+```
+
+Use your fork URL if a branch lives in a fork. Branches that diverge from the
+imported revisions in [`upstreams.json`](upstreams.json) can require merge
+conflict resolution, especially the Lean-blaster tree, which includes the
+Blaster extension and libz3 integration. Then run `lake update` and `lake build`
+again in your own project. Keep a lab branch or commit for each combination so
+the exact package trees are reproducible. The `/upstream` bot still targets the
+canonical branches in `upstreams.json`; a local subtree swap does not retarget
+it.
+
 ## Benchmark tiers
 
 The fixed seven-day cohort contains 2,250 exact scripts. The PR check runs a
