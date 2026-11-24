@@ -81,9 +81,72 @@ jobs:
             --revision "${{ steps.source.outputs.sha }}" \
             --output "$GITHUB_OUTPUT"
 
-  replay:
+  build:
     needs: plan
     if: needs.plan.outputs.eligible == '1' && needs.plan.outputs.pending != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+          path: source
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: source/benchmark
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+      - id: shared-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            source/packages/Lean-blaster/.lake/build
+            source/packages/PlutusCoreBlaster/.lake/build
+            source/packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-replay-shared-build-${{ runner.os }}-${{ hashFiles('source/benchmark/lean-toolchain', 'source/benchmark/lake-manifest.json', 'source/packages/**/*.lean', 'source/packages/**/lakefile.lean') }}
+          restore-keys: cardano-replay-shared-build-${{ runner.os }}-
+      - name: Install pinned Z3
+        working-directory: source
+        run: |
+          mkdir -p .tools
+          curl -fL --retry 3 --silent --show-error -o .tools/z3.zip \
+            https://github.com/Z3Prover/z3/releases/download/z3-5.4.1/z3-5.4.1-x64-glibc-2.39.zip
+          echo 'b548bac48ef2452b4e09ea2945cf4b011d5f43fcf39e4799df268ee7e0769d85  .tools/z3.zip' | sha256sum -c -
+          unzip -q .tools/z3.zip -d .tools
+          z3_root="$GITHUB_WORKSPACE/source/.tools/z3-5.4.1-x64-glibc-2.39"
+          echo "Z3_LIB_PATH=$z3_root/bin" >> "$GITHUB_ENV"
+          echo "Z3_INC_PATH=$z3_root/include" >> "$GITHUB_ENV"
+      - name: Build shared Lean dependencies
+        working-directory: source/benchmark
+        run: lake build CardanoLedgerApi
+      - name: Cache successful shared build for later replay runs
+        if: github.event_name == 'workflow_dispatch' && steps.shared-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            source/packages/Lean-blaster/.lake/build
+            source/packages/PlutusCoreBlaster/.lake/build
+            source/packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-replay-shared-build-${{ runner.os }}-${{ hashFiles('source/benchmark/lean-toolchain', 'source/benchmark/lake-manifest.json', 'source/packages/**/*.lean', 'source/packages/**/lakefile.lean') }}
+      - name: Package shared build for replay shards
+        run: |
+          tar -C source/packages -I 'zstd -T0 -3' -cf "$RUNNER_TEMP/cardano-replay-build.tar.zst" \
+            Lean-blaster/.lake/build \
+            PlutusCoreBlaster/.lake/build \
+            CardanoLedgerApiBlaster/.lake/build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardano-replay-build-${{ github.run_id }}
+          path: ${{ runner.temp }}/cardano-replay-build.tar.zst
+          compression-level: 0
+          if-no-files-found: error
+
+  replay:
+    needs: [plan, build]
+    if: needs.build.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 300
     strategy:
@@ -113,14 +176,12 @@ jobs:
           build: false
           test: false
           lint: false
-      - uses: actions/cache/restore@v4
+      - uses: actions/download-artifact@v4
         with:
-          path: |
-            source/packages/Lean-blaster/.lake/build
-            source/packages/PlutusCoreBlaster/.lake/build
-            source/packages/CardanoLedgerApiBlaster/.lake/build
-          key: cardano-shared-build-${{ runner.os }}-${{ hashFiles('source/benchmark/lean-toolchain', 'source/benchmark/lake-manifest.json', 'source/packages/**/*.lean', 'source/packages/**/lakefile.lean') }}
-          restore-keys: cardano-shared-build-${{ runner.os }}-
+          name: cardano-replay-build-${{ github.run_id }}
+          path: ${{ runner.temp }}/shared-build
+      - name: Restore the single shared build
+        run: tar -C source/packages -I zstd -xf "$RUNNER_TEMP/shared-build/cardano-replay-build.tar.zst"
       - name: Install pinned Z3
         working-directory: source
         run: |
@@ -132,9 +193,6 @@ jobs:
           z3_root="$GITHUB_WORKSPACE/source/.tools/z3-5.4.1-x64-glibc-2.39"
           echo "Z3_LIB_PATH=$z3_root/bin" >> "$GITHUB_ENV"
           echo "Z3_INC_PATH=$z3_root/include" >> "$GITHUB_ENV"
-      - name: Build shared Lean dependencies
-        working-directory: source/benchmark
-        run: lake build CardanoLedgerApi
       - uses: actions/download-artifact@v4
         with:
           name: cardano-benchmark-${{ needs.plan.outputs.run_id }}

@@ -114,7 +114,8 @@ run does not automatically produce a green result or a frontier point.
 PR smoke checks replay every new candidate. A completed full GitHub Actions
 sweep starts a separate matrix workflow that replays every new candidate in
 batches of up to 16 and checks that every candidate was attempted before
-uploading the combined evidence artifact.
+uploading the combined evidence artifact. It builds the shared Lean
+dependencies once, then passes that build artifact to every replay batch.
 To rerun only the replay from an existing complete full-sweep artifact,
 including a run whose post-search replay step failed, use the Actions **Replay every full-sweep
 candidate** workflow's **Run workflow** button and enter the benchmark run ID,
