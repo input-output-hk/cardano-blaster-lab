@@ -127,7 +127,8 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
         "script_hash": script_hash, "status": status,
         "timeout_stage": stage,
         "seconds": round(time.monotonic() - started, 3),
-        "exit_code": code, "stdout": output[-16000:],
+        # A replay must use the complete model from this run, including its first line.
+        "exit_code": code, "stdout": output if status == "candidate" else output[-16000:],
         "stderr": errors[-4000:],
     }
 
@@ -143,6 +144,8 @@ def main() -> None:
     parser.add_argument("--cluster-first", action="store_true", help="Try the smallest script in each structural family first")
     parser.add_argument("--skip-existing", action="store_true", help="Skip cases already run with this configuration")
     parser.add_argument("--z3", type=Path, help="Path to Z3 5.4 or newer")
+    parser.add_argument("--result-path-file", type=Path,
+                        help="Write the exact JSONL path for a post-search replay step")
     args = parser.parse_args()
     if (args.limit is not None and args.limit < 1) or args.timeout < 1 or args.offset < 0 or args.workers < 1:
         parser.error("limit, timeout and workers must be positive; offset cannot be negative")
@@ -228,6 +231,8 @@ def main() -> None:
                               capture_output=True, text=True, check=True).stdout.strip()
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + "-" + revision[:8]
     output_path = results_dir / f"{run_id}.jsonl"
+    if args.result_path_file:
+        args.result_path_file.write_text(str(output_path.resolve()) + "\n")
     with output_path.open("w") as sink:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
             pending = {pool.submit(run_case, h, args.timeout, env): h for h in hashes}

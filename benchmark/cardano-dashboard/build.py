@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import shutil
 from hashlib import sha256
@@ -15,7 +16,35 @@ REPO = ROOT.parent
 DIST = ROOT / "dist"
 
 
-def build() -> dict:
+def open_pr_events(entries: list[dict], cohort_hashes: dict[str, set[str]],
+                   verified: dict, merged_events: list[dict]) -> list[dict]:
+    events = []
+    for cohort, members in cohort_hashes.items():
+        published = members.intersection(verified)
+        best = max([len(published)] + [event["solved_count"] for event in merged_events
+                    if event["cohort"] == cohort and event.get("verified_run") is not False])
+        for entry in entries:
+            hashes = members.intersection(entry["verified_hashes"])
+            if len(hashes) <= best:
+                continue
+            events.append({
+                "run_id": f"open-pr-{entry['number']}-{entry['head_sha']}",
+                "cohort": cohort,
+                "timestamp": entry["checked_at"],
+                "title": entry["title"],
+                "author": entry["author"],
+                "solved_count": len(hashes),
+                "gained": len(hashes - published),
+                "regressed": len(published - hashes),
+                "prs": [{"number": entry["number"], "url": entry["pr_url"]}],
+                "replay_url": entry["replay_url"],
+                "summary": "The benchmark workflow passed concrete replay checks for this open PR head.",
+                "open_pr": True,
+            })
+    return events
+
+
+def build(open_pr_entries: list[dict] | None = None) -> dict:
     catalog = json.loads((REPO / "LiveScripts/catalog.json").read_text())
     cohort_files = sorted((REPO / "LiveScripts/cohorts").glob("*.json"))
     cohorts = [json.loads(path.read_text()) for path in cohort_files]
@@ -61,7 +90,9 @@ def build() -> dict:
         "schema_version": 1,
         "scripts": public_scripts,
         "cohorts": cohorts,
-        "events": runs.get("events", []),
+        "events": runs.get("events", []) + open_pr_events(
+            open_pr_entries or [], cohort_hashes, verified, runs.get("events", [])
+        ),
         "counts": dict(Counter(item["status"] for item in public_scripts)),
     }
     (DIST / "assets").mkdir(parents=True, exist_ok=True)
@@ -82,4 +113,8 @@ def build() -> dict:
 
 
 if __name__ == "__main__":
-    print(json.dumps(build()))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--open-pr-frontier", type=Path)
+    args = parser.parse_args()
+    entries = json.loads(args.open_pr_frontier.read_text()) if args.open_pr_frontier else []
+    print(json.dumps(build(entries)))

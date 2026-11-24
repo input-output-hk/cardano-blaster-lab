@@ -1,0 +1,100 @@
+name: Upstream handoff
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: upstream-handoff-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  handoff:
+    if: github.event.issue.pull_request && github.event.comment.body == '/upstream'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Require repository admin
+        id: admin
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+        run: |
+          permission=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$COMMENTER/permission" --jq .permission)
+          if [[ "$permission" == admin ]]; then
+            echo 'authorized=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'authorized=false' >> "$GITHUB_OUTPUT"
+            echo 'Only repository admins may invoke /upstream.'
+          fi
+
+      # issue_comment checks out trusted default-branch code. The PR head is
+      # fetched later as Git data and is never run with a write token.
+      - uses: actions/checkout@v4
+        if: steps.admin.outputs.authorized == 'true'
+        with:
+          fetch-depth: 0
+
+      - name: Test upstream patch replay
+        if: steps.admin.outputs.authorized == 'true'
+        run: python3 -m unittest discover -s tests -p test_upstream_handoff.py
+
+      - uses: actions/create-github-app-token@v3
+        if: steps.admin.outputs.authorized == 'true'
+        id: bot
+        with:
+          client-id: ${{ vars.UPSTREAM_APP_CLIENT_ID }}
+          private-key: ${{ secrets.UPSTREAM_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            Lean-blaster
+            PlutusCoreBlaster
+            CardanoLedgerApiBlaster
+            Blaster-benchmarking
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: actions/create-github-app-token@v3
+        if: steps.admin.outputs.authorized == 'true'
+        id: comment-bot
+        with:
+          client-id: ${{ vars.UPSTREAM_APP_CLIENT_ID }}
+          private-key: ${{ secrets.UPSTREAM_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: cardano-blaster-lab
+          permission-contents: read
+          permission-pull-requests: write
+
+      - name: Configure bot Git credentials
+        id: bot-git
+        if: steps.admin.outputs.authorized == 'true'
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          BOT_LOGIN: ${{ steps.bot.outputs.app-slug }}[bot]
+        run: |
+          bot_id=$(gh api "users/$BOT_LOGIN" --jq .id)
+          echo "name=$BOT_LOGIN" >> "$GITHUB_OUTPUT"
+          echo "email=$bot_id+$BOT_LOGIN@users.noreply.github.com" >> "$GITHUB_OUTPUT"
+          gh auth setup-git
+
+      - name: Mirror commits and open upstream drafts
+        if: steps.admin.outputs.authorized == 'true'
+        env:
+          SOURCE_TOKEN: ${{ github.token }}
+          BOT_TOKEN: ${{ steps.bot.outputs.token }}
+          COMMENT_TOKEN: ${{ steps.comment-bot.outputs.token }}
+          BOT_COMMITTER_NAME: ${{ steps.bot-git.outputs.name }}
+          BOT_COMMITTER_EMAIL: ${{ steps.bot-git.outputs.email }}
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+        run: |
+          python3 scripts/upstream_handoff.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --pr "$PR_NUMBER" \
+            --commenter "$COMMENTER" \
+            --source "$GITHUB_WORKSPACE"
