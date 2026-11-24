@@ -88,6 +88,20 @@ jobs:
         working-directory: benchmark
         run: lake build CardanoLedgerApi
 
+      - name: Check imported Z3 shim PIC
+        run: |
+          for unit in context solver sorts terms datatypes; do
+            trace="packages/Lean-blaster/.lake/build/ffi/z3_shim_${unit}.o.trace"
+            if ! grep -Fq -- ' -fPIC' "$trace"; then
+              echo "Z3 shim object was not compiled with -fPIC: $trace" >&2
+              exit 1
+            fi
+          done
+          if readelf -rW packages/Lean-blaster/.lake/build/ffi/z3_shim_*.o | grep -Eq 'R_X86_64_(32|32S)[[:space:]]'; then
+            echo 'An imported Z3 shim object contains a non-PIC x86_64 relocation' >&2
+            exit 1
+          fi
+
       - name: Verify concrete replay witnesses
         working-directory: benchmark
         run: python3 LiveScripts/verify_replays.py --check
