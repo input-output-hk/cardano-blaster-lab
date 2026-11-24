@@ -27,8 +27,19 @@ def build() -> dict:
         active_config = json.loads(config_path.read_text())["config"]
         latest = {key: result for key, result in latest.items()
                   if result.get("config") == active_config}
+    verified_path = REPO / "LiveScripts/results/verified.json"
+    verified = json.loads(verified_path.read_text()) if verified_path.exists() else {}
     scripts = catalog["scripts"]
-    statuses = {**latest, **runs.get("results", {})}
+    statuses = {**latest, **runs.get("results", {}), **verified}
+    cohort_hashes = {entry["name"]: set(entry["script_hashes"]) for entry in cohorts}
+    for event in runs.get("events", []):
+        hashes = event.get("verified_hashes")
+        if hashes is not None and (len(hashes) != event.get("solved_count") or
+                                   len(set(hashes)) != len(hashes) or
+                                   any(script_hash not in verified or
+                                       script_hash not in cohort_hashes.get(event.get("cohort"), set())
+                                       for script_hash in hashes)):
+            raise ValueError(f"Frontier event has unverified scripts: {event.get('run_id')}")
     public_scripts = []
     for record in scripts:
         item = dict(record)

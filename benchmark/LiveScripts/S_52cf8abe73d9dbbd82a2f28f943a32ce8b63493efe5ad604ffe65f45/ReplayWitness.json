@@ -1,0 +1,10 @@
+{
+  "script_hash": "52cf8abe73d9dbbd82a2f28f943a32ce8b63493efe5ad604ffe65f45",
+  "baseline_candidate_run_id": "20261123T155835845289Z-c2456d09",
+  "witness_source": "native Z3 model of Properties.lean",
+  "source_revision": "90a10093c20c8b82d7abd317cba27453441fb182",
+  "backend": "ffi",
+  "search_options": "(backend: ffi) (replay: 1) (timeout: 10) (verbose: 1) (solve-result: 1)",
+  "blaster_internal_replay": "Lean could not evaluate this proposition",
+  "verification": "standalone concrete replay through CardanoLedgerApi and PlutusCore CEK"
+}
