@@ -25,7 +25,7 @@ def open_pr_events(entries: list[dict], cohort_hashes: dict[str, set[str]],
                     if event["cohort"] == cohort and event.get("verified_run") is not False])
         for entry in entries:
             hashes = members.intersection(entry["verified_hashes"])
-            if len(hashes) <= best:
+            if len(hashes) < best:
                 continue
             events.append({
                 "run_id": f"open-pr-{entry['number']}-{entry['head_sha']}",
@@ -38,7 +38,9 @@ def open_pr_events(entries: list[dict], cohort_hashes: dict[str, set[str]],
                 "regressed": len(published - hashes),
                 "prs": [{"number": entry["number"], "url": entry["pr_url"]}],
                 "replay_url": entry["replay_url"],
-                "summary": "The benchmark workflow passed concrete replay checks for this open PR head.",
+                "summary": ("The benchmark workflow passed concrete replay checks for this open PR head."
+                            if len(hashes) > best else
+                            "This PR matches the published verified count; it does not raise the frontier."),
                 "open_pr": True,
             })
     return events

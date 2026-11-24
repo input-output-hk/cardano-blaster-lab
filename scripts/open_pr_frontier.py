@@ -115,7 +115,7 @@ def artifact_verified_hashes(repository: str, run_id: int, sha: str) -> set[str]
         return hashes
 
 
-def collect(repository: str, published: set[str]) -> list[dict]:
+def collect(repository: str) -> list[dict]:
     pages = api(f"repos/{repository}/pulls?state=open&base=main", paginate=True)
     entries = []
     for page in pages:
@@ -138,7 +138,7 @@ def collect(repository: str, published: set[str]) -> list[dict]:
             except (ValueError, RuntimeError, json.JSONDecodeError) as exc:
                 print(f"Skipping PR #{number}: {exc}", file=sys.stderr)
                 continue
-            if not hashes - published:
+            if not hashes:
                 continue
             entries.append({
                 "number": number,
@@ -158,9 +158,7 @@ def main() -> None:
     parser.add_argument("--repository", required=True)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
-    root = Path(__file__).resolve().parent.parent
-    published = verified_hashes(json.loads((root / VERIFIED_PATH).read_text()))
-    args.output.write_text(json.dumps(collect(args.repository, published), indent=2) + "\n")
+    args.output.write_text(json.dumps(collect(args.repository), indent=2) + "\n")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ def load_dashboard_builder():
 
 
 class OpenPRFrontierTest(unittest.TestCase):
-    def test_only_strict_gains_in_same_cohort(self):
+    def test_gain_and_equal_verified_prs_in_same_cohort(self):
         dashboard = load_dashboard_builder()
         events = dashboard.open_pr_events(
             [
@@ -25,17 +25,23 @@ class OpenPRFrontierTest(unittest.TestCase):
                  "head_sha": "1" * 40, "checked_at": "2026-11-24T12:00:00Z",
                  "title": "Open gain", "author": "test", "pr_url": "https://example.com/pr",
                  "replay_url": "https://example.com/replay"},
-                {"number": 45, "verified_hashes": ["a", "b", "b", "outside"]},
+                {"number": 45, "verified_hashes": ["a", "b", "b", "outside"],
+                 "head_sha": "2" * 40, "checked_at": "2026-11-24T13:00:00Z",
+                 "title": "Equal coverage", "author": "test", "pr_url": "https://example.com/pr2",
+                 "replay_url": "https://example.com/replay2"},
             ],
-            {"cohort": {"a", "b", "c"}, "other": {"outside"}},
+            {"cohort": {"a", "b", "c"}},
             {"a": {}, "b": {}, "outside": {}},
             [{"cohort": "cohort", "solved_count": 2}],
         )
-        self.assertEqual(len(events), 1)
+        self.assertEqual(len(events), 2)
         self.assertTrue(events[0]["open_pr"])
         self.assertEqual(events[0]["solved_count"], 3)
         self.assertEqual(events[0]["gained"], 1)
         self.assertEqual(events[0]["prs"][0]["number"], 44)
+        self.assertEqual(events[1]["solved_count"], 2)
+        self.assertEqual(events[1]["gained"], 0)
+        self.assertIn("does not raise the frontier", events[1]["summary"])
 
     def test_requires_successful_replay_for_this_revision(self):
         sha = "1" * 40
