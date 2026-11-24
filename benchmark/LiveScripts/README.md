@@ -51,6 +51,14 @@ then produced a candidate at fuel 10000. Its concrete replay passed at fuel
 10000, giving 51 verified scripts. This higher-fuel result is recorded as a
 separate frontier event so its changed search bound remains visible.
 
+A bounded fuel-5000 pilot revisited eight scripts previously reported unknown
+at fuel 1000. One 883-byte V1 script produced a candidate after 170 seconds;
+its typed context passed the ledger validity, data round-trip, and CEK replay
+checks at fuel 5000. The other seven hit a 180-second wall limit, including a
+265-byte V2 script. The local timings and selected hashes are in
+`results/fuel5000-pilot-20261124.json`. This pilot does not imply that the
+seven timed-out scripts lack valid contexts.
+
 The first verified V3 witness is
 `S_186e32faa80a26810392fda6d559c7ed4721a65ce1c9d4ef3e1c87b4/ReplayWitness.lean`.
 It came from a fresh native Z3 run of the same property with
