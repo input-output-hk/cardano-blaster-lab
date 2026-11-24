@@ -33,12 +33,12 @@ class ReplayRunTest(unittest.TestCase):
                 (directory / "metadata.json").write_text(json.dumps({
                     "script_hash": h, "script_type": "plutusV2", "search_purpose": "mint",
                 }))
-            output = "✅ Expected Falsified\nCounterexample:\n - input: (example : MintingInput)\ninfo: done\n"
+            output = "diagnostic\u0085inside the same JSON record\n✅ Expected Falsified\nCounterexample:\n - input: (example : MintingInput)\ninfo: done\n"
             results = root / "run.jsonl"
             results.write_text("".join(json.dumps({
                 "script_hash": h, "status": "candidate", "config": "config",
                 "revision": "1" * 40, "run_id": "run-1", "stdout": output,
-            }) + "\n" for h in hashes))
+            }, ensure_ascii=False) + "\n" for h in hashes))
             attempted = []
 
             def save_model(h, *_args, **_kwargs):
@@ -80,7 +80,7 @@ class ReplayRunTest(unittest.TestCase):
             results.write_text(json.dumps({
                 "script_hash": script_hash, "status": "candidate", "config": "config",
                 "revision": "1" * 40, "run_id": "run-1", "stdout": output,
-            }) + "\n")
+            }, ensure_ascii=False) + "\n")
             def save_model(*_, **__):
                 source = "def replayInput : MintingInput := example\n"
                 (directory / "ReplayWitness.lean").write_text(source)

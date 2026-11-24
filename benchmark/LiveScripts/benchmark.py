@@ -241,7 +241,9 @@ def main() -> None:
                 script_hash = result["script_hash"]
                 result.update({"run_id": run_id, "revision": revision, "config": config,
                                "timestamp": datetime.now(timezone.utc).isoformat()})
-                sink.write(json.dumps(result, ensure_ascii=False) + "\n")
+                # Keep each JSONL record on one physical line even if a solver
+                # diagnostic contains Unicode separators such as U+0085.
+                sink.write(json.dumps(result) + "\n")
                 sink.flush()
                 if result["status"] == "error":
                     report_path = results_dir / "errors" / f"{script_hash}.json"

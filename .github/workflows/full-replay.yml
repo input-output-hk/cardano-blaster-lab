@@ -21,12 +21,14 @@ jobs:
       ${{ github.event_name == 'workflow_dispatch' ||
           (github.event.workflow_run.event == 'workflow_dispatch' &&
            github.event.workflow_run.head_branch == 'main' &&
-           github.event.workflow_run.conclusion == 'success') }}
+           (github.event.workflow_run.conclusion == 'success' ||
+            github.event.workflow_run.conclusion == 'failure')) }}
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
       pending: ${{ steps.plan.outputs.pending }}
       eligible: ${{ steps.plan.outputs.eligible }}
+      search_run_id: ${{ steps.plan.outputs.search_run_id }}
       sha: ${{ steps.source.outputs.sha }}
       run_id: ${{ steps.source.outputs.run_id }}
     steps:
@@ -44,11 +46,12 @@ jobs:
 
           run = json.loads(Path(sys.argv[1]).read_text())
           if (run.get("event") != "workflow_dispatch" or run.get("head_branch") != "main"
-                  or run.get("conclusion") != "success"
+                  or run.get("status") != "completed"
+                  or run.get("conclusion") not in {"success", "failure"}
                   or run.get("path") != ".github/workflows/benchmark.yml"
                   or run.get("repository", {}).get("full_name") != sys.argv[3]
                   or not re.fullmatch(r"[0-9a-f]{40}", run.get("head_sha", ""))):
-              raise SystemExit("Source must be a successful full-benchmark dispatch on this repository's main branch")
+              raise SystemExit("Source must be a completed benchmark dispatch on this repository's main branch")
           with Path(sys.argv[2]).open("a") as output:
               output.write(f"sha={run['head_sha']}\nrun_id={run['id']}\n")
           PY
@@ -102,6 +105,7 @@ jobs:
         run: |
           cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
           cp workflow-tools/benchmark/LiveScripts/replay_run.py source/benchmark/LiveScripts/replay_run.py
+          cp workflow-tools/benchmark/LiveScripts/materialize_replays.py source/benchmark/LiveScripts/materialize_replays.py
       - uses: leanprover/lean-action@v1
         with:
           lake-package-directory: source/benchmark
@@ -141,9 +145,8 @@ jobs:
         working-directory: source/benchmark
         run: |
           cp "${{ runner.temp }}/search-results/active-config.json" LiveScripts/results/active-config.json
-          cp LiveScripts/results/verified.json "${{ runner.temp }}/baseline-verified.json"
           python3 LiveScripts/replay_run.py \
-            --results-file "$(find "${{ runner.temp }}/search-results" -name '*.jsonl' -print -quit)" \
+            --results-file "${{ runner.temp }}/search-results/${{ needs.plan.outputs.search_run_id }}.jsonl" \
             --limit 0 --shard-index ${{ matrix.index }} --shard-count ${{ matrix.count }} \
             --head-sha "${{ needs.plan.outputs.sha }}"
       - name: Stage shard evidence

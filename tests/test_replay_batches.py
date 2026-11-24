@@ -26,18 +26,21 @@ class ReplayBatchesTest(unittest.TestCase):
             revision = "a" * 40
             config = "config"
             rows = [{"script_hash": h, "status": "candidate", "revision": revision,
-                     "config": config, "run_id": "run-1"} for h in hashes]
+                     "config": config, "run_id": "run-1", "stdout": "note\u0085continued"}
+                    for h in hashes]
             (live / "cohorts/2026-11-23.json").write_text(json.dumps({"script_hashes": hashes}))
             (live / "catalog.json").write_text(json.dumps({"scripts": [
                 {"script_hash": h, "serialised_size": i} for i, h in enumerate(hashes)
             ]}))
             (live / "results/verified.json").write_text("{}")
-            (search / "run.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            (search / "run-1.jsonl").write_text("".join(
+                json.dumps(row, ensure_ascii=False) + "\n" for row in rows))
+            (search / "older.jsonl").write_text('{"stale":true}\n')
             (search / "active-config.json").write_text(json.dumps({
                 "config": config, "cohort": "2026-11-23",
             }))
             (search / "latest.json").write_text(json.dumps({
-                h: {"config": config} for h in hashes
+                h: {"config": config, "run_id": "run-1"} for h in hashes
             }))
             shards = root / "shards"
             shards.mkdir()
@@ -46,6 +49,7 @@ class ReplayBatchesTest(unittest.TestCase):
                 self.assertEqual(replay_batches.plan(search, revision, 16, plan_file),
                                  {"eligible": True, "pending": 17, "shards": 2})
                 self.assertIn('"index":1', plan_file.read_text())
+                self.assertIn("search_run_id=run-1", plan_file.read_text())
                 for index in range(2):
                     assigned = hashes[index::2]
                     records = {}

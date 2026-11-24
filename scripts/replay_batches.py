@@ -25,25 +25,28 @@ def read_json(path: Path) -> dict:
 
 
 def search_run(directory: Path, revision: str) -> tuple[Path, dict, list[dict], list[str]]:
-    paths = list(directory.rglob("*.jsonl"))
-    if len(paths) != 1:
-        raise ValueError(f"Expected one search JSONL in {directory}; found {len(paths)}")
-    rows = [json.loads(line) for line in paths[0].read_text().splitlines() if line]
     active = read_json(next(directory.rglob("active-config.json")))
     latest = read_json(next(directory.rglob("latest.json")))
     cohort_name = active["cohort"]
     if cohort_name.startswith("smoke-"):
         raise IncompleteCohort("Smoke benchmark; exhaustive replay runs only for full sweeps")
     cohort = read_json(LIVE / f"cohorts/{cohort_name}.json")["script_hashes"]
+    if any(latest.get(h, {}).get("config") != active["config"] for h in cohort):
+        raise IncompleteCohort("Latest results do not cover the complete cohort under this configuration")
+    latest_run_ids = {latest[h].get("run_id") for h in cohort}
+    if len(latest_run_ids) != 1 or None in latest_run_ids:
+        raise IncompleteCohort("Latest results do not all belong to one complete run")
+    paths = list(directory.rglob(f"{next(iter(latest_run_ids))}.jsonl"))
+    if len(paths) != 1:
+        raise ValueError(f"Expected the current run JSONL in {directory}; found {len(paths)}")
+    rows = [json.loads(line) for line in paths[0].read_text().split("\n") if line]
     if set(row["script_hash"] for row in rows) != set(cohort) or len(rows) != len(cohort):
         raise IncompleteCohort("Search artifact does not contain the complete seven-day cohort")
     if any(row.get("revision") != revision or row.get("config") != active["config"] for row in rows):
         raise ValueError("Search artifact has a different revision or configuration")
-    if any(latest.get(h, {}).get("config") != active["config"] for h in cohort):
-        raise IncompleteCohort("Latest results do not cover the complete cohort under this configuration")
     run_ids = {row.get("run_id") for row in rows}
-    if len(run_ids) != 1 or None in run_ids:
-        raise ValueError("Search artifact must contain one complete run")
+    if run_ids != latest_run_ids:
+        raise ValueError("Search JSONL does not match the latest complete run")
     return paths[0], active, rows, cohort
 
 
@@ -57,7 +60,7 @@ def pending_hashes(rows: list[dict], baseline: dict) -> list[str]:
 
 def plan(search_dir: Path, revision: str, batch_size: int, output: Path) -> dict:
     try:
-        _, active, rows, _ = search_run(search_dir, revision)
+        results_file, active, rows, _ = search_run(search_dir, revision)
     except IncompleteCohort as exc:
         with output.open("a") as sink:
             sink.write('matrix={"include":[]}\npending=0\neligible=0\n')
@@ -68,7 +71,8 @@ def plan(search_dir: Path, revision: str, batch_size: int, output: Path) -> dict
         raise ValueError("Replay matrix exceeds GitHub Actions' 256-job limit")
     matrix = {"include": [{"index": i, "count": count} for i in range(count)]}
     values = {"matrix": json.dumps(matrix, separators=(",", ":")),
-              "pending": str(len(pending)), "eligible": "1", "config": active["config"]}
+              "pending": str(len(pending)), "eligible": "1", "config": active["config"],
+              "search_run_id": results_file.stem}
     with output.open("a") as sink:
         for key, value in values.items():
             sink.write(f"{key}={value}\n")
