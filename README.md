@@ -86,11 +86,11 @@ site through GitHub Pages.
 The benchmark workflow now checks typed counterexamples from its own run with
 the independent ledger-context, Plutus data round-trip, and CEK replay guards.
 It uploads new witnesses and `verified.json` as an artifact; a solver candidate
-that fails a guard stays a candidate. An open lab PR gets a hollow point on the
-frontier graph when its current head has more verified scripts than the
-published best for the same frozen cohort. Select the point to see the PR and
-replay check. The green line follows published results. Completed benchmarks,
-new PR commits, and closures refresh the open-PR points.
+that fails a guard stays a candidate. An open lab PR gets a hollow point when
+its current head matches or exceeds the published verified count for the same
+frozen cohort. Only a strict gain raises the frontier. Select the point to see
+the PR and replay check. The green line follows published results. Completed
+benchmarks, new PR commits, and closures refresh the open-PR points.
 
 ## Sending a lab PR upstream
 
