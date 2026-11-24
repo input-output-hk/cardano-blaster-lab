@@ -4,6 +4,12 @@ on:
   workflow_run:
     workflows: ["Cardano script benchmark"]
     types: [completed]
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Completed full benchmark run ID whose candidate models should be replayed
+        type: number
+        required: true
 
 permissions:
   contents: read
@@ -12,18 +18,43 @@ permissions:
 jobs:
   plan:
     if: >-
-      ${{ github.event.workflow_run.event == 'workflow_dispatch' &&
-          github.event.workflow_run.head_branch == 'main' &&
-          github.event.workflow_run.conclusion == 'success' }}
+      ${{ github.event_name == 'workflow_dispatch' ||
+          (github.event.workflow_run.event == 'workflow_dispatch' &&
+           github.event.workflow_run.head_branch == 'main' &&
+           github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
       pending: ${{ steps.plan.outputs.pending }}
       eligible: ${{ steps.plan.outputs.eligible }}
+      sha: ${{ steps.source.outputs.sha }}
+      run_id: ${{ steps.source.outputs.run_id }}
     steps:
+      - id: source
+        name: Validate benchmark run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id || inputs.source_run_id }}
+        run: |
+          [[ "$SOURCE_RUN_ID" =~ ^[0-9]+$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" > "$RUNNER_TEMP/source-run.json"
+          python3 - "$RUNNER_TEMP/source-run.json" "$GITHUB_OUTPUT" "$GITHUB_REPOSITORY" <<'PY'
+          import json, re, sys
+          from pathlib import Path
+
+          run = json.loads(Path(sys.argv[1]).read_text())
+          if (run.get("event") != "workflow_dispatch" or run.get("head_branch") != "main"
+                  or run.get("conclusion") != "success"
+                  or run.get("path") != ".github/workflows/benchmark.yml"
+                  or run.get("repository", {}).get("full_name") != sys.argv[3]
+                  or not re.fullmatch(r"[0-9a-f]{40}", run.get("head_sha", ""))):
+              raise SystemExit("Source must be a successful full-benchmark dispatch on this repository's main branch")
+          with Path(sys.argv[2]).open("a") as output:
+              output.write(f"sha={run['head_sha']}\nrun_id={run['id']}\n")
+          PY
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ steps.source.outputs.sha }}
           path: source
           persist-credentials: false
       - uses: actions/checkout@v4
@@ -35,8 +66,8 @@ jobs:
         run: cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
       - uses: actions/download-artifact@v4
         with:
-          name: cardano-benchmark-${{ github.event.workflow_run.id }}
-          run-id: ${{ github.event.workflow_run.id }}
+          name: cardano-benchmark-${{ steps.source.outputs.run_id }}
+          run-id: ${{ steps.source.outputs.run_id }}
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/search-results
       - id: plan
@@ -44,7 +75,7 @@ jobs:
         run: |
           python3 scripts/replay_batches.py plan \
             --search-dir "${{ runner.temp }}/search-results" \
-            --revision "${{ github.event.workflow_run.head_sha }}" \
+            --revision "${{ steps.source.outputs.sha }}" \
             --output "$GITHUB_OUTPUT"
 
   replay:
@@ -59,7 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ needs.plan.outputs.sha }}
           path: source
           persist-credentials: false
       - uses: actions/checkout@v4
@@ -102,8 +133,8 @@ jobs:
         run: lake build CardanoLedgerApi
       - uses: actions/download-artifact@v4
         with:
-          name: cardano-benchmark-${{ github.event.workflow_run.id }}
-          run-id: ${{ github.event.workflow_run.id }}
+          name: cardano-benchmark-${{ needs.plan.outputs.run_id }}
+          run-id: ${{ needs.plan.outputs.run_id }}
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/search-results
       - name: Replay assigned candidates
@@ -114,7 +145,7 @@ jobs:
           python3 LiveScripts/replay_run.py \
             --results-file "$(find "${{ runner.temp }}/search-results" -name '*.jsonl' -print -quit)" \
             --limit 0 --shard-index ${{ matrix.index }} --shard-count ${{ matrix.count }} \
-            --head-sha "${{ github.event.workflow_run.head_sha }}"
+            --head-sha "${{ needs.plan.outputs.sha }}"
       - name: Stage shard evidence
         working-directory: source
         run: |
@@ -125,7 +156,7 @@ jobs:
             --output "${{ runner.temp }}/shard-artifact"
       - uses: actions/upload-artifact@v4
         with:
-          name: cardano-replay-shard-${{ github.event.workflow_run.id }}-${{ matrix.index }}
+          name: cardano-replay-shard-${{ needs.plan.outputs.run_id }}-${{ matrix.index }}
           path: ${{ runner.temp }}/shard-artifact
           if-no-files-found: error
 
@@ -136,7 +167,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ needs.plan.outputs.sha }}
           path: source
           persist-credentials: false
       - uses: actions/checkout@v4
@@ -147,13 +178,13 @@ jobs:
       - run: cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
       - uses: actions/download-artifact@v4
         with:
-          name: cardano-benchmark-${{ github.event.workflow_run.id }}
-          run-id: ${{ github.event.workflow_run.id }}
+          name: cardano-benchmark-${{ needs.plan.outputs.run_id }}
+          run-id: ${{ needs.plan.outputs.run_id }}
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/search-results
       - uses: actions/download-artifact@v4
         with:
-          pattern: cardano-replay-shard-${{ github.event.workflow_run.id }}-*
+          pattern: cardano-replay-shard-${{ needs.plan.outputs.run_id }}-*
           path: ${{ runner.temp }}/shards
       - name: Check complete replay coverage and combine evidence
         working-directory: source
@@ -161,10 +192,10 @@ jobs:
           python3 scripts/replay_batches.py aggregate \
             --search-dir "${{ runner.temp }}/search-results" \
             --shards-dir "${{ runner.temp }}/shards" \
-            --revision "${{ github.event.workflow_run.head_sha }}" \
+            --revision "${{ needs.plan.outputs.sha }}" \
             --output "${{ runner.temp }}/complete-replay"
       - uses: actions/upload-artifact@v4
         with:
-          name: cardano-complete-replay-${{ github.event.workflow_run.id }}
+          name: cardano-complete-replay-${{ needs.plan.outputs.run_id }}
           path: ${{ runner.temp }}/complete-replay
           if-no-files-found: error
