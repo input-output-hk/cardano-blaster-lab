@@ -232,6 +232,26 @@
       "pinned": true,
       "prs": [
         {
+          "number": 41,
+          "repo": "cardano-blaster-lab",
+          "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/41"
+        },
+        {
+          "number": 47,
+          "repo": "cardano-blaster-lab",
+          "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/47"
+        },
+        {
+          "number": 52,
+          "repo": "cardano-blaster-lab",
+          "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/52"
+        },
+        {
+          "number": 53,
+          "repo": "cardano-blaster-lab",
+          "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/53"
+        },
+        {
           "number": 55,
           "repo": "cardano-blaster-lab",
           "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/55"
@@ -241,9 +261,9 @@
       "replay_url": "https://github.com/input-output-hk/cardano-blaster-lab/actions/runs/45470732707",
       "run_id": "20261124T172950852829Z-58d02229",
       "solved_count": 303,
-      "summary": "The complete 2,250-script sweep produced 316 solver candidates. Exhaustive concrete replay attempted all 261 not already verified; 246 passed ledger-context validity, Plutus data round-trip, and CEK halt at fuel 1000. Fifteen remain candidates. The gain reflects full-corpus coverage and replay, not an individual solver change.",
+      "summary": "PR #41 fixed bounded UPLC imports (18 targeted importer failures); PR #47 added CI candidate replay; PRs #52 and #53 recovered replay from the complete 2,250-script sweep after its inline replay failed. Of 261 new candidates replayed, 246 passed ledger-context validity, Plutus data round-trip, and CEK halt at fuel 1000. PR #55 published the verified results. The 246 gain is from full-corpus coverage and replay, not an isolated measured gain for PR #41.",
       "timestamp": "2026-11-24T19:54:56Z",
-      "title": "Full sweep verifies 246 more scripts",
+      "title": "PRs #41 + #47: 303 verified",
       "verified_hashes": [
         "00487b0ee879c1da2a8a3563d11b0eaadf0400960c4233ab3d2c81c1",
         "01dbf30889e419e67f38dde1cc0c265da01d83c42f868128a87376b6",
