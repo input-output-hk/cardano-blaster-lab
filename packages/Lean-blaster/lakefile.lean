@@ -36,6 +36,8 @@ package «Blaster» where
 def cWeakArgs : FetchM (Array String) := do
   let leanInc := (← getLeanIncludeDir).toString
   let mut args := #["-I", leanInc, "-I/opt/homebrew/include", "-I", "Blaster/Smt/FFI/c"]
+  -- The shim archive is linked into a shared Lean module on Unix.
+  if !System.Platform.isWindows then args := args.push "-fPIC"
   if let some inc ← IO.getEnv "Z3_INC_PATH" then args := args.push s!"-I{inc}"
   return args
 
