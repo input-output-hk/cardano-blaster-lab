@@ -132,7 +132,7 @@ jobs:
           BENCH_LIMIT: ${{ github.event_name == 'pull_request' && '0' || inputs.limit }}
         run: |
           args=(--z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
-                --workers "$BENCH_WORKERS" --timeout 25
+                --workers "$BENCH_WORKERS" --timeout 25 --cek-fuel 3000
                 --result-path-file "$RUNNER_TEMP/cardano-result-path")
           if [[ "$BENCH_LIMIT" -gt 0 ]]; then
             args+=(--limit "$BENCH_LIMIT")

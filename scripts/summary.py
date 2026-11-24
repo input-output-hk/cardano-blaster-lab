@@ -26,14 +26,16 @@ def main() -> None:
         print("The benchmark did not produce results. Check the build and run logs.")
         return
     latest = json.loads(latest_path.read_text())
-    active = json.loads(active_path.read_text())["config"]
+    active_config = json.loads(active_path.read_text())
+    active = active_config["config"]
     entries = [latest[h] for h in cohort["script_hashes"]
                if h in latest and latest[h].get("config") == active]
     counts = Counter(item["status"] for item in entries)
     stages = Counter(item.get("timeout_stage") or "unclassified" for item in entries
                      if item["status"] == "timeout")
     print(f"## Cardano benchmark: {args.tier}\n")
-    print(f"Cohort `{cohort_name}`: {len(entries)} attempted of {len(cohort['script_hashes'])} scripts.\n")
+    print(f"Cohort `{cohort_name}`: {len(entries)} attempted of {len(cohort['script_hashes'])} scripts "
+          f"at CEK fuel {active_config.get('cek_fuel', 1000)}.\n")
     print("| Solver result | Count |")
     print("| --- | ---: |")
     for status in ("verified", "candidate", "timeout", "unknown", "error"):

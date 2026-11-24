@@ -17,15 +17,22 @@ from verify_replays import OUTPUT
 HASH = re.compile(r"[0-9a-f]{56}\Z")
 
 
-def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None = None,
+def replay(results_file: Path, limit: int, cek_fuel: int | None = None, head_sha: str | None = None,
            *, shard_index: int = 0, shard_count: int = 1) -> dict:
-    active = json.loads((ROOT / "results/active-config.json").read_text())["config"]
+    active_config = json.loads((ROOT / "results/active-config.json").read_text())
+    active = active_config["config"]
+    active_fuel = active_config.get("cek_fuel", 1000)
+    if cek_fuel is None:
+        cek_fuel = active_fuel
+    elif cek_fuel != active_fuel:
+        raise ValueError("Replay CEK fuel does not match the benchmark configuration")
     revision = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT.parent, text=True).strip()
     # JSONL records are separated by LF only. Candidate stdout can contain
     # U+0085, which str.splitlines() also treats as a separator.
     rows = [json.loads(line) for line in results_file.read_text().split("\n") if line]
-    if any(row.get("config") != active or row.get("revision") != revision for row in rows):
+    if any(row.get("config") != active or row.get("revision") != revision or
+           row.get("cek_fuel", active_fuel) != active_fuel for row in rows):
         raise ValueError("Replay input does not match the current source revision and benchmark configuration")
     run_ids = {row.get("run_id") for row in rows}
     if len(run_ids) > 1 or None in run_ids:
@@ -59,7 +66,7 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
         print(f"{script_hash}: {result}", flush=True)
     summary = {
         "run_id": next(iter(run_ids), None), "revision": revision, "head_sha": head_sha or revision,
-        "config": active,
+        "config": active, "cek_fuel": cek_fuel,
         "candidates": len(ordered), "already_verified": len(ordered) - len([h for h in ordered if h not in existing]),
         "pending_total": len(all_pending), "shard_index": shard_index,
         "shard_count": shard_count, "shard_pending": shard_pending,
@@ -86,12 +93,13 @@ def main() -> None:
     parser.add_argument("--results-file", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=12,
                         help="Maximum new witnesses to check; 0 checks all")
-    parser.add_argument("--cek-fuel", type=int, default=1000)
+    parser.add_argument("--cek-fuel", type=int,
+                        help="Must match active-config.json; defaults to that run's fuel")
     parser.add_argument("--head-sha", help="PR head SHA; the checked-out revision may be a merge commit")
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--shard-count", type=int, default=1)
     args = parser.parse_args()
-    if args.limit < 0 or not 1 <= args.cek_fuel <= 100000:
+    if args.limit < 0 or (args.cek_fuel is not None and not 1 <= args.cek_fuel <= 100000):
         parser.error("limit must be nonnegative and CEK fuel must be 1..100000")
     if args.head_sha and not re.fullmatch(r"[0-9a-f]{40}", args.head_sha):
         parser.error("--head-sha must be a 40-character Git SHA")

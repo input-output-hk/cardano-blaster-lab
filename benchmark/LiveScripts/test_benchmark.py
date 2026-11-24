@@ -1,9 +1,20 @@
 import unittest
 
-from benchmark import classify, error_report
+from benchmark import classify, error_report, property_at_fuel
 
 
 class ClassificationTests(unittest.TestCase):
+    def test_generated_property_uses_requested_fuel(self):
+        script_hash = "a" * 56
+        source = ("-- Search purpose: spend; CEK fuel: 1000; SMT limit: 10 seconds.\n"
+                  f"¬ isSuccessful (cekExecuteProgram script_{script_hash}.script "
+                  "(spendingInputs input) 1000)]\n")
+        changed = property_at_fuel(source, 3000)
+        self.assertIn("CEK fuel: 3000", changed)
+        self.assertIn("(spendingInputs input) 3000)]", changed)
+        with self.assertRaisesRegex(ValueError, "expected one generated CEK call"):
+            property_at_fuel(source + source, 3000)
+
     def test_unexpected_valid_is_inconclusive_at_fixed_cek_fuel(self):
         self.assertEqual(classify(1, "error: ❌ Unexpected Valid", False), "unknown")
 

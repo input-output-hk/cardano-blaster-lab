@@ -16,6 +16,27 @@ spec.loader.exec_module(replay_run)
 
 
 class ReplayRunTest(unittest.TestCase):
+    def test_model_parser_stops_before_phase_timings(self):
+        output = ("✅ Expected Falsified\nCounterexample:\n"
+                  " - input: (example : MintingInput)\n"
+                  "[Start]: Optimization\n[End]: Optimization (1.0s)\n")
+        self.assertEqual(replay_run.typed_model(output, "input", "MintingInput"),
+                         "(example : MintingInput)")
+
+    def test_replay_rejects_wrong_fuel_for_current_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "results").mkdir()
+            (root / "results/active-config.json").write_text(
+                '{"config":"current","cek_fuel":3000}')
+            results = root / "run.jsonl"
+            results.write_text(json.dumps({"config": "current", "cek_fuel": 1000,
+                                           "revision": "1" * 40, "run_id": "run-1"}) + "\n")
+            with patch.object(replay_run, "ROOT", root), \
+                 patch.object(replay_run.subprocess, "check_output", return_value="1" * 40):
+                with self.assertRaisesRegex(ValueError, "does not match"):
+                    replay_run.replay(results, 12)
+
     def test_shards_cover_all_candidates_without_limit(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

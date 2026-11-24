@@ -18,8 +18,11 @@ own directories and share a structural `cluster_id` only for exploration.
 
 The Lean property asks Blaster for a successful CEK execution under the
 version-specific `CardanoLedgerApi` validity predicate for one observed
-script purpose. It uses CEK fuel 1000 and a 10-second SMT limit. Scripts
-observed at several purposes currently search the first of spending, minting,
+script purpose. Benchmark runs search at CEK fuel 3000 with a 10-second SMT
+limit. The runner applies that bound to each generated property in a temporary
+module, so previously imported files with a 1000-fuel literal are included.
+The selected fuel is recorded in each result and replayed at the same bound.
+Scripts observed at several purposes currently search the first of spending, minting,
 rewarding, or certifying; `search_purpose` records the selection in metadata.
 Falsification produces a **candidate** model, not a verified script context.
 The model must be materialized as concrete Plutus data and independently
