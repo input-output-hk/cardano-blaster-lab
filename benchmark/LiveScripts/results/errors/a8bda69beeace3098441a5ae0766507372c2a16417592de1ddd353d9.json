@@ -1,0 +1,8 @@
+{
+  "script_hash": "a8bda69beeace3098441a5ae0766507372c2a16417592de1ddd353d9",
+  "run_id": "20261124T172950852829Z-58d02229",
+  "exit_code": 1,
+  "kind": "other",
+  "message": "Lean exited with code 139",
+  "details": "error: Lean exited with code 139"
+}

@@ -1,0 +1,11 @@
+{
+  "script_hash": "f3c8f243dfe639ff569172d8687204a6348f8dcb773a60d0e7e09a2d",
+  "baseline_run_id": "20261124T172950852829Z-58d02229",
+  "witness_source": "native Z3 model from benchmark JSONL",
+  "source_revision": "58d02229f3e730f903900cbd910e62a83f2e8f03",
+  "cek_fuel": 1000,
+  "backend": "ffi",
+  "search_options": "(timeout: 10) (verbose: 1) (solve-result: 1)",
+  "blaster_internal_replay": "not requested during benchmark search",
+  "verification": "standalone concrete replay through CardanoLedgerApi and PlutusCore CEK"
+}

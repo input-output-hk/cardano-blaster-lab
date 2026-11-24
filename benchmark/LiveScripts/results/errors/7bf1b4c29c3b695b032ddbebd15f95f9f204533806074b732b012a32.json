@@ -1,8 +1,0 @@
-{
-  "script_hash": "7bf1b4c29c3b695b032ddbebd15f95f9f204533806074b732b012a32",
-  "run_id": "20261123T173946504797Z-9b319099",
-  "exit_code": 1,
-  "kind": "recursion_depth",
-  "message": "maximum recursion depth has been reached",
-  "details": "error: LiveScripts/S_7bf1b4c29c3b695b032ddbebd15f95f9f204533806074b732b012a32/Script.lean:3:0: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\nerror: Lean exited with code 1"
-}

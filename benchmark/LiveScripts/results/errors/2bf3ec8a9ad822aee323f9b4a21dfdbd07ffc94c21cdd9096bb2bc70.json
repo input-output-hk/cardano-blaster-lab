@@ -1,0 +1,8 @@
+{
+  "script_hash": "2bf3ec8a9ad822aee323f9b4a21dfdbd07ffc94c21cdd9096bb2bc70",
+  "run_id": "20261124T172950852829Z-58d02229",
+  "exit_code": 1,
+  "kind": "other",
+  "message": "translateRecFun: function body expected for Lean.Expr.const `PlutusCore.Data.PlutusCore.DataInternal.eqData []",
+  "details": "error: LiveScripts/S_2bf3ec8a9ad822aee323f9b4a21dfdbd07ffc94c21cdd9096bb2bc70/Properties.lean:13:0: translateRecFun: function body expected for Lean.Expr.const `PlutusCore.Data.PlutusCore.DataInternal.eqData []\ninfo: LiveScripts/S_2bf3ec8a9ad822aee323f9b4a21dfdbd07ffc94c21cdd9096bb2bc70/Properties.lean:13:0: [Start]: Optimization"
+}
