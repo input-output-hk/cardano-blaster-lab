@@ -72,6 +72,12 @@ def build(open_pr_entries: list[dict] | None = None) -> dict:
                                        script_hash not in cohort_hashes.get(event.get("cohort"), set())
                                        for script_hash in hashes)):
             raise ValueError(f"Frontier event has unverified scripts: {event.get('run_id')}")
+    for cohort, members in cohort_hashes.items():
+        published_events = [event for event in runs.get("events", [])
+                            if event.get("cohort") == cohort and event.get("verified_run") is not False]
+        if published_events and len(members.intersection(verified)) > max(
+                event["solved_count"] for event in published_events):
+            raise ValueError(f"Published verified scripts exceed the frontier for {cohort}")
     public_scripts = []
     for record in scripts:
         item = dict(record)
