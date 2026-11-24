@@ -88,6 +88,10 @@ jobs:
         working-directory: benchmark
         run: lake build CardanoLedgerApi
 
+      - name: Verify concrete replay witnesses
+        working-directory: benchmark
+        run: python3 LiveScripts/verify_replays.py --check
+
       - name: Reuse cluster results for full run
         if: github.event_name == 'workflow_dispatch' && inputs.tier == 'full'
         uses: actions/cache/restore@v4

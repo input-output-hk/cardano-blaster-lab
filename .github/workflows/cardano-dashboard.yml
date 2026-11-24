@@ -10,6 +10,7 @@ on:
       - benchmark/LiveScripts/cohorts/**
       - benchmark/LiveScripts/results/latest.json
       - benchmark/LiveScripts/results/active-config.json
+      - benchmark/LiveScripts/results/verified.json
   workflow_dispatch:
 
 permissions:
