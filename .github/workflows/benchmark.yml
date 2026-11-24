@@ -34,6 +34,15 @@ on:
         type: number
         required: true
         default: 0
+      script_hash:
+        description: Optional exact script hash from the selected tier
+        type: string
+        required: false
+      wall_timeout:
+        description: Whole-process seconds per script, including optimization
+        type: number
+        required: true
+        default: 25
 
 permissions:
   contents: read
@@ -88,6 +97,10 @@ jobs:
         working-directory: benchmark
         run: lake build CardanoLedgerApi
 
+      - name: Check datatype parameter regression
+        working-directory: packages/Lean-blaster
+        run: lake build Tests.FixedIssues.Issue454
+
       - name: Verify concrete replay witnesses
         working-directory: benchmark
         run: python3 LiveScripts/verify_replays.py --check
@@ -104,11 +117,16 @@ jobs:
           BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
           BENCH_WORKERS: ${{ github.event_name == 'pull_request' && '1' || inputs.workers }}
           BENCH_LIMIT: ${{ github.event_name == 'pull_request' && '0' || inputs.limit }}
+          BENCH_SCRIPT_HASH: ${{ inputs.script_hash || '' }}
+          BENCH_TIMEOUT: ${{ github.event_name == 'pull_request' && '25' || inputs.wall_timeout }}
         run: |
           args=(--z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
-                --workers "$BENCH_WORKERS" --timeout 25)
+                --workers "$BENCH_WORKERS" --timeout "$BENCH_TIMEOUT")
           if [[ "$BENCH_LIMIT" -gt 0 ]]; then
             args+=(--limit "$BENCH_LIMIT")
+          fi
+          if [[ -n "$BENCH_SCRIPT_HASH" ]]; then
+            args+=(--script "$BENCH_SCRIPT_HASH")
           fi
           python3 scripts/bench.py "$BENCH_TIER" "${args[@]}"
 
