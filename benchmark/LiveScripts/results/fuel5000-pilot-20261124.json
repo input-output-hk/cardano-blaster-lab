@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "source_revision": "5ad10358bb06cb387667f0cee4dd9e5589ea15f3",
+  "baseline_run_id": "20261124T172950852829Z-58d02229",
+  "platform": "Darwin arm64",
+  "z3": "5.4.1",
+  "cek_fuel": 5000,
+  "smt_timeout_seconds": 10,
+  "wall_timeout_seconds": 180,
+  "note": "Local bounded pilot: two mid-size scripts and the two smallest distinct structural clusters per Plutus version. One solver candidate was independently verified at CEK fuel 5000; seven property builds hit the wall limit. Timeout includes dependency build and optimization.",
+  "results": [
+    {
+      "script_hash": "65bac629ba84a1db1548d88e20286344ba05ccfa32f7ac38dc4b1483",
+      "script_type": "plutusV2",
+      "purpose": "reward",
+      "bytes": 265,
+      "status": "timeout",
+      "seconds": 180.04
+    },
+    {
+      "script_hash": "1a6f8561c9f681a668d4116fe3bb4714802955f0a04916b161695915",
+      "script_type": "plutusV3",
+      "purpose": "reward",
+      "bytes": 439,
+      "status": "timeout",
+      "seconds": 180.04
+    },
+    {
+      "script_hash": "3c6321a2b20b4fb2fd59ed48af617a8d08fa119901e4766298e030de",
+      "script_type": "plutusV2",
+      "purpose": "spend",
+      "bytes": 493,
+      "status": "timeout",
+      "seconds": 180.04
+    },
+    {
+      "script_hash": "107843ffc480211dd4b997e76dc51a2de03408b812cbe4d40a64cd21",
+      "script_type": "plutusV3",
+      "purpose": "reward",
+      "bytes": 498,
+      "status": "timeout",
+      "seconds": 180.03
+    },
+    {
+      "script_hash": "e4214b7cce62ac6fbba385d164df48e157eae5863521b4b67ca71d86",
+      "script_type": "plutusV1",
+      "purpose": "mint",
+      "bytes": 779,
+      "status": "timeout",
+      "seconds": 180.02
+    },
+    {
+      "script_hash": "86ae9eebd8b97944a45201e4aec1330a72291af2d071644bba015959",
+      "script_type": "plutusV1",
+      "purpose": "spend",
+      "bytes": 883,
+      "status": "candidate",
+      "seconds": 169.99
+    },
+    {
+      "script_hash": "5d9bb00b6fce163121dac9e3c55b51c8105797d0bc093b66130ec6cd",
+      "script_type": "plutusV2",
+      "purpose": "spend",
+      "bytes": 1577,
+      "status": "timeout",
+      "seconds": 180.04
+    },
+    {
+      "script_hash": "0fb3482637d024566f70fc43ed09a6178a545fa281e55e72082c44fe",
+      "script_type": "plutusV3",
+      "purpose": "spend",
+      "bytes": 1735,
+      "status": "timeout",
+      "seconds": 180.04
+    }
+  ]
+}
