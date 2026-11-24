@@ -100,7 +100,8 @@ def artifact_verified_hashes(repository: str, run_id: int, sha: str) -> set[str]
         if len(verified_files) != 1 or len(summary_files) != 1 or len(evidence_files) != 1:
             raise ValueError(f"Incomplete replay artifact for run {run_id}")
         summary = json.loads(summary_files[0].read_text())
-        if summary.get("head_sha") != sha or not SHA.fullmatch(summary.get("revision", "")):
+        revision = summary.get("revision") if isinstance(summary, dict) else None
+        if not isinstance(revision, str) or summary.get("head_sha") != sha or not SHA.fullmatch(revision):
             raise ValueError(f"Replay summary revision mismatch for run {run_id}")
         records = json.loads(verified_files[0].read_text())
         hashes = verified_hashes(records)
