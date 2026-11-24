@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import shutil
+from hashlib import sha256
 from collections import Counter
 from pathlib import Path
 
@@ -65,7 +66,14 @@ def build() -> dict:
     }
     (DIST / "assets").mkdir(parents=True, exist_ok=True)
     (DIST / "data").mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "index.html", DIST / "index.html")
+    index = (ROOT / "index.html").read_text()
+    for name in ("app.js", "styles.css"):
+        digest = sha256((ROOT / name).read_bytes()).hexdigest()[:12]
+        asset = f"assets/{name}"
+        if index.count(f'"{asset}"') != 1:
+            raise ValueError(f"Expected one reference to {asset}")
+        index = index.replace(f'"{asset}"', f'"{asset}?v={digest}"')
+    (DIST / "index.html").write_text(index)
     shutil.copy2(ROOT / "styles.css", DIST / "assets/styles.css")
     shutil.copy2(ROOT / "app.js", DIST / "assets/app.js")
     (DIST / "data/dashboard.json").write_text(json.dumps(payload, separators=(",", ":")))
