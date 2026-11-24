@@ -33,8 +33,9 @@ reconstruction now produces replayable context values for most candidates.
 The dashboard turns a script green only after an independently built replay
 module checks the concrete Blaster witness against the version-specific ledger
 API context predicate, an `IsData` encode/decode round trip, and CEK success at
-fuel 1000. This checks the Lean ledger API model; it does not claim that an
-actual transaction containing the generated context was submitted on-chain.
+the fuel recorded in its witness provenance. This checks the Lean ledger API
+model; it does not claim that an actual transaction containing the generated
+context was submitted on-chain.
 Timeout or unknown results do not mean a script is unsatisfiable. In the frozen
 seven-day baseline, 239 runs reported `Unexpected Valid` at CEK fuel 1000.
 They are marked unknown because a higher fuel limit may change the outcome;
@@ -45,6 +46,10 @@ The bounded native-model sweep verified 50 of the 52 baseline candidates:
 data checks but evaluate to CEK `Error` at both fuel 1000 and 10000. Their
 `CandidateWitness.lean` files preserve the models for investigation. The V2
 replays also uncovered and fixed a `TxOutRef` `IsData` decoder mismatch.
+One additional 604-byte V2 script reported `Unexpected Valid` at fuel 1000,
+then produced a candidate at fuel 10000. Its concrete replay passed at fuel
+10000, giving 51 verified scripts. This higher-fuel result is recorded as a
+separate frontier event so its changed search bound remains visible.
 
 The first verified V3 witness is
 `S_186e32faa80a26810392fda6d559c7ed4721a65ce1c9d4ef3e1c87b4/ReplayWitness.lean`.
@@ -69,7 +74,7 @@ For a baseline candidate, the bounded materializer runs the same property
 through native Z3, saves the typed model, and invokes the replay verifier:
 
 ```sh
-python3 LiveScripts/materialize_replays.py --hash <script-hash> --wall-timeout 45
+python3 LiveScripts/materialize_replays.py --hash <script-hash> --cek-fuel 10000 --wall-timeout 90
 ```
 
 The verifier generates a temporary Lean module containing the three mandatory
