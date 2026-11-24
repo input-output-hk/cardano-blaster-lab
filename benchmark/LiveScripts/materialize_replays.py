@@ -17,7 +17,7 @@ def typed_model(output: str, binder: str, typ: str) -> str | None:
     if "✅ Expected Falsified" not in output:
         return None
     marker = f"- {binder}: "
-    lines = output.splitlines()
+    lines = output.split("\n")
     for i, line in enumerate(lines):
         if marker not in line or "[raw Z3 value" in line:
             continue

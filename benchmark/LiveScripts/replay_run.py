@@ -22,7 +22,9 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
     active = json.loads((ROOT / "results/active-config.json").read_text())["config"]
     revision = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT.parent, text=True).strip()
-    rows = [json.loads(line) for line in results_file.read_text().splitlines() if line]
+    # JSONL records are separated by LF only. Candidate stdout can contain
+    # U+0085, which str.splitlines() also treats as a separator.
+    rows = [json.loads(line) for line in results_file.read_text().split("\n") if line]
     if any(row.get("config") != active or row.get("revision") != revision for row in rows):
         raise ValueError("Replay input does not match the current source revision and benchmark configuration")
     run_ids = {row.get("run_id") for row in rows}
