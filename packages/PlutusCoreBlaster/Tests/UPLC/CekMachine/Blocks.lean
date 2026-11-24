@@ -4,6 +4,14 @@ import PlutusCore.UPLC.CekMachine.Blocks
 open PlutusCore.UPLC.CekMachine
 open PlutusCore.UPLC.Term (Program)
 
+-- A proof of reflexivity at the wrong result must never admit a rewrite.
+run_cmd Lean.Elab.Command.liftTermElabM do
+  let error := Lean.mkConst ``State.Error
+  let exhausted := Lean.mkConst ``State.BudgetExhausted
+  let refl := Lean.mkApp2 (Lean.mkConst ``Eq.refl [Lean.levelOne]) (Lean.mkConst ``State) exhausted
+  let (result, _) ← (Blocks.checkRewrite error exhausted refl).run default
+  unless result.isNone do throwError "certificate accepted Error = BudgetExhausted"
+
 section Conditional
 
 private def conditional : Program :=
@@ -13,6 +21,11 @@ private def conditional : Program :=
         (.Delay (.Const (.Integer 11)))) (.Delay (.Const (.Integer 13))))))
 
 #index_uplc conditional
+
+set_option warn.sorry false in
+example : ∀ fuel, runSteps default .Error fuel = .Error ∧
+    runSteps default .BudgetExhausted fuel = .BudgetExhausted ∧
+    runSteps default (.Halt (.VCon .Unit)) fuel = .Halt (.VCon .Unit) := by blaster
 
 private def runConditional (b : Bool) (fuel : Nat) : State :=
   cekExecuteProgram conditional [.Const (.Bool b)] fuel
