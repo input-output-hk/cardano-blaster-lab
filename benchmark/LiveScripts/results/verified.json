@@ -1,4 +1,16 @@
 {
+  "00487b0ee879c1da2a8a3563d11b0eaadf0400960c4233ab3d2c81c1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_00487b0ee879c1da2a8a3563d11b0eaadf0400960c4233ab3d2c81c1/ReplayWitness.json",
+    "replay": "LiveScripts/S_00487b0ee879c1da2a8a3563d11b0eaadf0400960c4233ab3d2c81c1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b12dc834bffd93b89c4eab5993371526536402930550b033e8cda608c2592a7d"
+  },
   "01dbf30889e419e67f38dde1cc0c265da01d83c42f868128a87376b6": {
     "checks": [
       "valid_context",
@@ -23,6 +35,150 @@
     "status": "verified",
     "witness_sha256": "2ef58f57d377aa44e5cd798ff19a2ce10406530d4157b2e70a249df517675c89"
   },
+  "021a32ee5621d4e94df1d9bef6baa284a7cc75ba51bb5fb804c6c471": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_021a32ee5621d4e94df1d9bef6baa284a7cc75ba51bb5fb804c6c471/ReplayWitness.json",
+    "replay": "LiveScripts/S_021a32ee5621d4e94df1d9bef6baa284a7cc75ba51bb5fb804c6c471/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5c2dbad7724d23b8e99a53b9d189c12870476432fd107286f52b67ea1c5323a2"
+  },
+  "02c6733e526d70c563ff905496e93f8fcd9d6147beb4695729bb9589": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_02c6733e526d70c563ff905496e93f8fcd9d6147beb4695729bb9589/ReplayWitness.json",
+    "replay": "LiveScripts/S_02c6733e526d70c563ff905496e93f8fcd9d6147beb4695729bb9589/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d9d3ece25450c5f3821600c7d3ddcbee8731a11d7efee9057655303a020cc0ad"
+  },
+  "047564febcb5c87047c8de607139e6ed372386913d87082e4774123e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_047564febcb5c87047c8de607139e6ed372386913d87082e4774123e/ReplayWitness.json",
+    "replay": "LiveScripts/S_047564febcb5c87047c8de607139e6ed372386913d87082e4774123e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e2f670e24ffb00e7b0a79ac80fdc43f40b6e4a4292871943f4956ab72666bd75"
+  },
+  "048fdc2d91108f6806c241d778775fe28885c2c6b066a8caa106b022": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_048fdc2d91108f6806c241d778775fe28885c2c6b066a8caa106b022/ReplayWitness.json",
+    "replay": "LiveScripts/S_048fdc2d91108f6806c241d778775fe28885c2c6b066a8caa106b022/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c8d9279b38b72bcf7e71bf9ac825e003069ffb60fd6130c1f8910333b475712e"
+  },
+  "0531bdfcb95f5563173d6c629cf0991d2c43ccba16caec3dff75e16b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0531bdfcb95f5563173d6c629cf0991d2c43ccba16caec3dff75e16b/ReplayWitness.json",
+    "replay": "LiveScripts/S_0531bdfcb95f5563173d6c629cf0991d2c43ccba16caec3dff75e16b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7384613d7a49efd76b9c7f4e7f7472dbc7e15c390ec4d6cfacad32954915b25a"
+  },
+  "05a1efe8520e7bcc27e233db5f5b504b39a14e897b56420f33f8f13f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_05a1efe8520e7bcc27e233db5f5b504b39a14e897b56420f33f8f13f/ReplayWitness.json",
+    "replay": "LiveScripts/S_05a1efe8520e7bcc27e233db5f5b504b39a14e897b56420f33f8f13f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "89e67cfbc711c001a192ed9e7f50e7d031fbbb27677d8d243654c58ccd32376a"
+  },
+  "05d231799bdec5acab13e670b4107d81a5725814c2de7900d422fdb6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_05d231799bdec5acab13e670b4107d81a5725814c2de7900d422fdb6/ReplayWitness.json",
+    "replay": "LiveScripts/S_05d231799bdec5acab13e670b4107d81a5725814c2de7900d422fdb6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9c593636f342ebf906aefb6be4c2ed75603d1eeaab41e38505035c9ead7d20bd"
+  },
+  "07de5eb4fdb9f6bd23c7bc3c588306f03d46c8c59ee980223132c87e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_07de5eb4fdb9f6bd23c7bc3c588306f03d46c8c59ee980223132c87e/ReplayWitness.json",
+    "replay": "LiveScripts/S_07de5eb4fdb9f6bd23c7bc3c588306f03d46c8c59ee980223132c87e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "34612baa50fb36e1124d2aaa547ccb6f0d39bf38d83a0c1b4139bd5aac0dfe9b"
+  },
+  "07eb2fb09d9dd6603870ce6f84c8f8506249152173ddf0c77f1f07ec": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_07eb2fb09d9dd6603870ce6f84c8f8506249152173ddf0c77f1f07ec/ReplayWitness.json",
+    "replay": "LiveScripts/S_07eb2fb09d9dd6603870ce6f84c8f8506249152173ddf0c77f1f07ec/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3832d543ea2fd377544bded7f3e48700388e3708646b12cee3130ed1107f234f"
+  },
+  "07f9840cc1855457af29510a4a05d0424d75bc0a4e67cb02b8b55269": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_07f9840cc1855457af29510a4a05d0424d75bc0a4e67cb02b8b55269/ReplayWitness.json",
+    "replay": "LiveScripts/S_07f9840cc1855457af29510a4a05d0424d75bc0a4e67cb02b8b55269/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9170860ff04f9ecba9a18b5ca78ca3addb888433c0b1dfdf3060e1ad65dfb235"
+  },
+  "0860b91482c5eed963f517c0a39f4f09621f05c59d5682fdf1094ed0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0860b91482c5eed963f517c0a39f4f09621f05c59d5682fdf1094ed0/ReplayWitness.json",
+    "replay": "LiveScripts/S_0860b91482c5eed963f517c0a39f4f09621f05c59d5682fdf1094ed0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "429397f6654d5b71c058403b7943e031c641007ba1f4b75009ffe12ab11589b3"
+  },
+  "09256a3613d5ed5ce866351e84dcd3d67b21ba9cde9cf635599fbbe8": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_09256a3613d5ed5ce866351e84dcd3d67b21ba9cde9cf635599fbbe8/ReplayWitness.json",
+    "replay": "LiveScripts/S_09256a3613d5ed5ce866351e84dcd3d67b21ba9cde9cf635599fbbe8/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a7dd2f1a3af61765a4b412745dad752832609c2d1bbc4824fb9411a1e722f3c5"
+  },
   "0928984ed4ce5b6cd17094544a5b9e33f7e4c0169948624dd4fb29f2": {
     "checks": [
       "valid_context",
@@ -34,6 +190,30 @@
     "replay": "LiveScripts/S_0928984ed4ce5b6cd17094544a5b9e33f7e4c0169948624dd4fb29f2/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "5f204e8c280b01c946a7587095417083671244ce7509de906f4a261ca63e622a"
+  },
+  "0cd585246a46ce0229669b55461079227a4ccbe5f3b8d86e27b31f09": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0cd585246a46ce0229669b55461079227a4ccbe5f3b8d86e27b31f09/ReplayWitness.json",
+    "replay": "LiveScripts/S_0cd585246a46ce0229669b55461079227a4ccbe5f3b8d86e27b31f09/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "84f438d4a22b95ab7ca6491143962c0aec8e6601687d20c40fef7002ed4eeaf4"
+  },
+  "0ce22b44f9a5ad6d79e9aadaf0983ef986879e569d94d09a4d2f5b85": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0ce22b44f9a5ad6d79e9aadaf0983ef986879e569d94d09a4d2f5b85/ReplayWitness.json",
+    "replay": "LiveScripts/S_0ce22b44f9a5ad6d79e9aadaf0983ef986879e569d94d09a4d2f5b85/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "db3e14e24a6e7b26b7e9dba80ce912641a78e7fa194439c4f169c2b40d83279a"
   },
   "0d9c11fec4d50a141e3c029ed984999d4fd09e2c7dc17159ae3f5ce2": {
     "checks": [
@@ -47,6 +227,18 @@
     "status": "verified",
     "witness_sha256": "d5d26d6824eb957287690368c59e4f53b5de4be3f24f0fbac0be8c47258f3b86"
   },
+  "0de7ecabf1ee6e44318130d606891dd824d087528f81e2b31358d9b1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0de7ecabf1ee6e44318130d606891dd824d087528f81e2b31358d9b1/ReplayWitness.json",
+    "replay": "LiveScripts/S_0de7ecabf1ee6e44318130d606891dd824d087528f81e2b31358d9b1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "59eb34b322f4e5ffc743fea3c9d446460c27c861c151f6b247a0713829fa2361"
+  },
   "0e45793d2233f3efb19ee4c5fafac7eedc3e7f11639300b52cd1402f": {
     "checks": [
       "valid_context",
@@ -59,6 +251,42 @@
     "status": "verified",
     "witness_sha256": "4dcb031007a871e53614def0732902faffe3055ee5db44a0f5679e9c2073155e"
   },
+  "0efa4d7873891512ce1a0e9907ed2b036edaba257906316d34614e2c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0efa4d7873891512ce1a0e9907ed2b036edaba257906316d34614e2c/ReplayWitness.json",
+    "replay": "LiveScripts/S_0efa4d7873891512ce1a0e9907ed2b036edaba257906316d34614e2c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "392504bd00aafced8e125f4f2543775b547d9b224293bf7bf8acac2155e3726a"
+  },
+  "0fe20512f155e79766bd5ab74151a48c97fadc13166853c164f58285": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0fe20512f155e79766bd5ab74151a48c97fadc13166853c164f58285/ReplayWitness.json",
+    "replay": "LiveScripts/S_0fe20512f155e79766bd5ab74151a48c97fadc13166853c164f58285/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "05ac52c7f777642d5c562607a1c81cdfb75b593e45a56a97f40454027a17f897"
+  },
+  "0fec6084b9329a16410e0e679d689c30e77051cd3197edae4557e27e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_0fec6084b9329a16410e0e679d689c30e77051cd3197edae4557e27e/ReplayWitness.json",
+    "replay": "LiveScripts/S_0fec6084b9329a16410e0e679d689c30e77051cd3197edae4557e27e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a7fbe61afd6e9c1d54012756258e0388008a10f1426c696db91afc8dfb6363c2"
+  },
   "14eabcf7743b6d322955af1e176d3a2df0e466f98f9dd798db3f7327": {
     "checks": [
       "valid_context",
@@ -70,6 +298,90 @@
     "replay": "LiveScripts/S_14eabcf7743b6d322955af1e176d3a2df0e466f98f9dd798db3f7327/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "41fe2aa16a02f9b4fa436c1562eea35d4e3b4a10b8404ad6036aea64b1a9ffdc"
+  },
+  "15217aa12f7d8a9714f38c49c813707bb91c20e3b68c3b9df3d54ee0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_15217aa12f7d8a9714f38c49c813707bb91c20e3b68c3b9df3d54ee0/ReplayWitness.json",
+    "replay": "LiveScripts/S_15217aa12f7d8a9714f38c49c813707bb91c20e3b68c3b9df3d54ee0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "abec34716f12f9c844161f8a123828f0add66c15812891c96e9b1191d325f67a"
+  },
+  "1579f32be90cf3825e7194568240dae5e0b87c7c40108ed7cdfe89f8": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_1579f32be90cf3825e7194568240dae5e0b87c7c40108ed7cdfe89f8/ReplayWitness.json",
+    "replay": "LiveScripts/S_1579f32be90cf3825e7194568240dae5e0b87c7c40108ed7cdfe89f8/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e07e908dbf5092d925b430c115a695de8a3548b6d3b37e2e3011df9dbfd1cdcf"
+  },
+  "159f756241a939d6787c471f14202ed86ea924bf505480b8f07869f0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_159f756241a939d6787c471f14202ed86ea924bf505480b8f07869f0/ReplayWitness.json",
+    "replay": "LiveScripts/S_159f756241a939d6787c471f14202ed86ea924bf505480b8f07869f0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "eedec57aa593bb6691eeb59a50d4164a4480d0f66911a46317efd0a9d6805098"
+  },
+  "15b7e93e1ca5d01e83867823432eb686b5632527b286fc301b0c7f6d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_15b7e93e1ca5d01e83867823432eb686b5632527b286fc301b0c7f6d/ReplayWitness.json",
+    "replay": "LiveScripts/S_15b7e93e1ca5d01e83867823432eb686b5632527b286fc301b0c7f6d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "bc9ed65ba186a4e82854cc298e3e7920322db24a0165937eec505d33686d92d3"
+  },
+  "15c51263493c61617973eb73f7a43d787f0d5d8cb4b0fea263a0ccc6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_15c51263493c61617973eb73f7a43d787f0d5d8cb4b0fea263a0ccc6/ReplayWitness.json",
+    "replay": "LiveScripts/S_15c51263493c61617973eb73f7a43d787f0d5d8cb4b0fea263a0ccc6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d8e822c322c01d770737ba6184546f163b05993fc0be0057d719b44c73eae864"
+  },
+  "177a07459543f847b048dc8f0961390fab656129a4f45ff60ffcf310": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_177a07459543f847b048dc8f0961390fab656129a4f45ff60ffcf310/ReplayWitness.json",
+    "replay": "LiveScripts/S_177a07459543f847b048dc8f0961390fab656129a4f45ff60ffcf310/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c980a56e6e0d6003eb93ec6104f1c57ff3aa1bd6ddf7e1cb2ccc979720bd855d"
+  },
+  "17d0515468d89d073bffcae84e20ebb8417e3c9faad22dc8bdf4e087": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_17d0515468d89d073bffcae84e20ebb8417e3c9faad22dc8bdf4e087/ReplayWitness.json",
+    "replay": "LiveScripts/S_17d0515468d89d073bffcae84e20ebb8417e3c9faad22dc8bdf4e087/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a4d08a0801ad7cb34d0e451271639ce9b2853287f8a4bdd74aaa6274054af667"
   },
   "186e32faa80a26810392fda6d559c7ed4721a65ce1c9d4ef3e1c87b4": {
     "checks": [
@@ -95,6 +407,18 @@
     "status": "verified",
     "witness_sha256": "fe9e8bbb606e94fb1230e43e50cf676c1ff1563a46c55bb5e1faa0a1c70ce3c4"
   },
+  "19d5f4e5267858da0bdb3542cc7f8fbe1258df88eb25de967725aa59": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_19d5f4e5267858da0bdb3542cc7f8fbe1258df88eb25de967725aa59/ReplayWitness.json",
+    "replay": "LiveScripts/S_19d5f4e5267858da0bdb3542cc7f8fbe1258df88eb25de967725aa59/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "06f6ceef133d2208b01d59393cb6c5f3aef4bbd368d652abce9a0bf281e9f0e1"
+  },
   "19f41b815222bac9cc47c042f35cb1c358b66136930bf3381504eb8b": {
     "checks": [
       "valid_context",
@@ -106,6 +430,66 @@
     "replay": "LiveScripts/S_19f41b815222bac9cc47c042f35cb1c358b66136930bf3381504eb8b/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "ffe7e5150937288aca6fc3e977fffb9bd12a372b95d1be6e0e46734f2da38eac"
+  },
+  "1bcd2ac824b02aac21c4a018138aca4884c99fb3b9bca64d6240af2e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_1bcd2ac824b02aac21c4a018138aca4884c99fb3b9bca64d6240af2e/ReplayWitness.json",
+    "replay": "LiveScripts/S_1bcd2ac824b02aac21c4a018138aca4884c99fb3b9bca64d6240af2e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4bdb5cfbc127e411e8f97177c364516561155a8661dbf7d364218c4a2a23ae3c"
+  },
+  "1c9bd7ef0a6aecd0cc603d9ea0de4aa73f27573a4b875838bce894ec": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_1c9bd7ef0a6aecd0cc603d9ea0de4aa73f27573a4b875838bce894ec/ReplayWitness.json",
+    "replay": "LiveScripts/S_1c9bd7ef0a6aecd0cc603d9ea0de4aa73f27573a4b875838bce894ec/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d8e121c17a28360c923f8d83e26bd852e1f135e1ec1217768031851c4368c2f5"
+  },
+  "1d17b3ae844c6dd998b130893dd2e7691d8f394caa254dd0f5d1ee83": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_1d17b3ae844c6dd998b130893dd2e7691d8f394caa254dd0f5d1ee83/ReplayWitness.json",
+    "replay": "LiveScripts/S_1d17b3ae844c6dd998b130893dd2e7691d8f394caa254dd0f5d1ee83/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "18ac37adf48ae3e4525b7426252fba279fa6b07cfbbf6b74a0f282ee4a9e665e"
+  },
+  "1e60ec9e8b60af39c53a33b8548f0108861f419612f4f078e6964ccb": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_1e60ec9e8b60af39c53a33b8548f0108861f419612f4f078e6964ccb/ReplayWitness.json",
+    "replay": "LiveScripts/S_1e60ec9e8b60af39c53a33b8548f0108861f419612f4f078e6964ccb/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "705c44692d07bece06024b63974155039e9046bb6e28632a51b26ff180b88d14"
+  },
+  "1fbe434ff81bfb8e95fd867e580b7d30c10ffd4b0367471fefd4b639": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_1fbe434ff81bfb8e95fd867e580b7d30c10ffd4b0367471fefd4b639/ReplayWitness.json",
+    "replay": "LiveScripts/S_1fbe434ff81bfb8e95fd867e580b7d30c10ffd4b0367471fefd4b639/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "112766ed251723ada1fb4e9212c93e2b02467af8cc05b2f909902cc795124e85"
   },
   "20413a8a0f57fd67ce5e8a45ce9d8df66bd66db9ceedbfd213ef3fd0": {
     "checks": [
@@ -119,6 +503,78 @@
     "status": "verified",
     "witness_sha256": "734dd6d2c92a45053647cdd70d207ed5e3d823d14c3ba495268db502742e6aa9"
   },
+  "221170b7089f53a4aed8cb4ecab93e76e75afe1d8719d805e8696290": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_221170b7089f53a4aed8cb4ecab93e76e75afe1d8719d805e8696290/ReplayWitness.json",
+    "replay": "LiveScripts/S_221170b7089f53a4aed8cb4ecab93e76e75afe1d8719d805e8696290/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4d30348cba80b35f2055feafab3890bdf74b1a1efa767941ca516f437fa71892"
+  },
+  "221ad845313837904c15a0f0107dd0cbe8bdf4a41701866dabe996e4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_221ad845313837904c15a0f0107dd0cbe8bdf4a41701866dabe996e4/ReplayWitness.json",
+    "replay": "LiveScripts/S_221ad845313837904c15a0f0107dd0cbe8bdf4a41701866dabe996e4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2629a17baa52e1b1b85968eaf53cb2249bcde9905ed7e061465b1d689371c089"
+  },
+  "233d38f89af8b4d439cedddf071b1b2458b68a1ec01e11cc49091e4e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_233d38f89af8b4d439cedddf071b1b2458b68a1ec01e11cc49091e4e/ReplayWitness.json",
+    "replay": "LiveScripts/S_233d38f89af8b4d439cedddf071b1b2458b68a1ec01e11cc49091e4e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "1eb399461236dbcfd27bfa37a4f04ba7fd38e23ae50c870925027917723aaf38"
+  },
+  "23680ea6701b56f2c12ae79d8af94fd36f509b7b007029c7ce114840": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_23680ea6701b56f2c12ae79d8af94fd36f509b7b007029c7ce114840/ReplayWitness.json",
+    "replay": "LiveScripts/S_23680ea6701b56f2c12ae79d8af94fd36f509b7b007029c7ce114840/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "bf337bedc07cd32e7e4b6fca45e3901720f139b34724d9c826b304df1ddfe777"
+  },
+  "23b58b985141fe5ffd2eb93c5ee4fa0e11d46a934c2837c0230071fd": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_23b58b985141fe5ffd2eb93c5ee4fa0e11d46a934c2837c0230071fd/ReplayWitness.json",
+    "replay": "LiveScripts/S_23b58b985141fe5ffd2eb93c5ee4fa0e11d46a934c2837c0230071fd/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "06f3c3fb144706b358a5d3540426f844c27f6e086a73285a0853ba9913fcdf50"
+  },
+  "23c870a96ef1343a38c61a0d566c9d39d130d53eaa1517ca92f60eb4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_23c870a96ef1343a38c61a0d566c9d39d130d53eaa1517ca92f60eb4/ReplayWitness.json",
+    "replay": "LiveScripts/S_23c870a96ef1343a38c61a0d566c9d39d130d53eaa1517ca92f60eb4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "838aa49151910c815a96f00291c5276e3ba33cd85177ce2ba8c2c268b4a83e4c"
+  },
   "23fba2cd85d61c0111b97564360661d740efbecd2aec773195e59d53": {
     "checks": [
       "valid_context",
@@ -130,6 +586,42 @@
     "replay": "LiveScripts/S_23fba2cd85d61c0111b97564360661d740efbecd2aec773195e59d53/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "1b18e5c3b6095dde1e2182c8c6bd732d9cd9d7499ba1fc08b91bf45da41a7056"
+  },
+  "2516bd5a957c6caf068bd5fd67bf020dfed938fbb50242dff2529c49": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2516bd5a957c6caf068bd5fd67bf020dfed938fbb50242dff2529c49/ReplayWitness.json",
+    "replay": "LiveScripts/S_2516bd5a957c6caf068bd5fd67bf020dfed938fbb50242dff2529c49/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b9d792741e29724915724b6480e0b431d99eb76d14fd2d03de068cff0dbf9285"
+  },
+  "25bbd5f000647e0ebd8bae4d75e1195a824df92187733036ff0803d0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_25bbd5f000647e0ebd8bae4d75e1195a824df92187733036ff0803d0/ReplayWitness.json",
+    "replay": "LiveScripts/S_25bbd5f000647e0ebd8bae4d75e1195a824df92187733036ff0803d0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9ba6451b60fa355a49b3c44af193eca2377b9fbc845d728e151770c259e7e1a7"
+  },
+  "2628bcd5fb3b55c1661cf0b6bb9331a0bb59e31ce3c903b41ae45e75": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2628bcd5fb3b55c1661cf0b6bb9331a0bb59e31ce3c903b41ae45e75/ReplayWitness.json",
+    "replay": "LiveScripts/S_2628bcd5fb3b55c1661cf0b6bb9331a0bb59e31ce3c903b41ae45e75/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2054a708c8792e0d7976f9f570f643445485c6da0f8c80499ac3ec75638f7699"
   },
   "26370b459e5eafe6e179c94a39bb1c278657de5c1875fb9c5d1fa0ba": {
     "checks": [
@@ -143,6 +635,114 @@
     "status": "verified",
     "witness_sha256": "af0dab180bd3d5c5d2063953cb1d2521a9039c7ac5f7de651e48ed63ea73c2a3"
   },
+  "287d89b5fe9b0a39627ce19ae0426de1a229b8692b3fdd7d9b4daa62": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_287d89b5fe9b0a39627ce19ae0426de1a229b8692b3fdd7d9b4daa62/ReplayWitness.json",
+    "replay": "LiveScripts/S_287d89b5fe9b0a39627ce19ae0426de1a229b8692b3fdd7d9b4daa62/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7411c0f0ff8c808017716019dccefeb91e3b4523554df3a01f09c7e15fcd068f"
+  },
+  "2a39f2583ae4d0a5125ecdc3ddbf1d646962b0939174f1bf1f8ef0bd": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2a39f2583ae4d0a5125ecdc3ddbf1d646962b0939174f1bf1f8ef0bd/ReplayWitness.json",
+    "replay": "LiveScripts/S_2a39f2583ae4d0a5125ecdc3ddbf1d646962b0939174f1bf1f8ef0bd/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "52c87994974bedfeac7249199715768783b8b0635638d6f199755ea3af10e316"
+  },
+  "2a9677968ed432716017c6c00b2800682449689ca5fffee802840af4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2a9677968ed432716017c6c00b2800682449689ca5fffee802840af4/ReplayWitness.json",
+    "replay": "LiveScripts/S_2a9677968ed432716017c6c00b2800682449689ca5fffee802840af4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "accfaeaf694eb52805d51afcb13c07135a0309056d044fcf4b27d346e873e6ba"
+  },
+  "2b26ee29062c63ef9cfb303e25444ae8fb7ce4a9bedc8df44f91bd3c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2b26ee29062c63ef9cfb303e25444ae8fb7ce4a9bedc8df44f91bd3c/ReplayWitness.json",
+    "replay": "LiveScripts/S_2b26ee29062c63ef9cfb303e25444ae8fb7ce4a9bedc8df44f91bd3c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b5f2b36bd38a47cc97d86a77310a74c902be701b98ba36cbbca78bd3de8f014f"
+  },
+  "2b48af6fd01c49d05ddee3badaba999c4cf8c41ca69c71928a3a6986": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2b48af6fd01c49d05ddee3badaba999c4cf8c41ca69c71928a3a6986/ReplayWitness.json",
+    "replay": "LiveScripts/S_2b48af6fd01c49d05ddee3badaba999c4cf8c41ca69c71928a3a6986/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "519fc1bf8b1e3fce22cd9ab8d060c97c0b050c73a9ab0e402500c5612816ddfe"
+  },
+  "2c34ccb4e64d1fd2ee0d5dd709a973b2bd2789e6df004fdd39e917a0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2c34ccb4e64d1fd2ee0d5dd709a973b2bd2789e6df004fdd39e917a0/ReplayWitness.json",
+    "replay": "LiveScripts/S_2c34ccb4e64d1fd2ee0d5dd709a973b2bd2789e6df004fdd39e917a0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "357eb69748f3ebd37df42adf868e2898ce0c2409599f2b8ef164738a2a53a189"
+  },
+  "2d066c461f37f3a41d2b2e57df0bff04cdf1ac799d06cb103f685ff2": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2d066c461f37f3a41d2b2e57df0bff04cdf1ac799d06cb103f685ff2/ReplayWitness.json",
+    "replay": "LiveScripts/S_2d066c461f37f3a41d2b2e57df0bff04cdf1ac799d06cb103f685ff2/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8f67e6dce5f59025bc3e7ba91a7d0690b6be09af36b506b409ea8e1fa97d2a27"
+  },
+  "2dbe4dd74f6c1f00d8182833e8e5114d2013ed0e9ab1db011aa56d70": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2dbe4dd74f6c1f00d8182833e8e5114d2013ed0e9ab1db011aa56d70/ReplayWitness.json",
+    "replay": "LiveScripts/S_2dbe4dd74f6c1f00d8182833e8e5114d2013ed0e9ab1db011aa56d70/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "604aee0f858ba64714dd10bcc81b87b186a59614e5b148c75b90125119a57c2b"
+  },
+  "2e6997532dbb0939eaa1ff624c0797c865dc52f083bd1bc4a75e8a1d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_2e6997532dbb0939eaa1ff624c0797c865dc52f083bd1bc4a75e8a1d/ReplayWitness.json",
+    "replay": "LiveScripts/S_2e6997532dbb0939eaa1ff624c0797c865dc52f083bd1bc4a75e8a1d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3ae229587e42514ab9efbbd15dc8cbc094e9b1f9e3ce2a37aa6a7f198d2058aa"
+  },
   "303cc9b1fb57b69530de8f0995e2f23f4c41018cd4168ab53e6bf118": {
     "checks": [
       "valid_context",
@@ -154,6 +754,30 @@
     "replay": "LiveScripts/S_303cc9b1fb57b69530de8f0995e2f23f4c41018cd4168ab53e6bf118/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "268644e10f4e8aa37b291d2309caf3a168d5654d3ad57e5e4b420459db00c52b"
+  },
+  "316a4969e413625f7b1949ebb2d3364cd068c8a4b3f7fbca9e2ff4c2": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_316a4969e413625f7b1949ebb2d3364cd068c8a4b3f7fbca9e2ff4c2/ReplayWitness.json",
+    "replay": "LiveScripts/S_316a4969e413625f7b1949ebb2d3364cd068c8a4b3f7fbca9e2ff4c2/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e94545de5a6ae00dae937b706c58ec960e8291437c96e19ad34ed52d192f99d9"
+  },
+  "31d2328d6ddc3d5dfc48c5b827aa922506a80e7db40f25ef807d0fd5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_31d2328d6ddc3d5dfc48c5b827aa922506a80e7db40f25ef807d0fd5/ReplayWitness.json",
+    "replay": "LiveScripts/S_31d2328d6ddc3d5dfc48c5b827aa922506a80e7db40f25ef807d0fd5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d2bb9d0e424125e265a1754046063e581ad1d7f1c36ee920ad999ac1cc935b1b"
   },
   "326ad595b0991aa21b1c18ef5d3c22b7799ee4cf966797064df5f006": {
     "checks": [
@@ -167,6 +791,162 @@
     "status": "verified",
     "witness_sha256": "7cf4d93832562b861e4467cb9058686d644971451f2c2ea0b06406b772be167d"
   },
+  "3429463efbc284ce2e409da6a666c209c0bfa5b06ac13b2a7344da18": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_3429463efbc284ce2e409da6a666c209c0bfa5b06ac13b2a7344da18/ReplayWitness.json",
+    "replay": "LiveScripts/S_3429463efbc284ce2e409da6a666c209c0bfa5b06ac13b2a7344da18/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "22c87a088aa13ee427a02b05b62164eca7e28bd7e746f9bb20c9771c98b0f081"
+  },
+  "3481b949ae6001459251dd1499bb4b679130c7c6b79a102b96be9f98": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_3481b949ae6001459251dd1499bb4b679130c7c6b79a102b96be9f98/ReplayWitness.json",
+    "replay": "LiveScripts/S_3481b949ae6001459251dd1499bb4b679130c7c6b79a102b96be9f98/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d4e11dfb4397832fe502fa67228d689aba1d187c1742e0b96ca549102deb9c9e"
+  },
+  "37099c9d74bb4f8da56e79ae9eaa8775fb53eab9fc386d816612d1f5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_37099c9d74bb4f8da56e79ae9eaa8775fb53eab9fc386d816612d1f5/ReplayWitness.json",
+    "replay": "LiveScripts/S_37099c9d74bb4f8da56e79ae9eaa8775fb53eab9fc386d816612d1f5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5988e4a1bac20ea187fce1d0cfb86add980f9d61fd99bae1a0ca18514aead779"
+  },
+  "37ec24e17e453a54c428b9312a5b0791a7232456835da5aeb5c4ed8a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_37ec24e17e453a54c428b9312a5b0791a7232456835da5aeb5c4ed8a/ReplayWitness.json",
+    "replay": "LiveScripts/S_37ec24e17e453a54c428b9312a5b0791a7232456835da5aeb5c4ed8a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "bd4f7336003c4583cd4a2358a4a722332d15c54af645cbac702e048a16ef5403"
+  },
+  "381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36/ReplayWitness.json",
+    "replay": "LiveScripts/S_381cd9b620ce9d7c73dd45cfe207971cc79df79251003116094f6b36/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f61ef94ebb088f55a745a820b072184c8261bc59d62047323a51d450e9c15989"
+  },
+  "386fe8c7c8ecd2f6729f2ce0f5b59cd56f9f3ff2729ffd6451124d17": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_386fe8c7c8ecd2f6729f2ce0f5b59cd56f9f3ff2729ffd6451124d17/ReplayWitness.json",
+    "replay": "LiveScripts/S_386fe8c7c8ecd2f6729f2ce0f5b59cd56f9f3ff2729ffd6451124d17/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d12434a0102b8fe24cb27a89f2dcac235881644677471d1634a45c4c95c95436"
+  },
+  "3879d39071d8499040e709c6cc783b3ea452c7a91761f2c1bf37e2af": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_3879d39071d8499040e709c6cc783b3ea452c7a91761f2c1bf37e2af/ReplayWitness.json",
+    "replay": "LiveScripts/S_3879d39071d8499040e709c6cc783b3ea452c7a91761f2c1bf37e2af/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "db0b286c4a8f630e0e76b315b4aa688a4991e7561daf6c8e7723e0c92e97bd99"
+  },
+  "390d27f97868840864922fb0b5657ae4982b5be8bf03bf9cec81125e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_390d27f97868840864922fb0b5657ae4982b5be8bf03bf9cec81125e/ReplayWitness.json",
+    "replay": "LiveScripts/S_390d27f97868840864922fb0b5657ae4982b5be8bf03bf9cec81125e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ea2c94162335c533825bd7c4a53069f07d337af55a105f189bceba65f162f82a"
+  },
+  "3a4b282e47c2e172960362c0dff397b189c9a4ca28f64cfac80015d9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_3a4b282e47c2e172960362c0dff397b189c9a4ca28f64cfac80015d9/ReplayWitness.json",
+    "replay": "LiveScripts/S_3a4b282e47c2e172960362c0dff397b189c9a4ca28f64cfac80015d9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "262b440e388626414c65ab92f0f9674c623d57949fdc8885c76e1956bc7b5316"
+  },
+  "3e6571393cf503a01558d3c82813ffebaf29249675aa448cdb5b6833": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_3e6571393cf503a01558d3c82813ffebaf29249675aa448cdb5b6833/ReplayWitness.json",
+    "replay": "LiveScripts/S_3e6571393cf503a01558d3c82813ffebaf29249675aa448cdb5b6833/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "46066a4ab885a528ef809dabaadce319f149a434328f65d6cdea4458f13c1b1d"
+  },
+  "3f97950a160eb4685c0678e981113274d8788451b74b57084ef0ce4f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_3f97950a160eb4685c0678e981113274d8788451b74b57084ef0ce4f/ReplayWitness.json",
+    "replay": "LiveScripts/S_3f97950a160eb4685c0678e981113274d8788451b74b57084ef0ce4f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "43663ca8cfc63340a7a375c6ddf3779491047a7e9f6a3ccd301544f793515767"
+  },
+  "41d03b6245bfde772ab5a5e19362db621e4280a3d73068958e5a1cce": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_41d03b6245bfde772ab5a5e19362db621e4280a3d73068958e5a1cce/ReplayWitness.json",
+    "replay": "LiveScripts/S_41d03b6245bfde772ab5a5e19362db621e4280a3d73068958e5a1cce/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b2f375fd494e5ea7e986f7108fef3f531484b870468a63bcf874e69e0eeb1b2f"
+  },
+  "4254851a1015377e56ddd7ab530ddbacca5cdfeaecc75190e4a74d0c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4254851a1015377e56ddd7ab530ddbacca5cdfeaecc75190e4a74d0c/ReplayWitness.json",
+    "replay": "LiveScripts/S_4254851a1015377e56ddd7ab530ddbacca5cdfeaecc75190e4a74d0c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "75f47f5de591fd0911908f91c4235b427047a4ee5d300b64866b1d9a0293d3a1"
+  },
   "426a16c1db019b1493d3b061d84285da68f0bb3ce851390a6c53f441": {
     "checks": [
       "valid_context",
@@ -178,6 +958,18 @@
     "replay": "LiveScripts/S_426a16c1db019b1493d3b061d84285da68f0bb3ce851390a6c53f441/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "ba1991e64a660d5f2edf56c67ef714284563e5fd5ea55cd94e9eba2766d27de2"
+  },
+  "42b679e0128125f244c9b7da79ccfa5b40d337453e61285f018368b9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_42b679e0128125f244c9b7da79ccfa5b40d337453e61285f018368b9/ReplayWitness.json",
+    "replay": "LiveScripts/S_42b679e0128125f244c9b7da79ccfa5b40d337453e61285f018368b9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9d02760be98c0745f7a7d50ab67ad4bbc7c6633f6d6078d75dcb550593402afd"
   },
   "439e3795160cffc7174df0d8c0edf136ea4938673606c2ea12d799a6": {
     "checks": [
@@ -191,6 +983,66 @@
     "status": "verified",
     "witness_sha256": "99b24a76e882207df1dcc4d4f6c3d17b00befe19b60debb8dae33af14902d375"
   },
+  "4612bbafbe69786e08904c09285ea5f7623a1c17dbf4c4d3b4286895": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4612bbafbe69786e08904c09285ea5f7623a1c17dbf4c4d3b4286895/ReplayWitness.json",
+    "replay": "LiveScripts/S_4612bbafbe69786e08904c09285ea5f7623a1c17dbf4c4d3b4286895/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "0c7ee89ef04e3fa12c29a5ff6417c6d24be4ea3883250568c007e0922ac9faac"
+  },
+  "46fd967acb48cd8d5a77cceae4133dc13f021eb270c01c7412201988": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_46fd967acb48cd8d5a77cceae4133dc13f021eb270c01c7412201988/ReplayWitness.json",
+    "replay": "LiveScripts/S_46fd967acb48cd8d5a77cceae4133dc13f021eb270c01c7412201988/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6204b83c9e386761017a598ac74c0f7d3f35bc1f796cf25e53ef1c7bae3f25c8"
+  },
+  "497a8b0085517f1c9065cf3006af4c266454b39c6fa32a9d116c75ee": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_497a8b0085517f1c9065cf3006af4c266454b39c6fa32a9d116c75ee/ReplayWitness.json",
+    "replay": "LiveScripts/S_497a8b0085517f1c9065cf3006af4c266454b39c6fa32a9d116c75ee/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "015722f2a9f61416bb5f1783d360f7ab8118e77e285073e0fac940bcd74cdc8e"
+  },
+  "4a688ab65f839782067d1280c545476c981738311fa9b7954fb03bfa": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4a688ab65f839782067d1280c545476c981738311fa9b7954fb03bfa/ReplayWitness.json",
+    "replay": "LiveScripts/S_4a688ab65f839782067d1280c545476c981738311fa9b7954fb03bfa/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8a3c310ee511f2f2a8920ce71eb01f5b51b709aef4f68c1c48948afb30706a02"
+  },
+  "4b0caac56bd9b68c5e3806ab673627d16b568d1476743cca5fd3f39f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4b0caac56bd9b68c5e3806ab673627d16b568d1476743cca5fd3f39f/ReplayWitness.json",
+    "replay": "LiveScripts/S_4b0caac56bd9b68c5e3806ab673627d16b568d1476743cca5fd3f39f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b6ba1fbbf04c395df177b474839553ef9d4267db55ae3b6bc67e525ae4f0cdfa"
+  },
   "4b29416395a8def3ea96c7df33ebc2644e9242d795f564a97542a35f": {
     "checks": [
       "valid_context",
@@ -203,6 +1055,18 @@
     "status": "verified",
     "witness_sha256": "2ba556fba44d2850bf347dfc77575cf76dd2387ac6951a3ffbe01623ba4aecdb"
   },
+  "4c38a676bb2f95fb97c8d20065eee6ac2551ee32422b8d69b58d3daa": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4c38a676bb2f95fb97c8d20065eee6ac2551ee32422b8d69b58d3daa/ReplayWitness.json",
+    "replay": "LiveScripts/S_4c38a676bb2f95fb97c8d20065eee6ac2551ee32422b8d69b58d3daa/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "927f7787495e63428954a4a5d84a33ade1e2b9c0b7e55d4b81f89c7a492e6111"
+  },
   "4c4d65a0616f60adc2cba70f533705233b1d7e8cb3e9868cdca39d86": {
     "checks": [
       "valid_context",
@@ -214,6 +1078,18 @@
     "replay": "LiveScripts/S_4c4d65a0616f60adc2cba70f533705233b1d7e8cb3e9868cdca39d86/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "dd682f9b65b9b70aa11060d140e56b053d99f96ccc35fbf810ec992d7fa5f8e5"
+  },
+  "4cbc487bc711146f32b2cc5498ededd6353b9b74af301f669f1294cc": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4cbc487bc711146f32b2cc5498ededd6353b9b74af301f669f1294cc/ReplayWitness.json",
+    "replay": "LiveScripts/S_4cbc487bc711146f32b2cc5498ededd6353b9b74af301f669f1294cc/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4d0a9c2967ca025c79b96b9499e9e1b459cfcc82bcde4095ad604f75e7afb6bb"
   },
   "4df579e1822b967c50057bc6d11a778a82bc88e3bbf1397482931668": {
     "checks": [
@@ -239,6 +1115,66 @@
     "status": "verified",
     "witness_sha256": "25f7932315727c6142bb329587f420ba7bc85ef1ba6bb5c42c667ad7b6acb8a4"
   },
+  "4f59b412e8918dfa481e57e859b259e8007fa9675cf5f154691faef3": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4f59b412e8918dfa481e57e859b259e8007fa9675cf5f154691faef3/ReplayWitness.json",
+    "replay": "LiveScripts/S_4f59b412e8918dfa481e57e859b259e8007fa9675cf5f154691faef3/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3b605d38e30ed4997bf5773e439d2814c4c928f2d885211cf12562aab037ec44"
+  },
+  "4fb78bd1d5b32eefc7c189be96c0279470ee96c0ff3ff87a379dd811": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_4fb78bd1d5b32eefc7c189be96c0279470ee96c0ff3ff87a379dd811/ReplayWitness.json",
+    "replay": "LiveScripts/S_4fb78bd1d5b32eefc7c189be96c0279470ee96c0ff3ff87a379dd811/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7169ebc9a0061570d07f5636a591da6b446ab1ef8963430a2aa840f47a1abb95"
+  },
+  "5001ab1440a4e658332765dd72ef685efc27c72a80da7bf59f60dc6f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5001ab1440a4e658332765dd72ef685efc27c72a80da7bf59f60dc6f/ReplayWitness.json",
+    "replay": "LiveScripts/S_5001ab1440a4e658332765dd72ef685efc27c72a80da7bf59f60dc6f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "469b85cebfec7bbf8df377fc30efd811812a48a57f2aa3b2af5d1a91b8c42c6f"
+  },
+  "505759098f5b622f9be627d45080eeda69c57db07fa5ca9e85329531": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_505759098f5b622f9be627d45080eeda69c57db07fa5ca9e85329531/ReplayWitness.json",
+    "replay": "LiveScripts/S_505759098f5b622f9be627d45080eeda69c57db07fa5ca9e85329531/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "df020c831b2e001b0c4241c6f552d65bc92d1f0b98d8ccc2b88ddd13b8bb7bae"
+  },
+  "50a65666e492e14fbfd080bd7ba3448aecd3a308b6d46f0ee5a0cc0f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_50a65666e492e14fbfd080bd7ba3448aecd3a308b6d46f0ee5a0cc0f/ReplayWitness.json",
+    "replay": "LiveScripts/S_50a65666e492e14fbfd080bd7ba3448aecd3a308b6d46f0ee5a0cc0f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a59991ca9db5c81405341c0b6a096422530b197a87bd7c671a2f9892f8599404"
+  },
   "516c003fd5fd1cf020c54b02fca93a57c275c3f91221c1806399919f": {
     "checks": [
       "valid_context",
@@ -250,6 +1186,18 @@
     "replay": "LiveScripts/S_516c003fd5fd1cf020c54b02fca93a57c275c3f91221c1806399919f/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "a9de848bdd02a8cbe5ee929b02de152e4d7dd113f58e9bda423103e4bd8d52f2"
+  },
+  "51ded1374aa111991a755ee426baab8fed0de6831e7c757b269ebee9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_51ded1374aa111991a755ee426baab8fed0de6831e7c757b269ebee9/ReplayWitness.json",
+    "replay": "LiveScripts/S_51ded1374aa111991a755ee426baab8fed0de6831e7c757b269ebee9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "84098ead888bd015fcb93717fe342082aebd78d5f3ee311b5e52474ef61ce0c5"
   },
   "52bdaa27bb84ab3a62053b01c08f8645278182b4fe48090f42096eec": {
     "checks": [
@@ -275,6 +1223,30 @@
     "status": "verified",
     "witness_sha256": "42dd3258a3ef4be535f5c533bca08068d5a17b932413ffb1cf260b7f15d86f18"
   },
+  "548e3423910cf72087c39667dff4725c8367e71704a5f4984cd876ce": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_548e3423910cf72087c39667dff4725c8367e71704a5f4984cd876ce/ReplayWitness.json",
+    "replay": "LiveScripts/S_548e3423910cf72087c39667dff4725c8367e71704a5f4984cd876ce/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "1bbeed98f0869a152f1f322bcd4480361206aad6c75c04e8b0a6846496f4a504"
+  },
+  "552feb04f21adc6023c3c1d4ff375f41e0cda1928f3dfbebff488284": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_552feb04f21adc6023c3c1d4ff375f41e0cda1928f3dfbebff488284/ReplayWitness.json",
+    "replay": "LiveScripts/S_552feb04f21adc6023c3c1d4ff375f41e0cda1928f3dfbebff488284/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "dac954a4d611ea58fc29fc35a38c1b3c007f43853f8433169c45b0842fc28bff"
+  },
   "580bd1b3cd097a3eb20077001417dc0dba94f06c060a6c601c71e976": {
     "checks": [
       "valid_context",
@@ -286,6 +1258,114 @@
     "replay": "LiveScripts/S_580bd1b3cd097a3eb20077001417dc0dba94f06c060a6c601c71e976/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "d72153f13a3e8fb837c0cd7de2b70fd9fb17c91d70f724dd7cadd17fa94a2d0d"
+  },
+  "58f9a6e1a381d5b1038fc6a40ef9f64ebf38f24d67e980d8d438065a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_58f9a6e1a381d5b1038fc6a40ef9f64ebf38f24d67e980d8d438065a/ReplayWitness.json",
+    "replay": "LiveScripts/S_58f9a6e1a381d5b1038fc6a40ef9f64ebf38f24d67e980d8d438065a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "456e2fe345cd992a7a322bf2bf9362c0aa14b20297aefbf3a2db94c1e8f313dd"
+  },
+  "5917ad9f27bb40482eac40027f9dd69898215ef4843a525c4355193b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5917ad9f27bb40482eac40027f9dd69898215ef4843a525c4355193b/ReplayWitness.json",
+    "replay": "LiveScripts/S_5917ad9f27bb40482eac40027f9dd69898215ef4843a525c4355193b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2a6409467048d9835534035e47fc4c8678913fdb9be3a6311d0aa0ad987ce453"
+  },
+  "5a04e05f6fd8b6e03c19619417abfec145b44f237d58bed30dc9f694": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5a04e05f6fd8b6e03c19619417abfec145b44f237d58bed30dc9f694/ReplayWitness.json",
+    "replay": "LiveScripts/S_5a04e05f6fd8b6e03c19619417abfec145b44f237d58bed30dc9f694/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f5747c3a9294f635c204bf8febae24125f5be99004f07da557ba1ac5dca3e994"
+  },
+  "5a84c39b7cea80398218b96c08e5200883e7eb3ff81c97345095d57b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5a84c39b7cea80398218b96c08e5200883e7eb3ff81c97345095d57b/ReplayWitness.json",
+    "replay": "LiveScripts/S_5a84c39b7cea80398218b96c08e5200883e7eb3ff81c97345095d57b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "34e7f6c35739fa79fcd3613a60d3ad3a79520416f14ae4d7307b523557f8722e"
+  },
+  "5abbaa2eb177b574707fa3617e3436295d45d7795e0874623a9504da": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5abbaa2eb177b574707fa3617e3436295d45d7795e0874623a9504da/ReplayWitness.json",
+    "replay": "LiveScripts/S_5abbaa2eb177b574707fa3617e3436295d45d7795e0874623a9504da/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6ae753a6bfcc616db663233056b706c9890859834c5d712c61ebef5f3905ef8c"
+  },
+  "5b62faa22a666ff587203010b101084d5c4b0d3e15319b85584f309f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5b62faa22a666ff587203010b101084d5c4b0d3e15319b85584f309f/ReplayWitness.json",
+    "replay": "LiveScripts/S_5b62faa22a666ff587203010b101084d5c4b0d3e15319b85584f309f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c25f02efcced8dc6a283010f89f5a852894be1d6a76718f5d7028649276d5f98"
+  },
+  "5bf0c8b1b60ba40b8ba5785de0cc334558a74b4e35e504343b17d3cc": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5bf0c8b1b60ba40b8ba5785de0cc334558a74b4e35e504343b17d3cc/ReplayWitness.json",
+    "replay": "LiveScripts/S_5bf0c8b1b60ba40b8ba5785de0cc334558a74b4e35e504343b17d3cc/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4702f89ecd595f11f746b33e25be5e4f3d11af5c1664f00d95f0e394ef9e3d8e"
+  },
+  "5e360f6559cbb6b344dbeed7cb3ce29db1f50dedad03023588208e88": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5e360f6559cbb6b344dbeed7cb3ce29db1f50dedad03023588208e88/ReplayWitness.json",
+    "replay": "LiveScripts/S_5e360f6559cbb6b344dbeed7cb3ce29db1f50dedad03023588208e88/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "02905f0660d4ba556fd385b4faaa15c205f7c4490c61be5602c78862110872a6"
+  },
+  "5e5a13c9975582400de922cac0139b0bd0bf3e9d225c893078f46524": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_5e5a13c9975582400de922cac0139b0bd0bf3e9d225c893078f46524/ReplayWitness.json",
+    "replay": "LiveScripts/S_5e5a13c9975582400de922cac0139b0bd0bf3e9d225c893078f46524/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2325ba4065d9038e97873329f17fa8809cc027308b457907c13cf232ae713c62"
   },
   "611b94423b6abb20405b9e874a9e527291c32daf80698ff244546568": {
     "checks": [
@@ -311,6 +1391,66 @@
     "status": "verified",
     "witness_sha256": "6d49549ec4fa4b9d0182018d89a15ac8320ee1f8a861601c375cdb9b0ba60c12"
   },
+  "62bb15445ed71029afaeec2069458cd0678ca93ce36f7bd83db2e188": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_62bb15445ed71029afaeec2069458cd0678ca93ce36f7bd83db2e188/ReplayWitness.json",
+    "replay": "LiveScripts/S_62bb15445ed71029afaeec2069458cd0678ca93ce36f7bd83db2e188/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a45975f5ffcc9cf15afeb71890b855a444b1b60f863061cb6e91f908ded1c1d1"
+  },
+  "62d3e3975c6ec02d4002640413368a2d46ea10548b1cd217a3e9b7cd": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_62d3e3975c6ec02d4002640413368a2d46ea10548b1cd217a3e9b7cd/ReplayWitness.json",
+    "replay": "LiveScripts/S_62d3e3975c6ec02d4002640413368a2d46ea10548b1cd217a3e9b7cd/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5144f2553dc8768435709ea447543febe4cdd3393579255f00ff378b9227367b"
+  },
+  "64e5f6469ae338667af6c9400c6a14b199fd48eb5c130271969dbda5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_64e5f6469ae338667af6c9400c6a14b199fd48eb5c130271969dbda5/ReplayWitness.json",
+    "replay": "LiveScripts/S_64e5f6469ae338667af6c9400c6a14b199fd48eb5c130271969dbda5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b9718817e6ccb1bfea176213be34e8161297287d46205164312782354dec4f45"
+  },
+  "64fc4b24599b7fa08c9beee33d4bc35184d36b38d2b87d487f32253f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_64fc4b24599b7fa08c9beee33d4bc35184d36b38d2b87d487f32253f/ReplayWitness.json",
+    "replay": "LiveScripts/S_64fc4b24599b7fa08c9beee33d4bc35184d36b38d2b87d487f32253f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8f2b6499a65b4d86c2572e287f283b9ca46b143c59f1bf8ef802a3365113bac7"
+  },
+  "66ca2e502343ea7e4d7b0b369cf68ceb3b0364cdf615985360921c73": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_66ca2e502343ea7e4d7b0b369cf68ceb3b0364cdf615985360921c73/ReplayWitness.json",
+    "replay": "LiveScripts/S_66ca2e502343ea7e4d7b0b369cf68ceb3b0364cdf615985360921c73/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4186508de13df8a36421390d09dbf7866ce3e19a31e5c6e522df0c0e94541b7b"
+  },
   "673f2bfaa44efb5e9ae881606e32f94dfbee5ccd1c8ca4f9c44365de": {
     "checks": [
       "valid_context",
@@ -322,6 +1462,66 @@
     "replay": "LiveScripts/S_673f2bfaa44efb5e9ae881606e32f94dfbee5ccd1c8ca4f9c44365de/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "e0a9d8242bce23359d2453771a90d1aed372b1516d63a6cac5138c60eee83b73"
+  },
+  "6743f4b69446b4e066cfb89daa3d01ef041b6d2646968993be4cec09": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6743f4b69446b4e066cfb89daa3d01ef041b6d2646968993be4cec09/ReplayWitness.json",
+    "replay": "LiveScripts/S_6743f4b69446b4e066cfb89daa3d01ef041b6d2646968993be4cec09/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9839eca02b9d59d43bba5c7b2fd396d20feb8240083b595f03ab50caebb6e0fc"
+  },
+  "67ea773942485d37ae32378fa6cb9e971499b6f1fea92feba5d8130b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_67ea773942485d37ae32378fa6cb9e971499b6f1fea92feba5d8130b/ReplayWitness.json",
+    "replay": "LiveScripts/S_67ea773942485d37ae32378fa6cb9e971499b6f1fea92feba5d8130b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "714d5cb914396dfd1556c60bb8764ca529cdc440953f3c0fad43ef22f388f727"
+  },
+  "6a836e8bb408ef5110a7477039a9f5fc41e55be9fc7eb5464def826b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6a836e8bb408ef5110a7477039a9f5fc41e55be9fc7eb5464def826b/ReplayWitness.json",
+    "replay": "LiveScripts/S_6a836e8bb408ef5110a7477039a9f5fc41e55be9fc7eb5464def826b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "04cb03f39f73e138f38f29f02e57abdea6c0a1f2e7e309caa6b250dc0c734c52"
+  },
+  "6bc69b41d664a4458eceac84d140b436f079c16c2463e1084bfcc8f8": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6bc69b41d664a4458eceac84d140b436f079c16c2463e1084bfcc8f8/ReplayWitness.json",
+    "replay": "LiveScripts/S_6bc69b41d664a4458eceac84d140b436f079c16c2463e1084bfcc8f8/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4a35ba355b6a7d5d8e2537912b9a3d82efb40d9973b6f70f86ba358f834bd0d6"
+  },
+  "6bfd0482c5652db14c7bc1d6c22f0e04a8d9643b35659a1a9270c57c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6bfd0482c5652db14c7bc1d6c22f0e04a8d9643b35659a1a9270c57c/ReplayWitness.json",
+    "replay": "LiveScripts/S_6bfd0482c5652db14c7bc1d6c22f0e04a8d9643b35659a1a9270c57c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "1846eb8abfa4d00aa27300006aeaa6c2f281abdc3491e33f497a37a03372db35"
   },
   "6cbe83f55737c61f654d5e8f7a0c04fb6e208e76aaa0a7dc4519d36e": {
     "checks": [
@@ -335,6 +1535,126 @@
     "status": "verified",
     "witness_sha256": "06cef2dcc0f3de249142e6f03def4e7aeaf0d64a2b9cb95a0c3349c04026487d"
   },
+  "6d9124b74b493f2039504b7d8af044a56d3d0683a8ce2a39f719fa2d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6d9124b74b493f2039504b7d8af044a56d3d0683a8ce2a39f719fa2d/ReplayWitness.json",
+    "replay": "LiveScripts/S_6d9124b74b493f2039504b7d8af044a56d3d0683a8ce2a39f719fa2d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7887de5b3bf8bd8c2495f7fe89f72c6ed71fd1d4b7257617b7855e9281213b3a"
+  },
+  "6e570d7444854e67ff476176baa80b2ab8c33c9ac96b8fc23e4a2b8d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6e570d7444854e67ff476176baa80b2ab8c33c9ac96b8fc23e4a2b8d/ReplayWitness.json",
+    "replay": "LiveScripts/S_6e570d7444854e67ff476176baa80b2ab8c33c9ac96b8fc23e4a2b8d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c0c3466e7984bdab37941ab63ec65c2254a9c1137d46930fc16d6abf9140d1bd"
+  },
+  "6f1be9594f8df02bcb7f2faab22d548fb2784b3ea4b5e0a428fe5d09": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6f1be9594f8df02bcb7f2faab22d548fb2784b3ea4b5e0a428fe5d09/ReplayWitness.json",
+    "replay": "LiveScripts/S_6f1be9594f8df02bcb7f2faab22d548fb2784b3ea4b5e0a428fe5d09/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2cf37a32600b32583bd4f0955d0189c017ad304a77070eea79f1c2954a15d0c5"
+  },
+  "6fb003585fcdf63810bb9c2a117b71cf61772bebaa31040f84d02928": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_6fb003585fcdf63810bb9c2a117b71cf61772bebaa31040f84d02928/ReplayWitness.json",
+    "replay": "LiveScripts/S_6fb003585fcdf63810bb9c2a117b71cf61772bebaa31040f84d02928/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "99a3c5b1761c5deaa1ad654e2f1c9091560808a1ea362942e68105fee26734e5"
+  },
+  "72da5bbb7697031ada8b9d70e509643eca70501c40adc1496de46e86": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_72da5bbb7697031ada8b9d70e509643eca70501c40adc1496de46e86/ReplayWitness.json",
+    "replay": "LiveScripts/S_72da5bbb7697031ada8b9d70e509643eca70501c40adc1496de46e86/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2d772f410b9d46c5887194c55f78c99d110c7a59a2a8c8a40c7b52243c22dc02"
+  },
+  "737638b371d522d3d6ad9a95e0d58e710b8eded71c8d5072790a7a11": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_737638b371d522d3d6ad9a95e0d58e710b8eded71c8d5072790a7a11/ReplayWitness.json",
+    "replay": "LiveScripts/S_737638b371d522d3d6ad9a95e0d58e710b8eded71c8d5072790a7a11/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "57004824a294bd2669937fd80a660b52e78460430083d714055a307795422314"
+  },
+  "73d8a23a1e4faf8daa7c5d6b14ac340bab3e75eee2374d54b1c183d5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_73d8a23a1e4faf8daa7c5d6b14ac340bab3e75eee2374d54b1c183d5/ReplayWitness.json",
+    "replay": "LiveScripts/S_73d8a23a1e4faf8daa7c5d6b14ac340bab3e75eee2374d54b1c183d5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "1ff669db82bde4807f3b1180717608381b1cb3d69a14183c7866ef527d34a40e"
+  },
+  "73fa78bde3828efeb50ce63461ea33e644faf90b9bdef40c50bfd780": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_73fa78bde3828efeb50ce63461ea33e644faf90b9bdef40c50bfd780/ReplayWitness.json",
+    "replay": "LiveScripts/S_73fa78bde3828efeb50ce63461ea33e644faf90b9bdef40c50bfd780/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "83feb24ae8edded7a03ee83bd4143598abf3b83a36f513b43e3e50da3b8537a2"
+  },
+  "774dd58762420f567ac35e28c47197fab4d93025838974c2c9fa98c4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_774dd58762420f567ac35e28c47197fab4d93025838974c2c9fa98c4/ReplayWitness.json",
+    "replay": "LiveScripts/S_774dd58762420f567ac35e28c47197fab4d93025838974c2c9fa98c4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7ccb2ba50915155a30a1580e7c3d1170d36a942e9ab75277803a02fcaed5c23d"
+  },
+  "78bbd2b4a99afc6500df8c9f38300001835bf2bc7211ecb1dffecfea": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_78bbd2b4a99afc6500df8c9f38300001835bf2bc7211ecb1dffecfea/ReplayWitness.json",
+    "replay": "LiveScripts/S_78bbd2b4a99afc6500df8c9f38300001835bf2bc7211ecb1dffecfea/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "0d42c118837eb36b4edaa3325777965c69f8fefbbd8ba8c19453f528f3842c95"
+  },
   "78f76aa28ae7081120b98e6675bfc18c2c930e4a574229b903958f06": {
     "checks": [
       "valid_context",
@@ -346,6 +1666,42 @@
     "replay": "LiveScripts/S_78f76aa28ae7081120b98e6675bfc18c2c930e4a574229b903958f06/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "1ec008bae08e6a487ce859bbe0b7e93f9ed47da6a70659c0568240af904f32ce"
+  },
+  "7b240311bb77a4d037798d398eafc130e4a47037751f51d684ac76e8": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_7b240311bb77a4d037798d398eafc130e4a47037751f51d684ac76e8/ReplayWitness.json",
+    "replay": "LiveScripts/S_7b240311bb77a4d037798d398eafc130e4a47037751f51d684ac76e8/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6027d68cb829fc0fee3a086f93083731277e0a8655ef6605969723247aabf5e8"
+  },
+  "7bb08afe982c7a9ef54f0ab7d2de48d80d27b9650fb1d7083ddf2d7b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_7bb08afe982c7a9ef54f0ab7d2de48d80d27b9650fb1d7083ddf2d7b/ReplayWitness.json",
+    "replay": "LiveScripts/S_7bb08afe982c7a9ef54f0ab7d2de48d80d27b9650fb1d7083ddf2d7b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9893b4b1166247a990e414809c1dc5fe99c09642906acd796bdada263a29a8f7"
+  },
+  "7c55bea1e5109eab701c5accf2631fc2103453414d8efc2c78bcd219": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_7c55bea1e5109eab701c5accf2631fc2103453414d8efc2c78bcd219/ReplayWitness.json",
+    "replay": "LiveScripts/S_7c55bea1e5109eab701c5accf2631fc2103453414d8efc2c78bcd219/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "83239cf9e05971c8531af373ad91a7390b4009489cedb2c40c09df82fea65cac"
   },
   "7cc268ce52e3c3542ad7ae7679e083c011dad57f17990ee4191447d9": {
     "checks": [
@@ -359,6 +1715,42 @@
     "status": "verified",
     "witness_sha256": "15fc8f3480a7d19a95d516fc16ea369b594ebcb745ed912feb931e01bcc92f53"
   },
+  "7d2cc03fc1beb6fa0dd8399e796d475bd2e6b3238765106e1b7d3d85": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_7d2cc03fc1beb6fa0dd8399e796d475bd2e6b3238765106e1b7d3d85/ReplayWitness.json",
+    "replay": "LiveScripts/S_7d2cc03fc1beb6fa0dd8399e796d475bd2e6b3238765106e1b7d3d85/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4ddd28b3b0355894142614c6cdcba2659423f4f9148b7cab9b4db194b9e1f8de"
+  },
+  "7d599d7ea9ed7198ef853101c68ee4506e80b96fa2cb5f6638365a68": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_7d599d7ea9ed7198ef853101c68ee4506e80b96fa2cb5f6638365a68/ReplayWitness.json",
+    "replay": "LiveScripts/S_7d599d7ea9ed7198ef853101c68ee4506e80b96fa2cb5f6638365a68/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e2f278e5cfc3a24fde8a58b24c246dd563257e14201084c44b20f50fb96ba328"
+  },
+  "7ec7a75e8acd6faac73745642644fd7a9d26cd834e356eb09b738ea9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_7ec7a75e8acd6faac73745642644fd7a9d26cd834e356eb09b738ea9/ReplayWitness.json",
+    "replay": "LiveScripts/S_7ec7a75e8acd6faac73745642644fd7a9d26cd834e356eb09b738ea9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5e3ef62b504b0a5cd2ba3ccde3a22c9afd1f223abeae58d36fd947008c0c8c50"
+  },
   "7f052cfce3ba771cc2a413c09a4ac458fc48af4108927b743de6659f": {
     "checks": [
       "valid_context",
@@ -370,6 +1762,78 @@
     "replay": "LiveScripts/S_7f052cfce3ba771cc2a413c09a4ac458fc48af4108927b743de6659f/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "81f6f632894d4559e181f1e25be805244d2404e6ec5210fbef275239586ef6c1"
+  },
+  "80a185e239a191ecd715c93cebefdf0babcf8b9b051dd861936975df": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_80a185e239a191ecd715c93cebefdf0babcf8b9b051dd861936975df/ReplayWitness.json",
+    "replay": "LiveScripts/S_80a185e239a191ecd715c93cebefdf0babcf8b9b051dd861936975df/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "003c1f543d88696d2d0e8e5693816ac7806f69d4687528f6fdcf332713bed485"
+  },
+  "814ae039589e06258d11f86b24e5aa1659d044a135a04d8df942aa37": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_814ae039589e06258d11f86b24e5aa1659d044a135a04d8df942aa37/ReplayWitness.json",
+    "replay": "LiveScripts/S_814ae039589e06258d11f86b24e5aa1659d044a135a04d8df942aa37/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6987d9e6023e8f926a548c06f617113fe23a3484fd96d356a5ad870a74a5bf55"
+  },
+  "859f2d1aa9b562e7af9053b8f952d364f4db225d89be204f183a663b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_859f2d1aa9b562e7af9053b8f952d364f4db225d89be204f183a663b/ReplayWitness.json",
+    "replay": "LiveScripts/S_859f2d1aa9b562e7af9053b8f952d364f4db225d89be204f183a663b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6db20a2afa57cee590b2de1c679a1ffad7de86bc4e1ae705b708034eb5533167"
+  },
+  "85b73eccbeaa328c5d50607172af60f53f5e91ab7a90257bfe179a3a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_85b73eccbeaa328c5d50607172af60f53f5e91ab7a90257bfe179a3a/ReplayWitness.json",
+    "replay": "LiveScripts/S_85b73eccbeaa328c5d50607172af60f53f5e91ab7a90257bfe179a3a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "251f99756bc8d9fecfa01f42ee02ed3406084c74ee85ade0b12b3ff0c788613b"
+  },
+  "863599c87f03bbaed034bf6e36f39fd75b68b1f9bdb65097e0454c13": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_863599c87f03bbaed034bf6e36f39fd75b68b1f9bdb65097e0454c13/ReplayWitness.json",
+    "replay": "LiveScripts/S_863599c87f03bbaed034bf6e36f39fd75b68b1f9bdb65097e0454c13/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7e6787a08c8cc6f8e171007ebb93ec02a45a21a8252c9dbeb7ccb4f53f49adc9"
+  },
+  "865085a4d810ed21f7677bdf3b1a93e1b75fd17f246d7f0243493cde": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_865085a4d810ed21f7677bdf3b1a93e1b75fd17f246d7f0243493cde/ReplayWitness.json",
+    "replay": "LiveScripts/S_865085a4d810ed21f7677bdf3b1a93e1b75fd17f246d7f0243493cde/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "08f365b7e60b629e14cccc273903bc48fd6880d069519a06f37fb04daa3abda5"
   },
   "8720dfdeaca7c6061aa2bf2bfa5451a539003729f49008d683a0a486": {
     "checks": [
@@ -383,6 +1847,114 @@
     "status": "verified",
     "witness_sha256": "bef4d66f82847e4b34ef9caeb79cd4965da8b4fee43a87c80d34425cb5d4efea"
   },
+  "87b7ddd3e4629484519d2506190d4b5459d893e15edcef78c36f93fd": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_87b7ddd3e4629484519d2506190d4b5459d893e15edcef78c36f93fd/ReplayWitness.json",
+    "replay": "LiveScripts/S_87b7ddd3e4629484519d2506190d4b5459d893e15edcef78c36f93fd/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4acc1b8b6a988705fc1afaaf45bb69850e3adeb182d59c620bbb8271d21cb676"
+  },
+  "87f504b07add9e1d74ae102f53ab7f9ff2456dee897a43d8e27b348b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_87f504b07add9e1d74ae102f53ab7f9ff2456dee897a43d8e27b348b/ReplayWitness.json",
+    "replay": "LiveScripts/S_87f504b07add9e1d74ae102f53ab7f9ff2456dee897a43d8e27b348b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ccfe3583c5572997e2a4d14d301bff74c50ed8c78423b5eacf75610bc321961c"
+  },
+  "88ea9e7c2fde775a90406dd324f6b99e980250809fc223d88c64553e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_88ea9e7c2fde775a90406dd324f6b99e980250809fc223d88c64553e/ReplayWitness.json",
+    "replay": "LiveScripts/S_88ea9e7c2fde775a90406dd324f6b99e980250809fc223d88c64553e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f18e1d9e84469a9180ba9f20a7149de9117a0d8e975b324f6779bfdc0e9f3c2b"
+  },
+  "891050d555b65ad042c227695a6d0a68231971f2fbbba199685c34de": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_891050d555b65ad042c227695a6d0a68231971f2fbbba199685c34de/ReplayWitness.json",
+    "replay": "LiveScripts/S_891050d555b65ad042c227695a6d0a68231971f2fbbba199685c34de/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a5e978851f87e74c4416f863199fe67f934c915c40df06651c44c51fbfa62328"
+  },
+  "8a0e9d688d502c8184608a3915f529803db7e1e6d84c958b46c513ed": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_8a0e9d688d502c8184608a3915f529803db7e1e6d84c958b46c513ed/ReplayWitness.json",
+    "replay": "LiveScripts/S_8a0e9d688d502c8184608a3915f529803db7e1e6d84c958b46c513ed/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "25f067e23d3838b7bea0e812d54c58c6139958a409b27ca40489afd9d5a6a57a"
+  },
+  "8d2127e310bf9b14b7e3ec84e4a07a2140366c2659c0fe1c621643ac": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_8d2127e310bf9b14b7e3ec84e4a07a2140366c2659c0fe1c621643ac/ReplayWitness.json",
+    "replay": "LiveScripts/S_8d2127e310bf9b14b7e3ec84e4a07a2140366c2659c0fe1c621643ac/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f46dfcceb96178bba3aa73ce5e3083bbd07b2e7412cc00890ec693a85584d3c1"
+  },
+  "8d258b9d08dcab73f3165a11751d464b46056264091c1789da588726": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_8d258b9d08dcab73f3165a11751d464b46056264091c1789da588726/ReplayWitness.json",
+    "replay": "LiveScripts/S_8d258b9d08dcab73f3165a11751d464b46056264091c1789da588726/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5f426ae93755e1635c9f162ce3f384c10f4c860981326e5a487f989670d53192"
+  },
+  "8d35bd4b654983a6cc3c7afab779567bba4fdf7cfee4375cc61b4489": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_8d35bd4b654983a6cc3c7afab779567bba4fdf7cfee4375cc61b4489/ReplayWitness.json",
+    "replay": "LiveScripts/S_8d35bd4b654983a6cc3c7afab779567bba4fdf7cfee4375cc61b4489/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f43ec46988b2d969ca98c698c9110bcbc217fd0aae76a0b6f36920ca1055a58c"
+  },
+  "8e941c939dd9d78715db1d88c9b7f4b18d9af12b288e3f8f84314525": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_8e941c939dd9d78715db1d88c9b7f4b18d9af12b288e3f8f84314525/ReplayWitness.json",
+    "replay": "LiveScripts/S_8e941c939dd9d78715db1d88c9b7f4b18d9af12b288e3f8f84314525/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8d8f92b6df3314f261baba89ed3aea84dbf944ca6937aae6f163f40df3fe0a21"
+  },
   "8e9adeee9336dfd0464e600bd228f18e3066a07507eaecfa8a351477": {
     "checks": [
       "valid_context",
@@ -394,6 +1966,54 @@
     "replay": "LiveScripts/S_8e9adeee9336dfd0464e600bd228f18e3066a07507eaecfa8a351477/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "e42d6141f00134355c395c1c228d0fe0bf4d31f1a9b2724f761556c3681cd1ee"
+  },
+  "8f562749ab79b10ff3285ffc9112c608a029002720b4a714e919989f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_8f562749ab79b10ff3285ffc9112c608a029002720b4a714e919989f/ReplayWitness.json",
+    "replay": "LiveScripts/S_8f562749ab79b10ff3285ffc9112c608a029002720b4a714e919989f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2239e59bd76a810715b1275b05c37007a23fdfdfa6efb3dcdeb027d4c0f27951"
+  },
+  "902042871cd5ad69074da4f1d1f1fb93823340ff1a363a5275eb1d8b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_902042871cd5ad69074da4f1d1f1fb93823340ff1a363a5275eb1d8b/ReplayWitness.json",
+    "replay": "LiveScripts/S_902042871cd5ad69074da4f1d1f1fb93823340ff1a363a5275eb1d8b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "84ee906d9045b943ce3334c4757c3214222e592accbf238d29b4a31c44794df1"
+  },
+  "90c01b0df4ce03af03b361161b514ad7c594b44a447b25ed569ddeae": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_90c01b0df4ce03af03b361161b514ad7c594b44a447b25ed569ddeae/ReplayWitness.json",
+    "replay": "LiveScripts/S_90c01b0df4ce03af03b361161b514ad7c594b44a447b25ed569ddeae/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "38c03c636224b4ef22f84619f81de5284a6d7893b8e4ef223caeb03bd4939e7f"
+  },
+  "917723b7feab3acc7f37d02caa39e360c4dc0e0fde45879ee36452f6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_917723b7feab3acc7f37d02caa39e360c4dc0e0fde45879ee36452f6/ReplayWitness.json",
+    "replay": "LiveScripts/S_917723b7feab3acc7f37d02caa39e360c4dc0e0fde45879ee36452f6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9b6255b730e580d8a23cb6889d112eea14c147de90a1bbe1a6d0f32b2b2268aa"
   },
   "929e32e92e08e486e2cea633346590fbba0037d9dc082eb4477e6253": {
     "checks": [
@@ -407,6 +2027,126 @@
     "status": "verified",
     "witness_sha256": "abd128a3646b736ce182b6bc7ee70903eab23c7d7c12ca8b92888df603e97331"
   },
+  "92e9c9eef30c1ece4635e9b1926f5855855518495cc525fd958c6fe1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_92e9c9eef30c1ece4635e9b1926f5855855518495cc525fd958c6fe1/ReplayWitness.json",
+    "replay": "LiveScripts/S_92e9c9eef30c1ece4635e9b1926f5855855518495cc525fd958c6fe1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e0a0957ea36d37d8f44dc7947208fd81ba4df1ea15af883265a1fa3dece5db1f"
+  },
+  "934aeec57bdef0ed0b66be2d825bf4dad838a849d9d9ba9bc89f4cc1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_934aeec57bdef0ed0b66be2d825bf4dad838a849d9d9ba9bc89f4cc1/ReplayWitness.json",
+    "replay": "LiveScripts/S_934aeec57bdef0ed0b66be2d825bf4dad838a849d9d9ba9bc89f4cc1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "dbbfefe33bf23a80243fa029eaea00e855a90dac9c7cf5d262c72007971bf874"
+  },
+  "93d515d8f200856d312b9d571646e67e7ec0fc67d058b66e745c0aa2": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_93d515d8f200856d312b9d571646e67e7ec0fc67d058b66e745c0aa2/ReplayWitness.json",
+    "replay": "LiveScripts/S_93d515d8f200856d312b9d571646e67e7ec0fc67d058b66e745c0aa2/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "247094123a414e27ba2965913a189d8fe0e3d6b7a36750e9fd610efddd5900e5"
+  },
+  "94f27912feef972f783747837c01f2fc4d7c7819027c1ca6230f2fc7": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_94f27912feef972f783747837c01f2fc4d7c7819027c1ca6230f2fc7/ReplayWitness.json",
+    "replay": "LiveScripts/S_94f27912feef972f783747837c01f2fc4d7c7819027c1ca6230f2fc7/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "fcc82b97e970de3e294c6d466c67ef2251fbd6094cdd3075bd75bbd9daf795cf"
+  },
+  "958f5d82242a0ff9ad920cb1712bee7710550d9de2cf9b8f93355dc3": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_958f5d82242a0ff9ad920cb1712bee7710550d9de2cf9b8f93355dc3/ReplayWitness.json",
+    "replay": "LiveScripts/S_958f5d82242a0ff9ad920cb1712bee7710550d9de2cf9b8f93355dc3/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9c6472b982a078c3fa419b47e98733d15751d92d020b080b1b4b4dd8cab34b37"
+  },
+  "959d9b08113e0edbc48ce2c23bb293e4e47590bf574fa4f811fb736b": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_959d9b08113e0edbc48ce2c23bb293e4e47590bf574fa4f811fb736b/ReplayWitness.json",
+    "replay": "LiveScripts/S_959d9b08113e0edbc48ce2c23bb293e4e47590bf574fa4f811fb736b/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "edbe96d7a05f24c9e65f139667cfb3d2f88b4f1ffdb5de2e41717a6a41e7a340"
+  },
+  "95eaacbabd6559f92850d36d411ce3f32c486195dbc428f26ce50ea2": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_95eaacbabd6559f92850d36d411ce3f32c486195dbc428f26ce50ea2/ReplayWitness.json",
+    "replay": "LiveScripts/S_95eaacbabd6559f92850d36d411ce3f32c486195dbc428f26ce50ea2/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2a8826d38e9e35a4f86b1cbd19212bbe9ede790bd20691b44965f9310062e8f5"
+  },
+  "96c2d95fc73740ef18abb95af68be279f80bb711eb69a527f3b1d713": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_96c2d95fc73740ef18abb95af68be279f80bb711eb69a527f3b1d713/ReplayWitness.json",
+    "replay": "LiveScripts/S_96c2d95fc73740ef18abb95af68be279f80bb711eb69a527f3b1d713/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "661e6b9a1b20a7720671cdb4fa1982a83049707579504c74183c600e68150b35"
+  },
+  "96f5c1bee23481335ff4aece32fe1dfa1aa40a944a66d2d6edc9a9a5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_96f5c1bee23481335ff4aece32fe1dfa1aa40a944a66d2d6edc9a9a5/ReplayWitness.json",
+    "replay": "LiveScripts/S_96f5c1bee23481335ff4aece32fe1dfa1aa40a944a66d2d6edc9a9a5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3a94c37fcea94580ecc9dd5b52ffe20fe4a213c2b626e5581855ce66ef6c7d80"
+  },
+  "970181bb7e3efcce74e3a85116250e49b242cd04149eed890eaf4fb7": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_970181bb7e3efcce74e3a85116250e49b242cd04149eed890eaf4fb7/ReplayWitness.json",
+    "replay": "LiveScripts/S_970181bb7e3efcce74e3a85116250e49b242cd04149eed890eaf4fb7/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a6a176484969dc0261d93d75e494e46f8b86f2e9ad2dae8f854a40467c9d61ec"
+  },
   "9743b927c6257523f3101c70ccf5443464fa5654cd8a516c3f999530": {
     "checks": [
       "valid_context",
@@ -418,6 +2158,78 @@
     "replay": "LiveScripts/S_9743b927c6257523f3101c70ccf5443464fa5654cd8a516c3f999530/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "7c08c8460ba8798aa2059f1562b73d9152bffbec776dd249f625f4783324ef7e"
+  },
+  "9757165f511ec38ca59d1b08925e40e417dd9049ffcbd3c45dbbc055": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_9757165f511ec38ca59d1b08925e40e417dd9049ffcbd3c45dbbc055/ReplayWitness.json",
+    "replay": "LiveScripts/S_9757165f511ec38ca59d1b08925e40e417dd9049ffcbd3c45dbbc055/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3bda359131118130c8a87a1e70c9286c46e1cf1e59d319e1ad9d06d5bbbfb947"
+  },
+  "97f078c5e9bfa9980d1cfe9a2ae74094fd23e32bd99ff8724af91e07": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_97f078c5e9bfa9980d1cfe9a2ae74094fd23e32bd99ff8724af91e07/ReplayWitness.json",
+    "replay": "LiveScripts/S_97f078c5e9bfa9980d1cfe9a2ae74094fd23e32bd99ff8724af91e07/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9e5e982cea675da28147dd469880e2f589ecfb4618d51a1ec4670058dedc37b0"
+  },
+  "994c728861aec764b14693d2bd34d2586515d8a88ba16059df2e0276": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_994c728861aec764b14693d2bd34d2586515d8a88ba16059df2e0276/ReplayWitness.json",
+    "replay": "LiveScripts/S_994c728861aec764b14693d2bd34d2586515d8a88ba16059df2e0276/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "0034d619de51ec05006969c5d103baec3926500a59edce14f0736e57fa8d6fb8"
+  },
+  "99d006a6611bfa1dbaa9852aa1f9adf8ce4d20e36a2e52eac28f7fd9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_99d006a6611bfa1dbaa9852aa1f9adf8ce4d20e36a2e52eac28f7fd9/ReplayWitness.json",
+    "replay": "LiveScripts/S_99d006a6611bfa1dbaa9852aa1f9adf8ce4d20e36a2e52eac28f7fd9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b15812d2dc8cd33e9cedace42c15c52242c9a8e5d40a8662799a42f12edb6a71"
+  },
+  "9aa880b46f8b66197cc3d401e64ba48c05b4e3e026798e488fa04131": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_9aa880b46f8b66197cc3d401e64ba48c05b4e3e026798e488fa04131/ReplayWitness.json",
+    "replay": "LiveScripts/S_9aa880b46f8b66197cc3d401e64ba48c05b4e3e026798e488fa04131/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6d18512e5abed6475d9d784a6332c33d5d27591a3acba7fed3e17a7a452f827d"
+  },
+  "9ad16f7a207b36ca4073d9505203bc113adb8c06918993207501f0de": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_9ad16f7a207b36ca4073d9505203bc113adb8c06918993207501f0de/ReplayWitness.json",
+    "replay": "LiveScripts/S_9ad16f7a207b36ca4073d9505203bc113adb8c06918993207501f0de/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a25f97f8a1aeeb539356a0a196ac0d19c79ba673678183cac0cc0fcbfb465fd4"
   },
   "9afbf74bb9263b2434f6ced6657194464a3d2c93642fc26a1a8817a4": {
     "checks": [
@@ -443,6 +2255,30 @@
     "status": "verified",
     "witness_sha256": "6f10f38f2f158ebe8ba1211a01c2d0b186164505d63310d17688016b71984dd6"
   },
+  "a0e117927451ea9ab3a10681877301ea40f91e0e756092d0593b47c1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a0e117927451ea9ab3a10681877301ea40f91e0e756092d0593b47c1/ReplayWitness.json",
+    "replay": "LiveScripts/S_a0e117927451ea9ab3a10681877301ea40f91e0e756092d0593b47c1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7ff64bb75a1cbc8ae7fad5ca3a8ec817978aba01c951cecaea8852d423fe2a46"
+  },
+  "a11774152ca1a0c52a37f7da4d2ba8760a659ff8a14de97eb238edde": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a11774152ca1a0c52a37f7da4d2ba8760a659ff8a14de97eb238edde/ReplayWitness.json",
+    "replay": "LiveScripts/S_a11774152ca1a0c52a37f7da4d2ba8760a659ff8a14de97eb238edde/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "0fa7b270082292558faec92c2059947f5d66708d00f1bbb7fc3a50de1ae29550"
+  },
   "a240d37e3b2e4d8f0f219c2d3705aee776cee55c1e7413165cb5095b": {
     "checks": [
       "valid_context",
@@ -454,6 +2290,66 @@
     "replay": "LiveScripts/S_a240d37e3b2e4d8f0f219c2d3705aee776cee55c1e7413165cb5095b/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "b1ead785e6bd9809571b92badeec3fe4de36f901ac57cade1d2cb2cb5860428c"
+  },
+  "a268dd2313647679487dca8125cb32a5d71a0ab5569c8faf5bfe2fac": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a268dd2313647679487dca8125cb32a5d71a0ab5569c8faf5bfe2fac/ReplayWitness.json",
+    "replay": "LiveScripts/S_a268dd2313647679487dca8125cb32a5d71a0ab5569c8faf5bfe2fac/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e2617f1e4628383197f934543ec6f6b79f69439cb2aeefbaa004f308ce6382b2"
+  },
+  "a270e7d6bf6b1cdeb2ef518747281284546132d7dd21255c5b0316e8": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a270e7d6bf6b1cdeb2ef518747281284546132d7dd21255c5b0316e8/ReplayWitness.json",
+    "replay": "LiveScripts/S_a270e7d6bf6b1cdeb2ef518747281284546132d7dd21255c5b0316e8/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8436ff95a3224231829d4af85e7e5259de56afab1ec277db3d3aada84a7ac832"
+  },
+  "a3d5052864638828bc3fbc0d5b9a4223e233620d7911a5376ed4b658": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a3d5052864638828bc3fbc0d5b9a4223e233620d7911a5376ed4b658/ReplayWitness.json",
+    "replay": "LiveScripts/S_a3d5052864638828bc3fbc0d5b9a4223e233620d7911a5376ed4b658/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9c20d3ec32088152f0d0ac744256ef456394793813c7aa2d906697ea1b5d4781"
+  },
+  "a43368bc57874a4a7a087c3ac7bf435b029c5953904e2dd55aabdd8a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a43368bc57874a4a7a087c3ac7bf435b029c5953904e2dd55aabdd8a/ReplayWitness.json",
+    "replay": "LiveScripts/S_a43368bc57874a4a7a087c3ac7bf435b029c5953904e2dd55aabdd8a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b087defcb8ff690fb8cb269494f891f1f1197bafb180b1ff57b07656cbc3154d"
+  },
+  "a5643b4a22a192d7691d05baf4a9bbb8acdbb5daa60be1f333e128f1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a5643b4a22a192d7691d05baf4a9bbb8acdbb5daa60be1f333e128f1/ReplayWitness.json",
+    "replay": "LiveScripts/S_a5643b4a22a192d7691d05baf4a9bbb8acdbb5daa60be1f333e128f1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "72909d511d7e1bb83ce98a70558e452cd71f6219335b36982bca06c374f00efa"
   },
   "a65ca58a4e9c755fa830173d2a5caed458ac0c73f97db7faae2e7e3b": {
     "checks": [
@@ -467,6 +2363,210 @@
     "status": "verified",
     "witness_sha256": "fe67c152247ec62a52c2359ffabc272f9a3f6982b2f702f3f1a177a2d2825ace"
   },
+  "a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad/ReplayWitness.json",
+    "replay": "LiveScripts/S_a76f0fb801a29f591e9871576508d85b0b5f3c38774f65032f58fdad/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b4c819220bb17af4ddaef5110ed16df61554feff0efe0633dcbc38df6d131cad"
+  },
+  "a7b978f789eedcb7ea1485055891918655520354d3bdb284ee17c507": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a7b978f789eedcb7ea1485055891918655520354d3bdb284ee17c507/ReplayWitness.json",
+    "replay": "LiveScripts/S_a7b978f789eedcb7ea1485055891918655520354d3bdb284ee17c507/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d43ac03584710c6430d29d27c93170358a8a3628e622496d74ec66a17dbdd264"
+  },
+  "a8ff9aca24f3ac70447046628dc8b2606926c95266e28991e554b56c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a8ff9aca24f3ac70447046628dc8b2606926c95266e28991e554b56c/ReplayWitness.json",
+    "replay": "LiveScripts/S_a8ff9aca24f3ac70447046628dc8b2606926c95266e28991e554b56c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3fdd07bda53b5f321126bdcd46f23e1d8cc16edaed83a48d91b588169f848246"
+  },
+  "a903abffda76004edeba848b5424c3fb2802e74dd740f47a28bdd75e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_a903abffda76004edeba848b5424c3fb2802e74dd740f47a28bdd75e/ReplayWitness.json",
+    "replay": "LiveScripts/S_a903abffda76004edeba848b5424c3fb2802e74dd740f47a28bdd75e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c7ea634e66543dd1375bee98e7af1c55442d177a2c59a269003e2188e66c3152"
+  },
+  "ab5fba3021ed9d8d2453481334b46d8eaf837cf3183db70b05566b62": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ab5fba3021ed9d8d2453481334b46d8eaf837cf3183db70b05566b62/ReplayWitness.json",
+    "replay": "LiveScripts/S_ab5fba3021ed9d8d2453481334b46d8eaf837cf3183db70b05566b62/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f39f3281559e04f6f7b7493a6d8d5b5898ed57741b3e8831c538b4aa6483780b"
+  },
+  "acefcfe88ae3e1e4194b57e92e3588e9a5495b13f71d9fd511d0d33c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_acefcfe88ae3e1e4194b57e92e3588e9a5495b13f71d9fd511d0d33c/ReplayWitness.json",
+    "replay": "LiveScripts/S_acefcfe88ae3e1e4194b57e92e3588e9a5495b13f71d9fd511d0d33c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ffc1a3f16804d397febf2a0767011a771a320f30262e54aed852e9108df187e2"
+  },
+  "ad616fce2529405d9e7b6f7d4cd26e9596f5fe8b4a399b3b06f1cba5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ad616fce2529405d9e7b6f7d4cd26e9596f5fe8b4a399b3b06f1cba5/ReplayWitness.json",
+    "replay": "LiveScripts/S_ad616fce2529405d9e7b6f7d4cd26e9596f5fe8b4a399b3b06f1cba5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6ce4f2a9a4bb6eb40d6d210908ac1168fe7385cde877f745337e2e424335f538"
+  },
+  "adc98419692104e565144f8e2b3e5e80c73e785a752625373ee63467": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_adc98419692104e565144f8e2b3e5e80c73e785a752625373ee63467/ReplayWitness.json",
+    "replay": "LiveScripts/S_adc98419692104e565144f8e2b3e5e80c73e785a752625373ee63467/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e4e02f7ab010966181d73691eda6a14a1e2ce8514a6ef98e88044a27d361007a"
+  },
+  "b0b99c50b9ec9c997086cb2222bb9e4fa2841d77b2e7580b94d6e0c6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b0b99c50b9ec9c997086cb2222bb9e4fa2841d77b2e7580b94d6e0c6/ReplayWitness.json",
+    "replay": "LiveScripts/S_b0b99c50b9ec9c997086cb2222bb9e4fa2841d77b2e7580b94d6e0c6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "447f89dfc699abae352703212174df0f527723a1035714167c5e0b0ee891c25e"
+  },
+  "b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4/ReplayWitness.json",
+    "replay": "LiveScripts/S_b0ebdd68bd00f3a633c5097fe0243d69fb27abacd7f6959bec63c4c4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "3aedfa1e704968dc0353236ac2e8117c2281aa2977f43e8282dea4adec765a60"
+  },
+  "b256da41be022ba1a28fe92b32eeea00109310e3f0aea1cb7791d98f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b256da41be022ba1a28fe92b32eeea00109310e3f0aea1cb7791d98f/ReplayWitness.json",
+    "replay": "LiveScripts/S_b256da41be022ba1a28fe92b32eeea00109310e3f0aea1cb7791d98f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "748ae1dadd495c23e8425696a3315597d954a9cfdf5c981af5b325f07e03a167"
+  },
+  "b3db1b84025653b964a5c7ae34ddf74304b1ce7a505e2a1135be1c57": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b3db1b84025653b964a5c7ae34ddf74304b1ce7a505e2a1135be1c57/ReplayWitness.json",
+    "replay": "LiveScripts/S_b3db1b84025653b964a5c7ae34ddf74304b1ce7a505e2a1135be1c57/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5c10adb38d866b8e91342fa4c21b5b87382c34c8ea1f94633ecb6c8777cb171a"
+  },
+  "b4b42df4cb70c7442c8bd0d25b1aa4e5f2efcadf4499961a36d532b5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b4b42df4cb70c7442c8bd0d25b1aa4e5f2efcadf4499961a36d532b5/ReplayWitness.json",
+    "replay": "LiveScripts/S_b4b42df4cb70c7442c8bd0d25b1aa4e5f2efcadf4499961a36d532b5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "68ca09f21b3d7b10631dc783be86ba0b00c3220f07f6a3c3a7b60c5258584f1d"
+  },
+  "b4e81fa9a3291025cd279067daf4e43578d4c3f759e5490958f58cf6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b4e81fa9a3291025cd279067daf4e43578d4c3f759e5490958f58cf6/ReplayWitness.json",
+    "replay": "LiveScripts/S_b4e81fa9a3291025cd279067daf4e43578d4c3f759e5490958f58cf6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "471c6f74b5c38d335525bd4b8128b77f13bcc33822c37d02768e8375c09d2542"
+  },
+  "b5763e3c9cb7f1a2167f74f76cb635d24d138a4cc5cf9d87659c662d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b5763e3c9cb7f1a2167f74f76cb635d24d138a4cc5cf9d87659c662d/ReplayWitness.json",
+    "replay": "LiveScripts/S_b5763e3c9cb7f1a2167f74f76cb635d24d138a4cc5cf9d87659c662d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9ba7ff43f8342644abf1ff917247d86fbaa35e5eda6dbf2335e214c8a0cc9ca2"
+  },
+  "b8600b6e1fc8d437ecf5067870ae9a125478c8735fc4eb2b9775a234": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_b8600b6e1fc8d437ecf5067870ae9a125478c8735fc4eb2b9775a234/ReplayWitness.json",
+    "replay": "LiveScripts/S_b8600b6e1fc8d437ecf5067870ae9a125478c8735fc4eb2b9775a234/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d2b522c82395765d2c539cbc667de9393fb6e86136adab119b3ec605ae4c334d"
+  },
+  "baef35198c17567a43cf11a5d049b83f664241b35a666f5988f08092": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_baef35198c17567a43cf11a5d049b83f664241b35a666f5988f08092/ReplayWitness.json",
+    "replay": "LiveScripts/S_baef35198c17567a43cf11a5d049b83f664241b35a666f5988f08092/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "53a9482264f371dc2f850cf7c90c896605a6a81868667f112cd0d3ff6c25c215"
+  },
   "bcf4db6d2ceff381aa89871e61b4a5fc5ef6ead733b40f7a3547ff91": {
     "checks": [
       "valid_context",
@@ -478,6 +2578,18 @@
     "replay": "LiveScripts/S_bcf4db6d2ceff381aa89871e61b4a5fc5ef6ead733b40f7a3547ff91/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "7c15a54de5d89d2c25fc0dbf85c9c146c0b20047af1ff5c676041cbf9cfbfca4"
+  },
+  "bdceb595b8754726b3efe3ab0f81c76cbda1a0a0d3653bb8fad89bb2": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_bdceb595b8754726b3efe3ab0f81c76cbda1a0a0d3653bb8fad89bb2/ReplayWitness.json",
+    "replay": "LiveScripts/S_bdceb595b8754726b3efe3ab0f81c76cbda1a0a0d3653bb8fad89bb2/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5aec7a7a589328baccb2a81580d361b4d5323ecf9cd8ca58b37ef62e7487eda0"
   },
   "c1246f316a366d4ff13029553cdbdac71809afe95d1e029e4cb36ae1": {
     "checks": [
@@ -491,6 +2603,78 @@
     "status": "verified",
     "witness_sha256": "5379db08e4481326f193fe8ea008f4c5c5d67863645fdac36ea3d9ce366b6171"
   },
+  "c134d839a64a5dfb9b155869ef3f34280751a622f69958baa8ffd29c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c134d839a64a5dfb9b155869ef3f34280751a622f69958baa8ffd29c/ReplayWitness.json",
+    "replay": "LiveScripts/S_c134d839a64a5dfb9b155869ef3f34280751a622f69958baa8ffd29c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ffd97a95bf3234f309d802e7df117eaf11f54d93b0848982cc54988fcea8439c"
+  },
+  "c1b47001fbd36f891f5f038c8e2de77492a79d0a48d51d2faefe3baa": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c1b47001fbd36f891f5f038c8e2de77492a79d0a48d51d2faefe3baa/ReplayWitness.json",
+    "replay": "LiveScripts/S_c1b47001fbd36f891f5f038c8e2de77492a79d0a48d51d2faefe3baa/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ee0ca70b94b74d36f1c8db95cb216fe7345235cec88e905fd98682be5e031955"
+  },
+  "c1c751c30a31b5d456c87f7fa3caecabd3d2585e5463dd866eb25511": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c1c751c30a31b5d456c87f7fa3caecabd3d2585e5463dd866eb25511/ReplayWitness.json",
+    "replay": "LiveScripts/S_c1c751c30a31b5d456c87f7fa3caecabd3d2585e5463dd866eb25511/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "88e1857f4595db62a6dcf9db7c42f7e71cef97b8a3184082d684b76c0952b878"
+  },
+  "c1e392ee7da9415f946de9d2aef9607322b47d6e84e8142ef0c340bf": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c1e392ee7da9415f946de9d2aef9607322b47d6e84e8142ef0c340bf/ReplayWitness.json",
+    "replay": "LiveScripts/S_c1e392ee7da9415f946de9d2aef9607322b47d6e84e8142ef0c340bf/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e2e1d11d4254d6b98c7d50e6d6638ba45b134c16e457c06f6275050b8b5e2808"
+  },
+  "c23675bbd0b80590d48fccb28479c640cc88052505e765d8a35ad0aa": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c23675bbd0b80590d48fccb28479c640cc88052505e765d8a35ad0aa/ReplayWitness.json",
+    "replay": "LiveScripts/S_c23675bbd0b80590d48fccb28479c640cc88052505e765d8a35ad0aa/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "eacc97a48eb42a9bd4bd87c55ae2bcea3b987bef98d6d552d3536c5804068f55"
+  },
+  "c25f7962dcbb4f0837de40ab625f5df72a01f23a61eb4021ba6e8ad0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c25f7962dcbb4f0837de40ab625f5df72a01f23a61eb4021ba6e8ad0/ReplayWitness.json",
+    "replay": "LiveScripts/S_c25f7962dcbb4f0837de40ab625f5df72a01f23a61eb4021ba6e8ad0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "307eef5d755dfb8a5066c3daddb7c0bb9a71480c830723f3209e5f5f11942b81"
+  },
   "c2aaab163222b3da02c4b94777cac9bb75dc2d3edf20c9eaf020d72d": {
     "checks": [
       "valid_context",
@@ -502,6 +2686,102 @@
     "replay": "LiveScripts/S_c2aaab163222b3da02c4b94777cac9bb75dc2d3edf20c9eaf020d72d/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "909d19485da21ad66705efe911e600fd79bc2e54e01b38b9e6b12c6662d3a929"
+  },
+  "c3e28c36c3447315ba5a56f33da6a6ddc1770a876a8d9f0cb3a97c4c": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c3e28c36c3447315ba5a56f33da6a6ddc1770a876a8d9f0cb3a97c4c/ReplayWitness.json",
+    "replay": "LiveScripts/S_c3e28c36c3447315ba5a56f33da6a6ddc1770a876a8d9f0cb3a97c4c/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "1630ec322ce39500043b3f7fa06c4d25eb1983efeea0cbaf41f83bc2240c8296"
+  },
+  "c467e4a9fa45ce830819645f72db86c7e46e647f9cf46b3b9671284a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c467e4a9fa45ce830819645f72db86c7e46e647f9cf46b3b9671284a/ReplayWitness.json",
+    "replay": "LiveScripts/S_c467e4a9fa45ce830819645f72db86c7e46e647f9cf46b3b9671284a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "240ce9c472b1396ded0b3d5f4f88467c6f3ca6407f3202b2b88644c9d8c60cc0"
+  },
+  "c4d2b22966d0feac566022f66974053a057caaa41203535506317a67": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c4d2b22966d0feac566022f66974053a057caaa41203535506317a67/ReplayWitness.json",
+    "replay": "LiveScripts/S_c4d2b22966d0feac566022f66974053a057caaa41203535506317a67/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b35e0f567ad667f7f570419dc82d9f10325fe28fae33491306ce2a468a2cc19a"
+  },
+  "c4d7d117d9ebcde6db28db40837ff2b1401e9eaaa6eecea9e070e209": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c4d7d117d9ebcde6db28db40837ff2b1401e9eaaa6eecea9e070e209/ReplayWitness.json",
+    "replay": "LiveScripts/S_c4d7d117d9ebcde6db28db40837ff2b1401e9eaaa6eecea9e070e209/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2c60756686fa54ae75ae9b66d4d6cf2617eb2bddc7a9843d85927f1a8472a0d7"
+  },
+  "c4f37d2bc1a955cfdc33597b3c089179ebeffdc624bbcf05b33950ef": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c4f37d2bc1a955cfdc33597b3c089179ebeffdc624bbcf05b33950ef/ReplayWitness.json",
+    "replay": "LiveScripts/S_c4f37d2bc1a955cfdc33597b3c089179ebeffdc624bbcf05b33950ef/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "027cc265ccd84416bb05536c20d0a5d3c223b05d5901e172a5479956e3d3b05d"
+  },
+  "c661017c14413334f54b8cd1ec8f513f1deb4b3dc06a7024bf5b84e4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c661017c14413334f54b8cd1ec8f513f1deb4b3dc06a7024bf5b84e4/ReplayWitness.json",
+    "replay": "LiveScripts/S_c661017c14413334f54b8cd1ec8f513f1deb4b3dc06a7024bf5b84e4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "52a812cca8d7b5348247e623d7e8aef31dc0be915dec0f909ea7f8a28a5fbe7b"
+  },
+  "c6a913db347adc3d6c10ef59e7572e947a2eb6ca1a1cc29a512fb098": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c6a913db347adc3d6c10ef59e7572e947a2eb6ca1a1cc29a512fb098/ReplayWitness.json",
+    "replay": "LiveScripts/S_c6a913db347adc3d6c10ef59e7572e947a2eb6ca1a1cc29a512fb098/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d0aad3b222332d86fcb013cad3a9f2207f1e2e63257e3bcb269424de74e02b5a"
+  },
+  "c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65/ReplayWitness.json",
+    "replay": "LiveScripts/S_c727443d77df6cff95dca383994f4c3024d03ff56b02ecc22b0f3f65/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6918c35a4d86964126d320188eec39a69c6771f0d048fb504c2e73f596468bbf"
   },
   "c76c4bb14a3defa8d30aeb2136d9abb211cef21183c9cbdf0f86f57a": {
     "checks": [
@@ -515,6 +2795,42 @@
     "status": "verified",
     "witness_sha256": "c02b602884fb28fd5a5cbbc05b3c13d24b0225a96de6804d2a5b89186faa4ddb"
   },
+  "c7977e1e34ef7866b36bf56da97e4138da9c07612532e9d6a80edda9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c7977e1e34ef7866b36bf56da97e4138da9c07612532e9d6a80edda9/ReplayWitness.json",
+    "replay": "LiveScripts/S_c7977e1e34ef7866b36bf56da97e4138da9c07612532e9d6a80edda9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f6b5b7def9b1197797c889a434d8432f3e8a2f9fadd61617b2a0b202ebcf2438"
+  },
+  "c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f/ReplayWitness.json",
+    "replay": "LiveScripts/S_c7ab6ff0df90974fa01fcd7971336791207c475324f1b288e5808e5f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "2b4999a311fe47f6ba66dc6d0c602f859fb8077ae819539003e1837d276d8785"
+  },
+  "ca55662cd97c8a9d0a91d21fc93925ae08a715d41b14cf7b450449d5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ca55662cd97c8a9d0a91d21fc93925ae08a715d41b14cf7b450449d5/ReplayWitness.json",
+    "replay": "LiveScripts/S_ca55662cd97c8a9d0a91d21fc93925ae08a715d41b14cf7b450449d5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "fe4256d30b34bfad70e9fec8f955bdddeb88fb20a0cf457ebb5d3dff31b345d2"
+  },
   "ca81593041350008135be2ceffd348e0c1d2b353ea7cf3b3a0cd65d9": {
     "checks": [
       "valid_context",
@@ -527,6 +2843,18 @@
     "status": "verified",
     "witness_sha256": "62a244550a2ea8a60c070bb72ce8e963208f7adb7c12e21bbe159738cbbf80d6"
   },
+  "cbd1362aba2c786b2198a54a36ebd3d042c10fe65d3b5e5d55e48cd4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cbd1362aba2c786b2198a54a36ebd3d042c10fe65d3b5e5d55e48cd4/ReplayWitness.json",
+    "replay": "LiveScripts/S_cbd1362aba2c786b2198a54a36ebd3d042c10fe65d3b5e5d55e48cd4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "04b9f4a38e884c0869cc81c257ded88a68a4f26900fda2779c341ee9c5dbcf5a"
+  },
   "cc66b969a00d90e7cfaaecf51f0e8dca2d1a84742d52f140ec4f1dcd": {
     "checks": [
       "valid_context",
@@ -538,6 +2866,90 @@
     "replay": "LiveScripts/S_cc66b969a00d90e7cfaaecf51f0e8dca2d1a84742d52f140ec4f1dcd/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "40373f7ec6f822431b3d6166840ea279fca04e9669b4d485789d7e225b10c56e"
+  },
+  "cd20f123ab401e0392a96ef317c2da9252c1bcaea5d29ffbf7c831e2": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cd20f123ab401e0392a96ef317c2da9252c1bcaea5d29ffbf7c831e2/ReplayWitness.json",
+    "replay": "LiveScripts/S_cd20f123ab401e0392a96ef317c2da9252c1bcaea5d29ffbf7c831e2/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e445ff13c5879ef2381af135d33ce218a322e3bcf339033e168a1065c1ccac5f"
+  },
+  "cda0e9d5a40fc4854bba67714a6945217619e7627ee0ac269fe78abe": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cda0e9d5a40fc4854bba67714a6945217619e7627ee0ac269fe78abe/ReplayWitness.json",
+    "replay": "LiveScripts/S_cda0e9d5a40fc4854bba67714a6945217619e7627ee0ac269fe78abe/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "15c76c24aa36ef4e3b0b83a545821af6142582fb87c216cfaa4f34a12935fec7"
+  },
+  "cdf5088d824fe08b6562dc8fc08ad23d4634f7a6e572245ff5548cb5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cdf5088d824fe08b6562dc8fc08ad23d4634f7a6e572245ff5548cb5/ReplayWitness.json",
+    "replay": "LiveScripts/S_cdf5088d824fe08b6562dc8fc08ad23d4634f7a6e572245ff5548cb5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "1f22a9ee0b935c5c2274066f9ed6813c93c3710f8a97d8de11ed798813a5f51a"
+  },
+  "cf29f44cccaedfbb14b36ed7409cfef3c9fc9631505621ddecf75401": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cf29f44cccaedfbb14b36ed7409cfef3c9fc9631505621ddecf75401/ReplayWitness.json",
+    "replay": "LiveScripts/S_cf29f44cccaedfbb14b36ed7409cfef3c9fc9631505621ddecf75401/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "0a7983e7d4910efe06ff9d782b8ab423d3662e0b55d3f9520ec0da98cf6e45df"
+  },
+  "cf3128adeac108b4a1eb6c8b76cc67e8a218d5cc161cfcaaf2b445e0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cf3128adeac108b4a1eb6c8b76cc67e8a218d5cc161cfcaaf2b445e0/ReplayWitness.json",
+    "replay": "LiveScripts/S_cf3128adeac108b4a1eb6c8b76cc67e8a218d5cc161cfcaaf2b445e0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ee4af6d17426cd02a828662a2d928e724a4b0a1d3ed15373aa3612956fbe4bf6"
+  },
+  "cfab823b99b406ba5767ab0acb8a80d1da97a2868c5617e93faa1808": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_cfab823b99b406ba5767ab0acb8a80d1da97a2868c5617e93faa1808/ReplayWitness.json",
+    "replay": "LiveScripts/S_cfab823b99b406ba5767ab0acb8a80d1da97a2868c5617e93faa1808/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "4d71da65d15a27ada54e49b1dcaa2cd6894d0b25dc38309b6c4792d04fcac733"
+  },
+  "d04725e41e119fd99ce9b98a0ced57c8ba404c8b7b9aabd7b84ac1bb": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d04725e41e119fd99ce9b98a0ced57c8ba404c8b7b9aabd7b84ac1bb/ReplayWitness.json",
+    "replay": "LiveScripts/S_d04725e41e119fd99ce9b98a0ced57c8ba404c8b7b9aabd7b84ac1bb/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "53536dd11feccb8fa7fc58852db77a0da6579892e102b7145494bc691c9b6f6f"
   },
   "d06c833e1e4812073f7c634f8f91294e8d9839430d32f0dd8b56c3bd": {
     "checks": [
@@ -563,6 +2975,78 @@
     "status": "verified",
     "witness_sha256": "e58535e49dec5fe92777ae30ac57331d4f152d819c1721934b87a606394d89fa"
   },
+  "d3b1a4b80837a5e78d9e6cb28a562b17f3050818a1a358b65b5a90e9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d3b1a4b80837a5e78d9e6cb28a562b17f3050818a1a358b65b5a90e9/ReplayWitness.json",
+    "replay": "LiveScripts/S_d3b1a4b80837a5e78d9e6cb28a562b17f3050818a1a358b65b5a90e9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6320d6d7e70958e34abb1e488d986b057ff7fb737b75a4c1693ca197379dafb9"
+  },
+  "d3bf6c9174e9d7a633c50b7290a431179c8d5a0de31f615f01c2f895": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d3bf6c9174e9d7a633c50b7290a431179c8d5a0de31f615f01c2f895/ReplayWitness.json",
+    "replay": "LiveScripts/S_d3bf6c9174e9d7a633c50b7290a431179c8d5a0de31f615f01c2f895/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8a1052ccc1c4f263e3e249cc3ce37e477e56f71c76b5703e2588c36f2b8496f1"
+  },
+  "d4d5191317597ef577d300091ab853c8b0e8dffa913941da87c77964": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d4d5191317597ef577d300091ab853c8b0e8dffa913941da87c77964/ReplayWitness.json",
+    "replay": "LiveScripts/S_d4d5191317597ef577d300091ab853c8b0e8dffa913941da87c77964/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "e0ca572a7a588965cc1efed35cee05418ca5ad66201451d928bd84e480421c64"
+  },
+  "d547c9e1e26e4bc80b56eb979dda7a011280933cb2784f74b584ec8f": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d547c9e1e26e4bc80b56eb979dda7a011280933cb2784f74b584ec8f/ReplayWitness.json",
+    "replay": "LiveScripts/S_d547c9e1e26e4bc80b56eb979dda7a011280933cb2784f74b584ec8f/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ec08619974dd33bdae4733a08483c0434f844ea235b7089a66f7200fc8117d97"
+  },
+  "d77c0bea8bf5a2f8b3b401329ba22e77b2cd8fe88f2b8e2fc3781223": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d77c0bea8bf5a2f8b3b401329ba22e77b2cd8fe88f2b8e2fc3781223/ReplayWitness.json",
+    "replay": "LiveScripts/S_d77c0bea8bf5a2f8b3b401329ba22e77b2cd8fe88f2b8e2fc3781223/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f59feedeea041342ef43aa97284f557454357a53a9d75c7aacb95484634b8e28"
+  },
+  "d8436919ee35d79ff7ed2173fca54c88aef1105323e8fd69c1b108c1": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d8436919ee35d79ff7ed2173fca54c88aef1105323e8fd69c1b108c1/ReplayWitness.json",
+    "replay": "LiveScripts/S_d8436919ee35d79ff7ed2173fca54c88aef1105323e8fd69c1b108c1/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "52920d436a17affe6d6a57c2078e116eb0783400fe5c1fc589ba536df1793e55"
+  },
   "d8906ca5c7ba124a0407a32dab37b2c82b13b3dcd9111e42940dcea4": {
     "checks": [
       "valid_context",
@@ -574,6 +3058,126 @@
     "replay": "LiveScripts/S_d8906ca5c7ba124a0407a32dab37b2c82b13b3dcd9111e42940dcea4/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "42c00884758705288497c3a7ba1a04d4df129eab89ef438e83d1fce73327886c"
+  },
+  "d8c774493134809582ea91d62e1d7a7f2dd67bc1744c243f881dce70": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d8c774493134809582ea91d62e1d7a7f2dd67bc1744c243f881dce70/ReplayWitness.json",
+    "replay": "LiveScripts/S_d8c774493134809582ea91d62e1d7a7f2dd67bc1744c243f881dce70/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "cb48a0bd46011855545613d2ecc913dd6ed801c2081083c2117d7a1461c6bdb3"
+  },
+  "d8dca28a22475d2bf4614e3ca59735a7bac3ad1e8310d3ca96c1f59d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d8dca28a22475d2bf4614e3ca59735a7bac3ad1e8310d3ca96c1f59d/ReplayWitness.json",
+    "replay": "LiveScripts/S_d8dca28a22475d2bf4614e3ca59735a7bac3ad1e8310d3ca96c1f59d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ead28580d4f74f595be3c2bc3149e8861607c54346c59c3e42ff879de92c4a45"
+  },
+  "d91724ab50296c7dfea771d03a1f88c3a59a80a624e5c105b42c009a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_d91724ab50296c7dfea771d03a1f88c3a59a80a624e5c105b42c009a/ReplayWitness.json",
+    "replay": "LiveScripts/S_d91724ab50296c7dfea771d03a1f88c3a59a80a624e5c105b42c009a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "8af429f0720c5e364bbaa0b718d32b13fb89043b6ca9d0090795f1006b64fa78"
+  },
+  "da75a8eae20538ec6a822f226bdd0c4408269a709eac9bc362541a9d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_da75a8eae20538ec6a822f226bdd0c4408269a709eac9bc362541a9d/ReplayWitness.json",
+    "replay": "LiveScripts/S_da75a8eae20538ec6a822f226bdd0c4408269a709eac9bc362541a9d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a1b6ee374a54b05536378ac51914a2313cd03c788a73eacecefd8da255b3b661"
+  },
+  "da9525463841173ad1230b1d5a1b5d0a3116bbdeb4412327148a1b7a": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_da9525463841173ad1230b1d5a1b5d0a3116bbdeb4412327148a1b7a/ReplayWitness.json",
+    "replay": "LiveScripts/S_da9525463841173ad1230b1d5a1b5d0a3116bbdeb4412327148a1b7a/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "951db932a0a224075ffe4a078fdfc84dba57e6c7d7c3709c4fc1b42a8a22acae"
+  },
+  "dae4b059c19b0d0f1ac034ebb7334739511ae977c86468a27aeac44e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_dae4b059c19b0d0f1ac034ebb7334739511ae977c86468a27aeac44e/ReplayWitness.json",
+    "replay": "LiveScripts/S_dae4b059c19b0d0f1ac034ebb7334739511ae977c86468a27aeac44e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ebe3fb04073891caf7db082fa3e9cc8287507ab9d042751d7ef793bee85e3e12"
+  },
+  "dd94113cc07cbe0f0c331c9ba10477795ca90bfb1e3e348b40d15a31": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_dd94113cc07cbe0f0c331c9ba10477795ca90bfb1e3e348b40d15a31/ReplayWitness.json",
+    "replay": "LiveScripts/S_dd94113cc07cbe0f0c331c9ba10477795ca90bfb1e3e348b40d15a31/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c698bb3ebf21e7a9e4fd0d91a20c784caba5335ecc9139d7a9f823ebb5965b52"
+  },
+  "def68337867cb4f1f95b6b811fedbfcdd7780d10a95cc072077088ea": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_def68337867cb4f1f95b6b811fedbfcdd7780d10a95cc072077088ea/ReplayWitness.json",
+    "replay": "LiveScripts/S_def68337867cb4f1f95b6b811fedbfcdd7780d10a95cc072077088ea/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "60ecd3e0c7fcbb1975498167a4cb404788f7ef0b4ce9c615291a9404538456c7"
+  },
+  "df1589851e68abfbd4379979e95efe0076adbc92f4451670467ade48": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_df1589851e68abfbd4379979e95efe0076adbc92f4451670467ade48/ReplayWitness.json",
+    "replay": "LiveScripts/S_df1589851e68abfbd4379979e95efe0076adbc92f4451670467ade48/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "9a94a8aee893c46c3d80b387117bf0cb8a9af45998c28438be79fdb33d6dc952"
+  },
+  "dfb1d21e529af28d82004eee5689e3304bb896c35ce8fe65c85612b0": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_dfb1d21e529af28d82004eee5689e3304bb896c35ce8fe65c85612b0/ReplayWitness.json",
+    "replay": "LiveScripts/S_dfb1d21e529af28d82004eee5689e3304bb896c35ce8fe65c85612b0/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "65c8f2814311488ab1a807a999c883bb2b894d6337bbf74bccb9b45d0c97687c"
   },
   "dfdcfae7bb3a9de87f4cb9db698d57e972a7cac9e8a9ad77bee8631a": {
     "checks": [
@@ -599,6 +3203,42 @@
     "status": "verified",
     "witness_sha256": "d6ae109eb1df5559db5399d2fca9a5533c77e7eae7fd0ecc161efa16522a4a99"
   },
+  "e18468a37561a6fd96976b59d92bf683252d88f5f737ea2ba37360be": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e18468a37561a6fd96976b59d92bf683252d88f5f737ea2ba37360be/ReplayWitness.json",
+    "replay": "LiveScripts/S_e18468a37561a6fd96976b59d92bf683252d88f5f737ea2ba37360be/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "dd435178ea9596f3240b96bc5dfd2c5d18b9f59d9565e58e16005278fbb2e1f6"
+  },
+  "e28d8a926c8ef9d32ee7fdb9fa2e0043382e6c1ba42609c330d19b27": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e28d8a926c8ef9d32ee7fdb9fa2e0043382e6c1ba42609c330d19b27/ReplayWitness.json",
+    "replay": "LiveScripts/S_e28d8a926c8ef9d32ee7fdb9fa2e0043382e6c1ba42609c330d19b27/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "240e4b299a61306723ca56212cd824f47e6901ccec0f239418b23c153cae4486"
+  },
+  "e2a916c7a20f53970e7270dd27918b5104a3dfe06dcf47ecd0395844": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e2a916c7a20f53970e7270dd27918b5104a3dfe06dcf47ecd0395844/ReplayWitness.json",
+    "replay": "LiveScripts/S_e2a916c7a20f53970e7270dd27918b5104a3dfe06dcf47ecd0395844/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "b6c6489b2c15e6c97606ac60dcd032f7a294474b92d67e47a7a4056e659ad4fc"
+  },
   "e4bd6155ad729e6ee45ab843ffa884a9d2027fab3ff064796b4b2c72": {
     "checks": [
       "valid_context",
@@ -623,6 +3263,78 @@
     "status": "verified",
     "witness_sha256": "d194eb521e24afae70f74774e7578ccd537516ba3f04322bb6b5c9b749201abf"
   },
+  "e5a22e4c31db20bce1c8b081f8e4009683990a33157947d75030deb8": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e5a22e4c31db20bce1c8b081f8e4009683990a33157947d75030deb8/ReplayWitness.json",
+    "replay": "LiveScripts/S_e5a22e4c31db20bce1c8b081f8e4009683990a33157947d75030deb8/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "5fdbec0be525804d9c280d7cea00111c2ee6c871b80771e4de5f2cc45ff8047c"
+  },
+  "e67b02322e98f8f622980042a69508d67e2750afc92f4f8956188573": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e67b02322e98f8f622980042a69508d67e2750afc92f4f8956188573/ReplayWitness.json",
+    "replay": "LiveScripts/S_e67b02322e98f8f622980042a69508d67e2750afc92f4f8956188573/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "aa4e65862dca98a98e75fbace9099ffc4f6217200cf5685a7af7d5e0db8e1806"
+  },
+  "e87efb09c22d24915202b3ce6bab50ced3fc86a9c8ea13ff09e1e1c6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e87efb09c22d24915202b3ce6bab50ced3fc86a9c8ea13ff09e1e1c6/ReplayWitness.json",
+    "replay": "LiveScripts/S_e87efb09c22d24915202b3ce6bab50ced3fc86a9c8ea13ff09e1e1c6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d41c74bdec95e771ec20f0b1cb1ed3d8b1586f623380dbfdc6b768a9fd3da200"
+  },
+  "e8bdec96b0f1d0b55f16728841029c42eb52228aee621e0f5c8a148d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e8bdec96b0f1d0b55f16728841029c42eb52228aee621e0f5c8a148d/ReplayWitness.json",
+    "replay": "LiveScripts/S_e8bdec96b0f1d0b55f16728841029c42eb52228aee621e0f5c8a148d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ebb1ab0f9d6277e74459546b286a03c458e210e9c62045ad26c5a4266061092e"
+  },
+  "e8ded9661d13c56a711b1d82e8a10035a7cc713c5d4c94a9ba41b896": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e8ded9661d13c56a711b1d82e8a10035a7cc713c5d4c94a9ba41b896/ReplayWitness.json",
+    "replay": "LiveScripts/S_e8ded9661d13c56a711b1d82e8a10035a7cc713c5d4c94a9ba41b896/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d6628cad5bdbda89775e3a2eb058c9120da3065ca866b347692e5363f762a0b0"
+  },
+  "e8e031a07efb9d6bb4c7f2d2f9511a35457266cde58b3707fb7ff10e": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_e8e031a07efb9d6bb4c7f2d2f9511a35457266cde58b3707fb7ff10e/ReplayWitness.json",
+    "replay": "LiveScripts/S_e8e031a07efb9d6bb4c7f2d2f9511a35457266cde58b3707fb7ff10e/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "a00a677f7120cfef38c51d6c107381d898e78b6bfdd860ad4bfbf3bf94270f6d"
+  },
   "e9d2d3ad93bd955c60cb9cadf7534a5c88285d8a4dd0ae995523e36c": {
     "checks": [
       "valid_context",
@@ -634,6 +3346,78 @@
     "replay": "LiveScripts/S_e9d2d3ad93bd955c60cb9cadf7534a5c88285d8a4dd0ae995523e36c/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "20d600f9db83a4527c13eb2c99edb2c39da87a348051222e2c3cce2e60034056"
+  },
+  "ea8ded36e77d9f6050fe8fe6f6c20aef12bd7f7deaff60fb64d2b6cc": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ea8ded36e77d9f6050fe8fe6f6c20aef12bd7f7deaff60fb64d2b6cc/ReplayWitness.json",
+    "replay": "LiveScripts/S_ea8ded36e77d9f6050fe8fe6f6c20aef12bd7f7deaff60fb64d2b6cc/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d9ceb9464685ad2dc35ae78a12e43f216c6a5009dcedfbfdc9e8b3886eea3adb"
+  },
+  "eb5232a5f5743f8b4b57e6bc5949218af7aa6f7fb9a94e42543b7776": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_eb5232a5f5743f8b4b57e6bc5949218af7aa6f7fb9a94e42543b7776/ReplayWitness.json",
+    "replay": "LiveScripts/S_eb5232a5f5743f8b4b57e6bc5949218af7aa6f7fb9a94e42543b7776/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "d216f213526dda682deaa75033d654f7bb2bfa7cece937925eb2f986512e0f6c"
+  },
+  "ebbf7a6df2baa9ae2b8644b3511ce14bf6d27bfab97572fcb7825cf9": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ebbf7a6df2baa9ae2b8644b3511ce14bf6d27bfab97572fcb7825cf9/ReplayWitness.json",
+    "replay": "LiveScripts/S_ebbf7a6df2baa9ae2b8644b3511ce14bf6d27bfab97572fcb7825cf9/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "6634a2255d03338aabede19bf92f6cb5cee12c1d8a82454afcad3dbf067afc1e"
+  },
+  "ecb3ce037188879d7fea47aa5e7eb4cbb1e24479816bf439e57acbc6": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ecb3ce037188879d7fea47aa5e7eb4cbb1e24479816bf439e57acbc6/ReplayWitness.json",
+    "replay": "LiveScripts/S_ecb3ce037188879d7fea47aa5e7eb4cbb1e24479816bf439e57acbc6/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "fefee76c6e4358ea64d776b669e5409590e7b4da21f183e37b2781208e2619d1"
+  },
+  "ecd0c0fc554beb43ade65d45dd471ede4d9cfc9b22bb70de8e113458": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ecd0c0fc554beb43ade65d45dd471ede4d9cfc9b22bb70de8e113458/ReplayWitness.json",
+    "replay": "LiveScripts/S_ecd0c0fc554beb43ade65d45dd471ede4d9cfc9b22bb70de8e113458/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "05506571a436ff8bd564aa5d16f90549ed7fb061a8016e3d6213317676cfc1ca"
+  },
+  "ed3fb7e046b4f3387e0749fb46847dbc15e85e61aaa76558f968136d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_ed3fb7e046b4f3387e0749fb46847dbc15e85e61aaa76558f968136d/ReplayWitness.json",
+    "replay": "LiveScripts/S_ed3fb7e046b4f3387e0749fb46847dbc15e85e61aaa76558f968136d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ceee34c5c5cc12913eabc929e533ac348201f881c2776c4a1d30a7f3b2a04f86"
   },
   "ee2726691d6060ef43878db247b14984bd0fce21d7992af2dc4d98ce": {
     "checks": [
@@ -647,6 +3431,18 @@
     "status": "verified",
     "witness_sha256": "2a5b9c5aa0f54af8c70c971fb87b12245d09c8314bedafc58c849f5d89eaa15c"
   },
+  "f03c1b90aae1ec0616cf19b17a2cbde878d05ff7e92d58f38b622da5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f03c1b90aae1ec0616cf19b17a2cbde878d05ff7e92d58f38b622da5/ReplayWitness.json",
+    "replay": "LiveScripts/S_f03c1b90aae1ec0616cf19b17a2cbde878d05ff7e92d58f38b622da5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "74262ea2a5c202907bf68006bf35691ba580642829196ac4c434fa08caf29937"
+  },
   "f0bdb73a9fe70b6c0781b7a7466274dce6d78c7bd3e8fcb4244935e2": {
     "checks": [
       "valid_context",
@@ -658,6 +3454,78 @@
     "replay": "LiveScripts/S_f0bdb73a9fe70b6c0781b7a7466274dce6d78c7bd3e8fcb4244935e2/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "1259fff821139d24bdc18cac6d3fb9bfb66cef3b9ad62f140dfb29ffd8bbfaa5"
+  },
+  "f137a884d06e6a4105c0095ff9dab1eb2c11c15366b5bf476215e799": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f137a884d06e6a4105c0095ff9dab1eb2c11c15366b5bf476215e799/ReplayWitness.json",
+    "replay": "LiveScripts/S_f137a884d06e6a4105c0095ff9dab1eb2c11c15366b5bf476215e799/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "f44de1836db9e56d397a795de8a8ff61d40cbd9c9df0f722b23512bd1c3214e3"
+  },
+  "f1d4865bce47591d67ec320e92eeb26b917389e65f8fb12bb9b38877": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f1d4865bce47591d67ec320e92eeb26b917389e65f8fb12bb9b38877/ReplayWitness.json",
+    "replay": "LiveScripts/S_f1d4865bce47591d67ec320e92eeb26b917389e65f8fb12bb9b38877/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "c2b1b4dcca42fd8a7a1cce9dac5ad6fca14a9438e0e247a18e999229a99bc05a"
+  },
+  "f22d3ced0862aed36065cfdb2a89f7462c5cce3e4820e198ec935106": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f22d3ced0862aed36065cfdb2a89f7462c5cce3e4820e198ec935106/ReplayWitness.json",
+    "replay": "LiveScripts/S_f22d3ced0862aed36065cfdb2a89f7462c5cce3e4820e198ec935106/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "7fefe7ccc479de1038dbcc425310f56a5e77d9cef19117fa82d4f5c29776c9f4"
+  },
+  "f3c398920fc488cb995db26f09f7e7320b8538b123f300799bf101d5": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f3c398920fc488cb995db26f09f7e7320b8538b123f300799bf101d5/ReplayWitness.json",
+    "replay": "LiveScripts/S_f3c398920fc488cb995db26f09f7e7320b8538b123f300799bf101d5/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "0569f11a852ecc20e888c00d940217d73b58e7a7dba34169d862b04c263d9524"
+  },
+  "f3c8f243dfe639ff569172d8687204a6348f8dcb773a60d0e7e09a2d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f3c8f243dfe639ff569172d8687204a6348f8dcb773a60d0e7e09a2d/ReplayWitness.json",
+    "replay": "LiveScripts/S_f3c8f243dfe639ff569172d8687204a6348f8dcb773a60d0e7e09a2d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "96ed3b92694988b73a1008520340e9ab8f72d21765403be46a3f594720bf7da4"
+  },
+  "f59cc169b43cecd1b7309586dd54d7b3de8b0953f550592d238ad8ff": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f59cc169b43cecd1b7309586dd54d7b3de8b0953f550592d238ad8ff/ReplayWitness.json",
+    "replay": "LiveScripts/S_f59cc169b43cecd1b7309586dd54d7b3de8b0953f550592d238ad8ff/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "240390cc7440246820508ef7b809b45a813f98b5337a08030b85af42b07c964d"
   },
   "f5a1157566a72caeeaf2e6a1edfee27bebe0e4e01d851302c9f9c962": {
     "checks": [
@@ -671,6 +3539,30 @@
     "status": "verified",
     "witness_sha256": "9940a2793c2a5a597ca189d2a6003ffbbe5eff86ffc1963d214102830c7151c3"
   },
+  "f8ee1130915c4cd5f5482cc15537da54106dc2543cfba6dff41cb243": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_f8ee1130915c4cd5f5482cc15537da54106dc2543cfba6dff41cb243/ReplayWitness.json",
+    "replay": "LiveScripts/S_f8ee1130915c4cd5f5482cc15537da54106dc2543cfba6dff41cb243/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "847b1910e1006793e49fee4bf52b4c1d54e8142ae2865fd058dde3c6c789ed58"
+  },
+  "fa8b2ff1f7d6797e5fa792bef2d32716772b339c044b4c4de3c23644": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_fa8b2ff1f7d6797e5fa792bef2d32716772b339c044b4c4de3c23644/ReplayWitness.json",
+    "replay": "LiveScripts/S_fa8b2ff1f7d6797e5fa792bef2d32716772b339c044b4c4de3c23644/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "443f7f10e41590ee7e6b04c6957eed0bde24b4d024ec6bd5a1538f16db057875"
+  },
   "fc8787790a71e54cdd00e6e49265bb977f30aa0618fb4c2ab8817c66": {
     "checks": [
       "valid_context",
@@ -682,5 +3574,65 @@
     "replay": "LiveScripts/S_fc8787790a71e54cdd00e6e49265bb977f30aa0618fb4c2ab8817c66/ReplayWitness.lean",
     "status": "verified",
     "witness_sha256": "d835397784d800d507df536ca45f80bd897c80debe746d23b06b7cf8cadd711a"
+  },
+  "fceb645fdc06550d62065bc0f95318e8dcd71e6a8c13c05f313b246d": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_fceb645fdc06550d62065bc0f95318e8dcd71e6a8c13c05f313b246d/ReplayWitness.json",
+    "replay": "LiveScripts/S_fceb645fdc06550d62065bc0f95318e8dcd71e6a8c13c05f313b246d/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "533be29ad4778dc37be40ce5c0cc8ec884f340da675c448ffa9b208e22723dfb"
+  },
+  "fd5419d8391d3f26d7d9749834db639e772647d4ba961befefd0eab7": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_fd5419d8391d3f26d7d9749834db639e772647d4ba961befefd0eab7/ReplayWitness.json",
+    "replay": "LiveScripts/S_fd5419d8391d3f26d7d9749834db639e772647d4ba961befefd0eab7/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "dc489d1ccac171aabecaca7d51ff45edfb66fd8a6f9e8c858c347cf1c9f47126"
+  },
+  "fe066e4d2fbeb7903666ca21356af699decdfd32ba1e15d3b7f73968": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_fe066e4d2fbeb7903666ca21356af699decdfd32ba1e15d3b7f73968/ReplayWitness.json",
+    "replay": "LiveScripts/S_fe066e4d2fbeb7903666ca21356af699decdfd32ba1e15d3b7f73968/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "20c817620d27197f784558b60eb7e295c8355d7b7542a47940ba8b704952899c"
+  },
+  "fe548effe20c8d41ed0f14dad715ce359f995cf68bc15cc44f0a4e60": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_fe548effe20c8d41ed0f14dad715ce359f995cf68bc15cc44f0a4e60/ReplayWitness.json",
+    "replay": "LiveScripts/S_fe548effe20c8d41ed0f14dad715ce359f995cf68bc15cc44f0a4e60/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "aaffa97703df10fa55232477ca15350142b8b702d111f6bd405e4d7a50ac0c59"
+  },
+  "fffee534d121ebcf3085ec2c170c8b98281211c9bc6c2fc7ad351dc4": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_1000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+    "provenance": "LiveScripts/S_fffee534d121ebcf3085ec2c170c8b98281211c9bc6c2fc7ad351dc4/ReplayWitness.json",
+    "replay": "LiveScripts/S_fffee534d121ebcf3085ec2c170c8b98281211c9bc6c2fc7ad351dc4/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "ed630b04a20eecc9605fd33b3d47844542f2dc18d7f528c5187a9437c55af83e"
   }
 }

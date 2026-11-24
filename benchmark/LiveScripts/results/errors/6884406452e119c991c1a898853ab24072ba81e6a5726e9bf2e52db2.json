@@ -1,0 +1,8 @@
+{
+  "script_hash": "6884406452e119c991c1a898853ab24072ba81e6a5726e9bf2e52db2",
+  "run_id": "20261124T172950852829Z-58d02229",
+  "exit_code": 1,
+  "kind": "other",
+  "message": "Inductive datatype with instance parameters not supported: `BitVec",
+  "details": "error: LiveScripts/S_6884406452e119c991c1a898853ab24072ba81e6a5726e9bf2e52db2/Properties.lean:13:0: Inductive datatype with instance parameters not supported: `BitVec\ninfo: LiveScripts/S_6884406452e119c991c1a898853ab24072ba81e6a5726e9bf2e52db2/Properties.lean:13:0: [Start]: Optimization"
+}

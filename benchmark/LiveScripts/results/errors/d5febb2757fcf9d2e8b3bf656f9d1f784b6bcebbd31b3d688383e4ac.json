@@ -1,8 +1,8 @@
 {
   "script_hash": "d5febb2757fcf9d2e8b3bf656f9d1f784b6bcebbd31b3d688383e4ac",
-  "run_id": "20261123T155835845289Z-c2456d09",
+  "run_id": "20261124T172950852829Z-58d02229",
   "exit_code": 1,
-  "kind": "smt",
-  "message": "Unexpected smt error: (error \"line 1365 column 18: invalid datatype declaration, unknown sort '@ε'\")",
-  "details": "LiveScripts/S_d5febb2757fcf9d2e8b3bf656f9d1f784b6bcebbd31b3d688383e4ac/Properties.lean:13:0: error: Unexpected smt error: (error \"line 1365 column 18: invalid datatype declaration, unknown sort '@ε'\")\n for (declare-datatype @Except (par ( |@α| |@β|) ( (Except.error  (Except.error.0 |@ε|))\n (Except.ok  (Except.ok.0 |@α|))\n)))"
+  "kind": "other",
+  "message": "Lean exited with code 139",
+  "details": "error: Lean exited with code 139"
 }
