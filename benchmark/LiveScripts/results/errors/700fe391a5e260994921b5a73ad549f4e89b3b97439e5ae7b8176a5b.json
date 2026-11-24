@@ -1,0 +1,8 @@
+{
+  "script_hash": "700fe391a5e260994921b5a73ad549f4e89b3b97439e5ae7b8176a5b",
+  "run_id": "20261123T160345122783Z-2f178dd8",
+  "exit_code": 1,
+  "kind": "smt",
+  "message": "Unexpected smt error: (error \"line 1307 column 18: invalid datatype declaration, unknown sort '@ε'\")",
+  "details": "LiveScripts/S_700fe391a5e260994921b5a73ad549f4e89b3b97439e5ae7b8176a5b/Properties.lean:13:0: error: Unexpected smt error: (error \"line 1307 column 18: invalid datatype declaration, unknown sort '@ε'\")\n for (declare-datatype @Except (par ( |@α| |@β|) ( (Except.error  (Except.error.0 |@ε|))\n (Except.ok  (Except.ok.0 |@α|))\n)))"
+}

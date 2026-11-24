@@ -1,0 +1,8 @@
+{
+  "script_hash": "3c27ea751008552464f60e52d29c6397e26f138e5af0e8a76ea767cb",
+  "run_id": "20261123T160345122783Z-2f178dd8",
+  "exit_code": 1,
+  "kind": "decode",
+  "message": "Decoding error in 'LiveScripts/S_3c27ea751008552464f60e52d29c6397e26f138e5af0e8a76ea767cb/script.cbor.hex': Could not decode program!",
+  "details": "error: LiveScripts/S_3c27ea751008552464f60e52d29c6397e26f138e5af0e8a76ea767cb/Script.lean:3:0: Decoding error in 'LiveScripts/S_3c27ea751008552464f60e52d29c6397e26f138e5af0e8a76ea767cb/script.cbor.hex': Could not decode program!\nerror: Lean exited with code 1"
+}

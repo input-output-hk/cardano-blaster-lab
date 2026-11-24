@@ -80,6 +80,10 @@ python3 LiveScripts/materialize_replays.py --hash <script-hash> --cek-fuel 10000
 The verifier generates a temporary Lean module containing the three mandatory
 checks and publishes only passing witnesses in `results/verified.json`. CI
 rebuilds every witness and checks the committed result before a PR can pass.
+The dashboard's script detail links to these typed context records (and to
+`CandidateWitness.lean` for the two failed replays). Genuine Lean/SMT failures
+have compact reports under `results/errors/`; the detail shows the message and
+links to the full report.
 
 ## Import and run
 
