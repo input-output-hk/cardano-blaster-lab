@@ -61,7 +61,8 @@ jobs:
         run: python3 scripts/make_smoke_cohort.py --check
 
       - name: Restore shared package builds
-        uses: actions/cache@v4
+        id: shared-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             packages/Lean-blaster/.lake/build
@@ -101,6 +102,16 @@ jobs:
             echo 'An imported Z3 shim object contains a non-PIC x86_64 relocation' >&2
             exit 1
           fi
+
+      - name: Save successful shared package build
+        if: steps.shared-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            packages/Lean-blaster/.lake/build
+            packages/PlutusCoreBlaster/.lake/build
+            packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-shared-build-${{ runner.os }}-${{ hashFiles('benchmark/lean-toolchain', 'benchmark/lake-manifest.json', 'packages/**/*.lean', 'packages/**/lakefile.lean') }}
 
       - name: Verify concrete replay witnesses
         working-directory: benchmark
