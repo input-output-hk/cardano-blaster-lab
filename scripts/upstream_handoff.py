@@ -185,6 +185,7 @@ def main() -> int:
     args = parser.parse_args()
     source_token = os.environ["SOURCE_TOKEN"]
     bot_token = os.environ["BOT_TOKEN"]
+    comment_token = os.environ["COMMENT_TOKEN"]
     permission = api(
         "GET", f"repos/{args.repo}/collaborators/{args.commenter}/permission", source_token,
     )
@@ -214,19 +215,22 @@ def main() -> int:
                 )
                 if link:
                     links.append(link)
-        if links:
-            source_comment(args.repo, args.pr, source_token,
-                           f"Upstream drafts for source commit `{head}`:\n" +
-                           "\n".join(f"- {link}" for link in links))
-        else:
-            source_comment(args.repo, args.pr, source_token,
-                           "`/upstream` found no changes under configured upstream paths.")
-        return 0
     except Exception as exc:
         completed = "\nAlready opened:\n" + "\n".join(f"- {link}" for link in links) if links else ""
-        source_comment(args.repo, args.pr, source_token,
-                       f"`/upstream` stopped: {str(exc)[:1500]}{completed}")
+        try:
+            source_comment(args.repo, args.pr, comment_token,
+                           f"`/upstream` stopped: {str(exc)[:1500]}{completed}")
+        except Exception as comment_exc:
+            print(f"Could not report handoff failure on source PR: {comment_exc}", file=sys.stderr)
         raise
+    if links:
+        source_comment(args.repo, args.pr, comment_token,
+                       f"Upstream drafts for source commit `{head}`:\n" +
+                       "\n".join(f"- {link}" for link in links))
+    else:
+        source_comment(args.repo, args.pr, comment_token,
+                       "`/upstream` found no changes under configured upstream paths.")
+    return 0
 
 
 if __name__ == "__main__":

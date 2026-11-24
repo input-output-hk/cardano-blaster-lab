@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
   pull-requests: read
 
 concurrency:
@@ -59,6 +58,17 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
+      - uses: actions/create-github-app-token@v3
+        if: steps.admin.outputs.authorized == 'true'
+        id: comment-bot
+        with:
+          client-id: ${{ vars.UPSTREAM_APP_CLIENT_ID }}
+          private-key: ${{ secrets.UPSTREAM_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: cardano-blaster-lab
+          permission-contents: read
+          permission-pull-requests: write
+
       - name: Configure bot Git credentials
         id: bot-git
         if: steps.admin.outputs.authorized == 'true'
@@ -76,6 +86,7 @@ jobs:
         env:
           SOURCE_TOKEN: ${{ github.token }}
           BOT_TOKEN: ${{ steps.bot.outputs.token }}
+          COMMENT_TOKEN: ${{ steps.comment-bot.outputs.token }}
           BOT_COMMITTER_NAME: ${{ steps.bot-git.outputs.name }}
           BOT_COMMITTER_EMAIL: ${{ steps.bot-git.outputs.email }}
           GH_TOKEN: ${{ steps.bot.outputs.token }}
