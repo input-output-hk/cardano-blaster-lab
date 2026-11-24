@@ -38,6 +38,41 @@ def classify(code: int | None, output: str, timed_out: bool) -> str:
     return "error"
 
 
+def error_report(result: dict) -> dict:
+    """Keep the actual Lean/SMT error without publishing build environment logs."""
+    lines = (result.get("stdout", "") + "\n" + result.get("stderr", "")).splitlines()
+    first = next((i for i, line in enumerate(lines) if "error:" in line), None)
+    if first is None:
+        details = "\n".join(lines[-20:]).strip()
+        message = lines[-1].strip() if lines else "No diagnostic output recorded"
+    else:
+        excerpt = []
+        for line in lines[first:]:
+            if line.startswith(("[Start]:", "[End]:", "Some required targets")):
+                break
+            excerpt.append(line)
+            if len(excerpt) >= 20:
+                break
+        details = "\n".join(excerpt).strip()[:4000]
+        message = lines[first].strip()
+        message = re.sub(
+            r"^(?:error: )?LiveScripts/S_[0-9a-f]{56}/[^:]+:\d+:\d+: (?:error: )?",
+            "", message,
+        )
+        message = message.removeprefix("error: ")
+    kind = ("recursion_depth" if "maximum recursion depth" in message else
+            "decode" if "Decoding error" in message else
+            "smt" if "smt error" in message.lower() else "other")
+    return {
+        "script_hash": result["script_hash"],
+        "run_id": result["run_id"],
+        "exit_code": result.get("exit_code"),
+        "kind": kind,
+        "message": message,
+        "details": details,
+    }
+
+
 def active_stage(output: str) -> str:
     stage = "elaboration"
     for line in output.splitlines():
@@ -203,6 +238,11 @@ def main() -> None:
                                "timestamp": datetime.now(timezone.utc).isoformat()})
                 sink.write(json.dumps(result, ensure_ascii=False) + "\n")
                 sink.flush()
+                if result["status"] == "error":
+                    report_path = results_dir / "errors" / f"{script_hash}.json"
+                    report_path.parent.mkdir(parents=True, exist_ok=True)
+                    report_path.write_text(json.dumps(error_report(result), indent=2,
+                                                      ensure_ascii=False) + "\n")
                 latest[script_hash] = {
                     "status": result["status"], "seconds": result["seconds"],
                     "timeout_stage": result["timeout_stage"], "config": config, "run_id": run_id,

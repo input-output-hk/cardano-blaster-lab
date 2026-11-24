@@ -11,6 +11,7 @@ on:
       - benchmark/LiveScripts/results/latest.json
       - benchmark/LiveScripts/results/active-config.json
       - benchmark/LiveScripts/results/verified.json
+      - benchmark/LiveScripts/results/errors/**
   workflow_dispatch:
 
 permissions:

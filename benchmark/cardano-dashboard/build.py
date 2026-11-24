@@ -43,8 +43,18 @@ def build() -> dict:
     public_scripts = []
     for record in scripts:
         item = dict(record)
-        item["status"] = statuses.get(record["script_hash"], {}).get("status", "unrun")
-        item["result"] = statuses.get(record["script_hash"], {})
+        script_hash = record["script_hash"]
+        result = dict(statuses.get(script_hash, {}))
+        item["status"] = result.get("status", "unrun")
+        if item["status"] == "error":
+            report_path = REPO / f"LiveScripts/results/errors/{script_hash}.json"
+            if report_path.exists():
+                report = json.loads(report_path.read_text())
+                if report["script_hash"] != script_hash or report["run_id"] != result.get("run_id"):
+                    raise ValueError(f"Stale error report for {script_hash}")
+                result["error_message"] = report["message"]
+                result["error_report"] = f"LiveScripts/results/errors/{script_hash}.json"
+        item["result"] = result
         public_scripts.append(item)
     payload = {
         "schema_version": 1,

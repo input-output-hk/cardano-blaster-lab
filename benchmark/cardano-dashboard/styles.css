@@ -9,3 +9,6 @@
 .overview-scale-start,.overview-scale-end{color:#73839a;font-size:12px;font-weight:700}.overview-scale-start{margin-bottom:8px}.overview-scale-end{text-align:right;margin-top:8px}
 
 .contribute-links{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;max-width:420px;flex-shrink:0}.contribute-links a{font-size:13px;padding:10px 12px}@media(max-width:700px){.contribute-links{justify-content:flex-start;max-width:none}}
+
+.result-links{line-height:1.7}
+.error-message{white-space:pre-wrap;overflow-wrap:anywhere;background:#fff4f3;border:1px solid #f0d5d2;border-radius:8px;padding:12px;color:#8f3339;font-size:13px;line-height:1.5}

@@ -173,10 +173,27 @@ function renderGrid() {
 function openScript(script) {
   const detail = $("#script-detail");
   const examples = script.examples.slice(0, 5).map((e) => `<li>${esc(e.network)} · ${esc(e.purpose)} · <a href="https://${e.network === "preprod" ? "preprod." : ""}cardanoscan.io/transaction/${esc(e.tx_hash)}" target="_blank" rel="noopener noreferrer">${esc(shortHash(e.tx_hash))}</a>${e.valid_contract === true ? " · valid on-chain" : ""}</li>`).join("");
-  const replay = script.result?.replay ? ` · <a href="${repoBase}${esc(script.result.replay)}" target="_blank" rel="noopener noreferrer">Verified replay witness</a>` : "";
-  const provenance = script.result?.provenance ? ` · <a href="${repoBase}${esc(script.result.provenance)}" target="_blank" rel="noopener noreferrer">Replay provenance</a>` : "";
-  const failedReplay = script.result?.candidate_witness ? ` · <a href="${repoBase}${esc(script.result.candidate_witness)}" target="_blank" rel="noopener noreferrer">Unverified candidate model</a>` : "";
-  detail.innerHTML = `<div class="detail-eyebrow">${esc(script.script_type)} · ${esc(script.status)}</div><h2 id="dialog-title">Script detail</h2><div class="detail-hash">${esc(script.script_hash)}</div><div class="detail-grid"><div><span>Networks</span><strong>${esc(script.networks.join(" + "))}</strong></div><div><span>Serialized size</span><strong>${Number(script.serialised_size).toLocaleString()} bytes</strong></div><div><span>Observed purposes</span><strong>${esc(script.purposes.join(", ") || "Unknown")}</strong></div><div><span>Last observed</span><strong>${esc(formatTime(script.last_seen))}</strong></div></div><div class="detail-section"><h3>UPLC family</h3><p>${esc(script.cluster_id || "No structural family recorded")}</p></div><div class="detail-section"><h3>Observed transaction examples</h3><ul>${examples || "<li>No example recorded</li>"}</ul></div><div class="detail-section"><h3>Blaster result</h3><p>${esc(script.result?.note || (script.status === "unrun" ? "No benchmark run has been published for this script yet." : script.status))}</p></div><div class="detail-section"><a href="${repoBase}LiveScripts/S_${esc(script.script_hash)}/Properties.lean" target="_blank" rel="noopener noreferrer">Open Lean property</a> · <a href="${repoBase}LiveScripts/S_${esc(script.script_hash)}/script.cbor.hex" target="_blank" rel="noopener noreferrer">Original script CBOR</a>${replay}${provenance}${failedReplay}</div>`;
+  const contextPath = script.result?.replay || script.result?.candidate_witness;
+  const contextLink = contextPath ? `<a href="${repoBase}${esc(contextPath)}" target="_blank" rel="noopener noreferrer">Decoded script context (${script.status === "verified" ? "verified" : "candidate"})</a>` : "";
+  const provenanceLink = script.result?.provenance ? `<a href="${repoBase}${esc(script.result.provenance)}" target="_blank" rel="noopener noreferrer">Replay provenance</a>` : "";
+  const errorLink = script.result?.error_report ? `<a href="${repoBase}${esc(script.result.error_report)}" target="_blank" rel="noopener noreferrer">Full error message</a>` : "";
+  const resultLinks = [contextLink, provenanceLink, errorLink].filter(Boolean).join(" · ");
+  const errorMessage = script.result?.error_message ? `<pre class="error-message">${esc(script.result.error_message)}</pre>` : "";
+  const note = script.result?.note || (script.status === "unrun" ? "No benchmark run has been published for this script yet." : script.status);
+  detail.innerHTML = `
+    <div class="detail-eyebrow">${esc(script.script_type)} · ${esc(script.status)}</div>
+    <h2 id="dialog-title">Script detail</h2>
+    <div class="detail-hash">${esc(script.script_hash)}</div>
+    <div class="detail-grid">
+      <div><span>Networks</span><strong>${esc(script.networks.join(" + "))}</strong></div>
+      <div><span>Serialized size</span><strong>${Number(script.serialised_size).toLocaleString()} bytes</strong></div>
+      <div><span>Observed purposes</span><strong>${esc(script.purposes.join(", ") || "Unknown")}</strong></div>
+      <div><span>Last observed</span><strong>${esc(formatTime(script.last_seen))}</strong></div>
+    </div>
+    <div class="detail-section"><h3>UPLC family</h3><p>${esc(script.cluster_id || "No structural family recorded")}</p></div>
+    <div class="detail-section"><h3>Observed transaction examples</h3><ul>${examples || "<li>No example recorded</li>"}</ul></div>
+    <div class="detail-section"><h3>Blaster result</h3><p>${esc(note)}</p>${errorMessage}${resultLinks ? `<p class="result-links">${resultLinks}</p>` : ""}</div>
+    <div class="detail-section"><a href="${repoBase}LiveScripts/S_${esc(script.script_hash)}/Properties.lean" target="_blank" rel="noopener noreferrer">Open Lean property</a> · <a href="${repoBase}LiveScripts/S_${esc(script.script_hash)}/script.cbor.hex" target="_blank" rel="noopener noreferrer">Original script CBOR</a></div>`;
   $("#script-dialog").showModal();
 }
 function setupFilters() {
