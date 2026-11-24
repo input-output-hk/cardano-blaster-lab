@@ -4,3 +4,4 @@
 benchmark/cardano-dashboard/dist/
 benchmark/LiveScripts/results/*.log
 benchmark/LiveScripts/results/*.pid
+benchmark/LiveScripts/results/cek-blocks/

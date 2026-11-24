@@ -20,6 +20,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 
 REPO = Path(__file__).resolve().parent.parent
@@ -99,7 +100,24 @@ def run_command(command: list[str], timeout: float, env: dict[str, str]) -> tupl
             stderr.decode("utf-8", errors="replace"), timed_out)
 
 
-def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
+def run_comparison_property(script_hash: str, mode: str, timeout: float,
+                            env: dict[str, str]) -> tuple[int, str, str, bool]:
+    """Run the original property with an optional section-local CEK runner."""
+    source = (REPO / "LiveScripts" / f"S_{script_hash}" / "Properties.lean").read_text()
+    before, marker, after = source.partition("\n#blaster")
+    if not marker:
+        raise ValueError(f"no #blaster property for {script_hash}")
+    command = {"baseline": "", "generated": "#cek_blocks",
+               "indexed": f"#index_uplc script_{script_hash}.script"}[mode]
+    source = "import PlutusCore.UPLC.CekMachine.Blocks\n" + before + "\n" + command + marker + after
+    with TemporaryDirectory(prefix="cardano-cek-blocks-") as directory:
+        path = Path(directory) / "Properties.lean"
+        path.write_text(source)
+        return run_command(["lake", "lean", str(path)], timeout, env)
+
+
+def run_case(script_hash: str, timeout: int, env: dict[str, str],
+             cek_blocks: str | None = None) -> dict:
     started = time.monotonic()
     deadline = started + timeout
     module = f"LiveScripts.S_{script_hash}.Script"
@@ -114,6 +132,10 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
         if remaining <= 0:
             code, output, errors, timed_out = None, "", "", True
             status, stage = "timeout", "script_build"
+        elif cek_blocks is not None:
+            code, output, errors, timed_out = run_comparison_property(script_hash, cek_blocks, remaining, env)
+            status = classify(code, output + errors, timed_out)
+            stage = active_stage(output) if timed_out else None
         else:
             property_module = f"LiveScripts.S_{script_hash}.Properties"
             property_olean = REPO / ".lake/build/lib/lean/LiveScripts" / f"S_{script_hash}" / "Properties.olean"
@@ -123,13 +145,19 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
                 ["lake", "build", property_module], remaining, env)
             status = classify(code, output + errors, timed_out)
             stage = active_stage(output) if timed_out else None
-    return {
+    result = {
         "script_hash": script_hash, "status": status,
         "timeout_stage": stage,
         "seconds": round(time.monotonic() - started, 3),
         "exit_code": code, "stdout": output[-16000:],
         "stderr": errors[-4000:],
     }
+    if cek_blocks is not None:
+        result["phase_seconds"] = {
+            phase: float(seconds)
+            for phase, seconds in re.findall(r"^\[End\]: (.+?) \(([\d.eE+-]+)s\)$", output, re.M)
+        }
+    return result
 
 
 def main() -> None:
@@ -142,6 +170,8 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--cluster-first", action="store_true", help="Try the smallest script in each structural family first")
     parser.add_argument("--skip-existing", action="store_true", help="Skip cases already run with this configuration")
+    parser.add_argument("--cek-blocks", choices=("baseline", "generated", "indexed"),
+                        help="Compare the three CEK runners using isolated experiment results")
     parser.add_argument("--z3", type=Path, help="Path to Z3 5.4 or newer")
     args = parser.parse_args()
     if (args.limit is not None and args.limit < 1) or args.timeout < 1 or args.offset < 0 or args.workers < 1:
@@ -192,7 +222,11 @@ def main() -> None:
     if not match or tuple(map(int, match.groups())) < (5, 4):
         parser.error(f"Z3 5.4 or newer is required; found {version.strip()}")
     results_dir = REPO / "LiveScripts/results"
-    results_dir.mkdir(exist_ok=True)
+    if args.cek_blocks:
+        results_dir /= Path("cek-blocks") / args.cek_blocks
+        subprocess.run(["lake", "build", "+PlutusCore.UPLC.CekMachine.Blocks:dynlib"],
+                       cwd=REPO, env=env, check=True)
+    results_dir.mkdir(parents=True, exist_ok=True)
     latest_path = results_dir / "latest.json"
     latest = json.loads(latest_path.read_text()) if latest_path.exists() else {}
     manifest = json.loads((REPO / "lake-manifest.json").read_text())
@@ -215,10 +249,12 @@ def main() -> None:
         "generator": hashlib.sha256((REPO / "LiveScripts/import_corpus.py").read_bytes()).hexdigest(),
         "runner": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "lab": lab_fingerprint,
+        "cek_blocks": args.cek_blocks,
     }, sort_keys=True).encode()).hexdigest()
     (results_dir / "active-config.json").write_text(json.dumps({
         "config": config, "packages": package_revs, "z3": version.strip(),
         "wall_timeout": args.timeout, "workers": args.workers, "cohort": args.cohort,
+        "cek_blocks": args.cek_blocks,
     }, indent=2, sort_keys=True) + "\n")
     if args.skip_existing:
         hashes = [h for h in hashes if latest.get(h, {}).get("config") != config]
@@ -230,7 +266,7 @@ def main() -> None:
     output_path = results_dir / f"{run_id}.jsonl"
     with output_path.open("w") as sink:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            pending = {pool.submit(run_case, h, args.timeout, env): h for h in hashes}
+            pending = {pool.submit(run_case, h, args.timeout, env, args.cek_blocks): h for h in hashes}
             for index, task in enumerate(as_completed(pending), 1):
                 result = task.result()
                 script_hash = result["script_hash"]

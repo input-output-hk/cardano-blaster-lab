@@ -88,6 +88,11 @@ jobs:
         working-directory: benchmark
         run: lake build CardanoLedgerApi
 
+      - name: Check indexed CEK blocks
+        if: github.event_name == 'pull_request'
+        working-directory: benchmark
+        run: lake lean ../packages/PlutusCoreBlaster/Tests/UPLC/CekMachine/Blocks.lean
+
       - name: Verify concrete replay witnesses
         working-directory: benchmark
         run: python3 LiveScripts/verify_replays.py --check
