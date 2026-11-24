@@ -119,6 +119,18 @@
     "status": "verified",
     "witness_sha256": "1b18e5c3b6095dde1e2182c8c6bd732d9cd9d7499ba1fc08b91bf45da41a7056"
   },
+  "26370b459e5eafe6e179c94a39bb1c278657de5c1875fb9c5d1fa0ba": {
+    "checks": [
+      "valid_context",
+      "is_data_roundtrip",
+      "cek_halt_fuel_10000"
+    ],
+    "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 10000.",
+    "provenance": "LiveScripts/S_26370b459e5eafe6e179c94a39bb1c278657de5c1875fb9c5d1fa0ba/ReplayWitness.json",
+    "replay": "LiveScripts/S_26370b459e5eafe6e179c94a39bb1c278657de5c1875fb9c5d1fa0ba/ReplayWitness.lean",
+    "status": "verified",
+    "witness_sha256": "af0dab180bd3d5c5d2063953cb1d2521a9039c7ac5f7de651e48ed63ea73c2a3"
+  },
   "303cc9b1fb57b69530de8f0995e2f23f4c41018cd4168ab53e6bf118": {
     "checks": [
       "valid_context",

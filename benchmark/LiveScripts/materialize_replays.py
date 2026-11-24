@@ -32,7 +32,7 @@ def typed_model(output: str, binder: str, typ: str) -> str | None:
     return None
 
 
-def materialize(script_hash: str, wall_timeout: int) -> str:
+def materialize(script_hash: str, wall_timeout: int, cek_fuel: int) -> str:
     directory = ROOT / f"S_{script_hash}"
     metadata = json.loads((directory / "metadata.json").read_text())
     version = metadata["script_type"]
@@ -49,14 +49,15 @@ def materialize(script_hash: str, wall_timeout: int) -> str:
 
     property_source = (directory / "Properties.lean").read_text()
     old = "#blaster (timeout: 10)"
-    if property_source.count(old) != 1:
+    if property_source.count(old) != 1 or property_source.count(" 1000)]") != 1:
         raise ValueError(f"Unexpected property syntax for {script_hash}")
     search = directory / "ReplaySearch.lean"
     if search.exists():
         raise ValueError(f"Temporary search module already exists: {search}")
     replay_note = "not reported"
     try:
-        search.write_text(property_source.replace(old, "#blaster (backend: ffi) (replay: 1) (timeout: 10)"))
+        search.write_text(property_source.replace(old, "#blaster (backend: ffi) (replay: 1) (timeout: 10)")
+                          .replace(" 1000)]", f" {cek_fuel})]"))
         module = f"LiveScripts.S_{script_hash}.ReplaySearch"
         try:
             run = subprocess.run(["lake", "build", module], cwd=BENCHMARK, env=os.environ.copy(),
@@ -90,9 +91,10 @@ def materialize(script_hash: str, wall_timeout: int) -> str:
     provenance = witness.with_suffix(".json")
     provenance.write_text(json.dumps({
         "script_hash": script_hash,
-        "baseline_candidate_run_id": json.loads((ROOT / "results/latest.json").read_text()).get(script_hash, {}).get("run_id"),
+        "baseline_run_id": json.loads((ROOT / "results/latest.json").read_text()).get(script_hash, {}).get("run_id"),
         "witness_source": "native Z3 model of Properties.lean",
         "source_revision": revision,
+        "cek_fuel": cek_fuel,
         "backend": "ffi",
         "search_options": "(backend: ffi) (replay: 1) (timeout: 10) (verbose: 1) (solve-result: 1)",
         "blaster_internal_replay": replay_note,
@@ -129,6 +131,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=1, help="Smallest unverified candidates to attempt")
     parser.add_argument("--version", choices=["plutusV1", "plutusV2", "plutusV3"])
     parser.add_argument("--wall-timeout", type=int, default=120)
+    parser.add_argument("--cek-fuel", type=int, default=1000)
     args = parser.parse_args()
     catalog = json.loads((ROOT / "catalog.json").read_text())
     sizes = {item["script_hash"]: item["serialised_size"] for item in catalog["scripts"]}
@@ -141,10 +144,12 @@ def main() -> None:
     hashes = sorted(set(hashes), key=lambda key: (sizes.get(key, 10**12), key))
     if not args.hash and args.limit > 0:
         hashes = hashes[:args.limit]
+    if not 1 <= args.cek_fuel <= 100000:
+        parser.error("--cek-fuel must be between 1 and 100000")
     for script_hash in hashes:
         if not re.fullmatch(r"[0-9a-f]{56}", script_hash):
             raise ValueError(f"Invalid script hash: {script_hash}")
-        print(f"{script_hash}: {materialize(script_hash, args.wall_timeout)}", flush=True)
+        print(f"{script_hash}: {materialize(script_hash, args.wall_timeout, args.cek_fuel)}", flush=True)
 
 
 if __name__ == "__main__":

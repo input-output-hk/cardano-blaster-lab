@@ -23,7 +23,7 @@ PURPOSES = {
 }
 
 
-def check_source(script_hash: str, version: str, purpose: str) -> str:
+def check_source(script_hash: str, version: str, purpose: str, fuel: int) -> str:
     module = f"LiveScripts.S_{script_hash}"
     term = "replayContext" if version == "plutusV3" else "replayInput"
     context = term if version == "plutusV3" else f"{term}.ctx"
@@ -39,7 +39,7 @@ open PlutusCore.UPLC.CekMachine
 -- All three checks must evaluate to true for Lake to build this module.
 #guard valid{function.capitalize()}Context {term}
 #guard (IsData.fromData (IsData.toData {context}) : Option ScriptContext) == some {context}
-#guard match cekExecuteProgram script_{script_hash}.script ({function}Inputs {term}) 1000 with
+#guard match cekExecuteProgram script_{script_hash}.script ({function}Inputs {term}) {fuel} with
   | .Halt _ => true
   | _ => false
 """
@@ -56,10 +56,13 @@ def verify(path: Path) -> tuple[str, dict]:
     provenance = json.loads(provenance_path.read_text())
     if provenance["script_hash"] != script_hash:
         raise ValueError(f"Replay provenance hash mismatch: {provenance_path}")
+    fuel = provenance.get("cek_fuel", 1000)
+    if type(fuel) is not int or not 1 <= fuel <= 100000:
+        raise ValueError(f"Invalid CEK fuel in {provenance_path}: {fuel}")
     version, purpose = metadata["script_type"], metadata["search_purpose"]
     if version not in {"plutusV1", "plutusV2", "plutusV3"} or purpose not in PURPOSES:
         raise ValueError(f"Unsupported replay type: {version}/{purpose}")
-    source = check_source(script_hash, version, purpose)
+    source = check_source(script_hash, version, purpose, fuel)
     check = path.with_name("ReplayCheck.lean")
     if check.exists():
         raise ValueError(f"Temporary replay module already exists: {check}")
@@ -77,11 +80,11 @@ def verify(path: Path) -> tuple[str, dict]:
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     return script_hash, {
         "status": "verified",
-        "note": "Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel 1000.",
+        "note": f"Concrete context passed ledger API validity, Plutus data round-trip, and CEK halt at fuel {fuel}.",
         "replay": f"LiveScripts/S_{script_hash}/ReplayWitness.lean",
         "provenance": f"LiveScripts/S_{script_hash}/ReplayWitness.json",
         "witness_sha256": digest,
-        "checks": ["valid_context", "is_data_roundtrip", "cek_halt_fuel_1000"],
+        "checks": ["valid_context", "is_data_roundtrip", f"cek_halt_fuel_{fuel}"],
     }
 
 
