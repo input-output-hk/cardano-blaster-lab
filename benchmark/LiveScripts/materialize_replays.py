@@ -43,7 +43,8 @@ def witness_type(metadata: dict) -> tuple[str, str, str]:
 
 
 def save_witness(script_hash: str, model: str, cek_fuel: int, *, source_revision: str,
-                 baseline_run_id: str | None, source: str, replay_note: str) -> str:
+                 baseline_run_id: str | None, source: str, replay_note: str,
+                 search_options: str = "(timeout: 10) (verbose: 1) (solve-result: 1)") -> str:
     directory = ROOT / f"S_{script_hash}"
     metadata = json.loads((directory / "metadata.json").read_text())
     if metadata["script_hash"] != script_hash:
@@ -71,7 +72,7 @@ def save_witness(script_hash: str, model: str, cek_fuel: int, *, source_revision
         "source_revision": source_revision,
         "cek_fuel": cek_fuel,
         "backend": "ffi",
-        "search_options": "(backend: ffi) (timeout: 10) (verbose: 1) (solve-result: 1)",
+        "search_options": search_options,
         "blaster_internal_replay": replay_note,
         "verification": "standalone concrete replay through CardanoLedgerApi and PlutusCore CEK",
     }, indent=2) + "\n")
@@ -141,6 +142,7 @@ def materialize(script_hash: str, wall_timeout: int, cek_fuel: int) -> str:
         script_hash, model, cek_fuel, source_revision=revision,
         baseline_run_id=json.loads((ROOT / "results/latest.json").read_text()).get(script_hash, {}).get("run_id"),
         source="native Z3 model of Properties.lean", replay_note=replay_note,
+        search_options="(backend: ffi) (replay: 1) (timeout: 10) (verbose: 1) (solve-result: 1)",
     )
 
 
