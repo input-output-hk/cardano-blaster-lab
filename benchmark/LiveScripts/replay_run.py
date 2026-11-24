@@ -17,7 +17,8 @@ from verify_replays import OUTPUT
 HASH = re.compile(r"[0-9a-f]{56}\Z")
 
 
-def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None = None) -> dict:
+def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None = None,
+           *, shard_index: int = 0, shard_count: int = 1) -> dict:
     active = json.loads((ROOT / "results/active-config.json").read_text())["config"]
     revision = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT.parent, text=True).strip()
@@ -33,7 +34,9 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
                   and HASH.fullmatch(row.get("script_hash", ""))}
     ordered = sorted(candidates, key=lambda h: (sizes.get(h, 10**12), h))
     existing = set(json.loads(OUTPUT.read_text()))
-    pending = [h for h in ordered if h not in existing]
+    all_pending = [h for h in ordered if h not in existing]
+    pending = all_pending[shard_index::shard_count]
+    shard_pending = len(pending)
     if limit:
         pending = pending[:limit]
     outcomes = {}
@@ -56,6 +59,9 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
         "run_id": next(iter(run_ids), None), "revision": revision, "head_sha": head_sha or revision,
         "config": active,
         "candidates": len(ordered), "already_verified": len(ordered) - len([h for h in ordered if h not in existing]),
+        "pending_total": len(all_pending), "shard_index": shard_index,
+        "shard_count": shard_count, "shard_pending": shard_pending,
+        "skipped_due_to_limit": shard_pending - len(pending),
         "attempted": len(outcomes), "newly_verified": sum(v == "verified" for v in outcomes.values()),
         "outcomes": outcomes,
     }
@@ -80,12 +86,17 @@ def main() -> None:
                         help="Maximum new witnesses to check; 0 checks all")
     parser.add_argument("--cek-fuel", type=int, default=1000)
     parser.add_argument("--head-sha", help="PR head SHA; the checked-out revision may be a merge commit")
+    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--shard-count", type=int, default=1)
     args = parser.parse_args()
     if args.limit < 0 or not 1 <= args.cek_fuel <= 100000:
         parser.error("limit must be nonnegative and CEK fuel must be 1..100000")
     if args.head_sha and not re.fullmatch(r"[0-9a-f]{40}", args.head_sha):
         parser.error("--head-sha must be a 40-character Git SHA")
-    print(json.dumps(replay(args.results_file, args.limit, args.cek_fuel, args.head_sha)))
+    if args.shard_count < 1 or not 0 <= args.shard_index < args.shard_count:
+        parser.error("shard index must be in 0..shard-count-1")
+    print(json.dumps(replay(args.results_file, args.limit, args.cek_fuel, args.head_sha,
+                            shard_index=args.shard_index, shard_count=args.shard_count)))
 
 
 if __name__ == "__main__":

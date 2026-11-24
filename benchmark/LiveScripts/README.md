@@ -105,11 +105,16 @@ limits only SMT solving; the runner also kills the whole Lean process group
 after 25 wall-clock seconds, including elaboration and optimization. It writes
 raw results under `results/` and classifies which stage timed out.
 `--cluster-first` tries the smallest member of each structural family before
-the full exact-hash sweep. `--skip-existing` resumes a run for the same
-dependency and runner configuration. `results/latest.json` feeds
+the full exact-hash sweep. Cluster diagnostics can resume with
+`--skip-existing`; a full run reruns every exact hash so its raw artifact
+contains every candidate model. `results/latest.json` feeds
 candidate, timeout, unknown, and error states to the dashboard. A benchmark
 run does not automatically produce a green result or a frontier point.
 `run_all.py` performs both passes in sequence and resumes completed cases.
+PR smoke checks replay every new candidate. A completed full GitHub Actions
+sweep starts a separate matrix workflow that replays every new candidate in
+batches of up to 16 and checks that every candidate was attempted before
+uploading the combined evidence artifact.
 
 ## Contributing
 

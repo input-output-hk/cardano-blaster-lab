@@ -32,7 +32,7 @@ def main() -> None:
                "--timeout", str(args.timeout)]
     if args.tier == "clusters":
         command.append("--cluster-first")
-    if args.tier != "smoke":
+    if args.tier == "clusters":
         command.append("--skip-existing")
     if args.limit:
         command.extend(("--limit", str(args.limit)))

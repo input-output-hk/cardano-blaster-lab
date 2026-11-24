@@ -106,13 +106,6 @@ jobs:
         working-directory: benchmark
         run: python3 LiveScripts/verify_replays.py --check
 
-      - name: Reuse cluster results for full run
-        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'full'
-        uses: actions/cache/restore@v4
-        with:
-          path: benchmark/LiveScripts/results/latest.json
-          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-${{ inputs.workers }}w-25s-z3-5.4.1
-
       - name: Run selected tier
         env:
           BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
@@ -129,17 +122,12 @@ jobs:
 
       - name: Replay new counterexamples
         working-directory: benchmark
+        env:
+          REPLAY_LIMIT: ${{ github.event_name == 'pull_request' && '0' || '12' }}
         run: |
           python3 LiveScripts/replay_run.py \
-            --results-file "$(cat "$RUNNER_TEMP/cardano-result-path")" --limit 12 \
+            --results-file "$(cat "$RUNNER_TEMP/cardano-result-path")" --limit "$REPLAY_LIMIT" \
             --head-sha "${{ github.event.pull_request.head.sha || github.sha }}"
-
-      - name: Save cluster results for full run
-        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'clusters' && inputs.limit == 0
-        uses: actions/cache/save@v4
-        with:
-          path: benchmark/LiveScripts/results/latest.json
-          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-${{ inputs.workers }}w-25s-z3-5.4.1
 
       - name: Summarize results
         if: always()
