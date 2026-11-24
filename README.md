@@ -83,6 +83,37 @@ is built from `benchmark/cardano-dashboard/`. Its grid reads the committed
 `active-config.json`. A push to `main` that changes those files redeploys the
 site through GitHub Pages.
 
+## Sending a lab PR upstream
+
+The **Upstream handoff** GitHub Action lets a lab repository admin comment
+`/upstream` on an open lab PR. It splits that PR's commits by the source paths
+in [`upstreams.json`](upstreams.json), replays each affected subtree onto its
+configured upstream branch, and opens draft PRs in the affected repositories.
+Each mirrored commit keeps its original author, author date, message, and
+`Co-authored-by` trailers. The GitHub App bot is the committer and PR opener.
+The action comments with the draft links or a conflict diagnostic on the lab
+PR. Repeating `/upstream` for the same PR head finds the existing drafts; a new
+PR head gets new draft branches. Merge commits in the source PR require manual
+splitting.
+
+To enable the action after its workflow is merged into the default branch:
+
+1. Create a GitHub App with **Contents: Read and write** and **Pull requests:
+   Read and write** repository permissions. Install it on `Lean-blaster`,
+   `PlutusCoreBlaster`, `CardanoLedgerApiBlaster`, and `Blaster-benchmarking`
+   in `input-output-hk`. No webhook or HTTPS callback is needed.
+2. In `cardano-blaster-lab` → **Settings → Secrets and variables → Actions**,
+   set the repository **variable** `UPSTREAM_APP_CLIENT_ID` to the App's client
+   ID and the repository **secret** `UPSTREAM_APP_PRIVATE_KEY` to its generated
+   private key (including the PEM header and footer).
+3. As a repository admin, comment exactly `/upstream` on the lab PR. Review
+   the draft upstream PRs and their CI before merging them.
+
+The workflow checks admin permission before minting the App token. It runs code
+from the lab's default branch; PR contents are read as Git patches and are not
+executed with the write token. The App token is limited to the four target
+repositories and the two required permissions.
+
 ## Automatic error reports
 
 After each benchmark workflow, the [error agent](scripts/error_agent.py) reads
