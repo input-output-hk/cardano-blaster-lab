@@ -19,6 +19,7 @@ def main() -> None:
     parser.add_argument("--z3", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--limit", type=int, help="Run only the first N cases for a local pilot")
+    parser.add_argument("--script", help="Run one exact script hash from the selected tier")
     parser.add_argument("--timeout", type=int, default=25,
                         help="Whole-process seconds per case; SMT remains fixed at 10 seconds")
     args = parser.parse_args()
@@ -34,6 +35,8 @@ def main() -> None:
         command.append("--skip-existing")
     if args.limit:
         command.extend(("--limit", str(args.limit)))
+    if args.script:
+        command.extend(("--script", args.script))
     subprocess.run(command, cwd=BENCHMARK, check=True)
 
 

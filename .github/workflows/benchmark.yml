@@ -34,6 +34,15 @@ on:
         type: number
         required: true
         default: 0
+      script_hash:
+        description: Optional exact script hash from the selected tier
+        type: string
+        required: false
+      wall_timeout:
+        description: Whole-process seconds per script, including optimization
+        type: number
+        required: true
+        default: 25
 
 permissions:
   contents: read
@@ -88,6 +97,39 @@ jobs:
         working-directory: benchmark
         run: lake build CardanoLedgerApi
 
+      - name: Check datatype parameter regression
+        working-directory: packages/Lean-blaster
+        run: lake build Tests.FixedIssues.Issue454
+
+      - name: Recheck scripts affected by datatype parameter error
+        working-directory: benchmark
+        run: |
+          z3="$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
+          for script_hash in \
+            d5febb2757fcf9d2e8b3bf656f9d1f784b6bcebbd31b3d688383e4ac \
+            700fe391a5e260994921b5a73ad549f4e89b3b97439e5ae7b8176a5b; do
+            python3 LiveScripts/benchmark.py --script "$script_hash" \
+              --workers 1 --timeout 90 --z3 "$z3"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          hashes = (
+              "d5febb2757fcf9d2e8b3bf656f9d1f784b6bcebbd31b3d688383e4ac",
+              "700fe391a5e260994921b5a73ad549f4e89b3b97439e5ae7b8176a5b",
+          )
+          root = Path("LiveScripts/results")
+          latest = json.loads((root / "latest.json").read_text())
+          for script_hash in hashes:
+              run_id = latest[script_hash]["run_id"]
+              result = next(row for line in (root / f"{run_id}.jsonl").read_text().splitlines()
+                            if (row := json.loads(line))["script_hash"] == script_hash)
+              print(f"{script_hash}: {result['status']} after {result['seconds']} s")
+              if "invalid datatype declaration" in result["stdout"] + result["stderr"]:
+                  raise SystemExit(f"Datatype parameter regression persists for {script_hash}")
+          PY
+
       - name: Verify concrete replay witnesses
         working-directory: benchmark
         run: python3 LiveScripts/verify_replays.py --check
@@ -104,11 +146,16 @@ jobs:
           BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
           BENCH_WORKERS: ${{ github.event_name == 'pull_request' && '1' || inputs.workers }}
           BENCH_LIMIT: ${{ github.event_name == 'pull_request' && '0' || inputs.limit }}
+          BENCH_SCRIPT_HASH: ${{ inputs.script_hash || '' }}
+          BENCH_TIMEOUT: ${{ github.event_name == 'pull_request' && '25' || inputs.wall_timeout }}
         run: |
           args=(--z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
-                --workers "$BENCH_WORKERS" --timeout 25)
+                --workers "$BENCH_WORKERS" --timeout "$BENCH_TIMEOUT")
           if [[ "$BENCH_LIMIT" -gt 0 ]]; then
             args+=(--limit "$BENCH_LIMIT")
+          fi
+          if [[ -n "$BENCH_SCRIPT_HASH" ]]; then
+            args+=(--script "$BENCH_SCRIPT_HASH")
           fi
           python3 scripts/bench.py "$BENCH_TIER" "${args[@]}"
 
