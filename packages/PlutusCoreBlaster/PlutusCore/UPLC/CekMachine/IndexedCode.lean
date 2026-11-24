@@ -1,22 +1,17 @@
 import Blaster.Optimize.Env.Extension
-import PlutusCore.UPLC.CekMachine.BlockLemmas
+import PlutusCore.UPLC.CekMachine
 
 namespace PlutusCore.UPLC.CekMachine.Blocks
 
 open Lean Elab Command Blaster Blaster.Optimize
 open PlutusCore.UPLC.CekMachine
-open PlutusCore.UPLC.Term (Program)
-
-private def termType := mkConst ``PlutusCore.UPLC.Term.Term
-private def instructionType := mkApp (mkConst ``Option [levelZero]) termType
-private def noInstructions := mkApp (mkConst ``List.nil [levelZero]) instructionType
+open PlutusCore.UPLC.Term (Program Term)
 
 /-- The code to enter after pushing a static application or force prefix.
 Application frames capture the environment supplied at runtime. -/
 private structure EvalPrefix where
   frames : List (Option Expr) := []
   steps : Nat := 0
-  instructions : Expr := noInstructions
   target : Nat
   deriving Inhabited
 
@@ -40,13 +35,7 @@ private structure Compiler where
 private abbrev CompileM := StateT Compiler CoreM
 
 private def pushPrefix (arg : Option Expr) (next : EvalPrefix) : EvalPrefix :=
-  let instruction := match arg with
-    | some term => mkApp2 (mkConst ``Option.some [levelZero]) termType term
-    | none => mkApp (mkConst ``Option.none [levelZero]) termType
-  { next with
-    frames := arg :: next.frames
-    steps := next.steps + 1
-    instructions := mkApp3 (mkConst ``List.cons [levelZero]) instructionType instruction next.instructions }
+  { next with frames := arg :: next.frames, steps := next.steps + 1 }
 
 mutual
   private partial def compileTerm (label : Name) (term : Expr) : CompileM Nat := do
@@ -150,28 +139,19 @@ def IndexedProgram.advance (program : IndexedProgram) (base : Expr → Expr → 
 
 /-- Enter a compiled prefix with one index lookup. If the fuel runs out inside
 the prefix, CEK is still evaluating and returns `BudgetExhausted`. -/
-def IndexedProgram.advancePrefix (program : IndexedProgram) (sv state : Expr)
-    (fuel : Nat) : Option (Expr × Nat × Expr) := do
+def IndexedProgram.advancePrefix (program : IndexedProgram) (state : Expr)
+    (fuel : Nat) : Option (Expr × Nat) := do
   let .app (.app (.app ctor@(.const ``State.Eval _) stack) env) term := state | none
   let pc ← program.locate? term
   let spine := program.code[pc]!.spine
   guard (spine.steps > 0)
-  let target := program.code[spine.target]!.addr
-  if fuel ≤ spine.steps then
-    let bound := mkApp2 (mkConst ``Eq.refl [levelOne]) (mkConst ``Bool) (mkConst ``Bool.true)
-    let proof := mkAppN (mkConst ``runSteps_evalPrefix_exhausted)
-      #[sv, stack, env, spine.instructions, target, mkNatLit fuel, bound]
-    return (mkConst ``State.BudgetExhausted, 0, proof)
-  let originalStack := stack
+  if fuel ≤ spine.steps then return (mkConst ``State.BudgetExhausted, 0)
   let stack := spine.frames.foldl (init := stack) fun stack frame =>
     let frame := match frame with
       | some arg => mkApp2 (mkConst ``Frame.LeftApplicationToTerm) arg env
       | none => mkConst ``Frame.ForceFrame
     mkApp3 (mkConst ``List.cons [levelZero]) (mkConst ``Frame) frame stack
-  let remaining := fuel - spine.steps
-  let proof := mkApp6 (mkConst ``runSteps_evalPrefix_advance)
-    sv originalStack env spine.instructions target (mkNatLit remaining)
-  return (mkApp3 ctor stack env target, remaining, proof)
+  return (mkApp3 ctor stack env program.code[spine.target]!.addr, fuel - spine.steps)
 
 /-- Expand code references before a final value can be observed by the spec. -/
 def IndexedProgram.finish (program : IndexedProgram) (state : Expr) : Expr :=

@@ -108,11 +108,11 @@ theorem runSteps_evalPrefix_advance (sv : BuiltinSemanticsVariant) (stack : Stac
       simp only [prefixTerm, prefixStack, List.length_cons, Nat.succ_add] <;>
       apply ih
 
-/-- The native runner supplies a closed fuel comparison for a cut within the prefix. -/
+/-- A run that stops inside the prefix exhausts its fuel. -/
 theorem runSteps_evalPrefix_exhausted (sv : BuiltinSemanticsVariant) (stack : Stack)
     (env : Environment) (instrs : List (Option Term)) (term : Term) (fuel : Nat)
-    (bound : decide (fuel ≤ instrs.length) = true) :
+    (bound : fuel ≤ instrs.length) :
     runSteps sv (.Eval stack env (prefixTerm instrs term)) fuel = .BudgetExhausted := by
-  rw [runSteps_evalPrefix, if_pos (of_decide_eq_true bound)]
+  rw [runSteps_evalPrefix, if_pos bound]
 
 end PlutusCore.UPLC.CekMachine.Blocks
