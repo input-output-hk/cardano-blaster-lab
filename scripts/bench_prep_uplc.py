@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BENCH = ROOT / "benchmark"
 CASE = BENCH / "BlasterBenchmarks/PrepUplc/SellNFT.lean"
+WORKSPACE = ROOT / "packages/CardanoLedgerApiBlaster"
 
 
 def main() -> None:
@@ -51,8 +52,26 @@ def main() -> None:
     env["PREP_UPLC_BENCH_OUT"] = str(output)
     library_var = "DYLD_LIBRARY_PATH" if sys.platform == "darwin" else "LD_LIBRARY_PATH"
     env[library_var] = str(library) + os.pathsep + env.get(library_var, "")
+    # A clean clone does not have the dependency .olean files yet. Build them
+    # before the timed command, then measure a fresh elaboration of the case.
+    build_started = time.monotonic()
+    build = subprocess.Popen(
+        ["lake", "build", "Benchmark.PrepUplc.Harness", "CardanoLedgerApi.V2"],
+        cwd=WORKSPACE, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        start_new_session=True,
+    )
+    try:
+        build_stdout, _ = build.communicate(timeout=900)
+    except subprocess.TimeoutExpired:
+        os.killpg(build.pid, signal.SIGKILL)
+        build_stdout, _ = build.communicate()
+        raise SystemExit("Prerequisite build exceeded 900 seconds")
+    output.with_suffix(".build.log").write_bytes(build_stdout)
+    if build.returncode:
+        raise SystemExit(f"Prerequisite build failed; see {output.with_suffix('.build.log')}")
+    build_s = round(time.monotonic() - build_started, 3)
     started = time.monotonic()
-    process = subprocess.Popen(["lake", "lean", str(CASE)], cwd=BENCH, env=env,
+    process = subprocess.Popen(["lake", "lean", str(CASE)], cwd=WORKSPACE, env=env,
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                start_new_session=True)
     timed_out = False
@@ -68,6 +87,7 @@ def main() -> None:
     summary = {
         "case": "sellNFT@1800", "status": "timeout" if timed_out else record.get("status", "error"),
         "prep_ms": record.get("wall_ms"), "process_s": round(time.monotonic() - started, 3),
+        "build_s": build_s,
         "exit_code": process.returncode, "z3": version, "output": str(output), "log": str(log),
     }
     print(json.dumps(summary, indent=2), flush=True)
