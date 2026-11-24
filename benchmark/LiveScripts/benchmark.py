@@ -31,6 +31,8 @@ def classify(code: int | None, output: str, timed_out: bool) -> str:
         return "timeout"
     if code == 0 and "✅ Expected Falsified" in output and "Counterexample:" in output:
         return "candidate"
+    if "❌ Unexpected Valid" in output:
+        return "unknown"
     if code == 0 and ("Undetermined" in output or "Valid" in output):
         return "unknown"
     return "error"
@@ -206,6 +208,8 @@ def main() -> None:
                     "timeout_stage": result["timeout_stage"], "config": config, "run_id": run_id,
                     "note": "Blaster returned a CardanoLedgerApi-valid context candidate; independent replay is pending."
                     if result["status"] == "candidate" else
+                    "No counterexample at CEK fuel 1000; a higher fuel limit may reveal one."
+                    if "❌ Unexpected Valid" in result["stdout"] + result["stderr"] else
                     f"Last run: {result['status']}"
                     + (f" during {result['timeout_stage']}" if result["timeout_stage"] else "")
                     + f" after {result['seconds']} s.",
