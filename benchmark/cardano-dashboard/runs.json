@@ -5,6 +5,13 @@
       "cohort": "2026-11-23",
       "gained": 50,
       "pinned": true,
+      "prs": [
+        {
+          "number": 35,
+          "repo": "cardano-blaster-lab",
+          "url": "https://github.com/input-output-hk/cardano-blaster-lab/pull/35"
+        }
+      ],
       "regressed": 0,
       "run_id": "verified-replay-20261124-candidate-sweep",
       "solved_count": 50,
