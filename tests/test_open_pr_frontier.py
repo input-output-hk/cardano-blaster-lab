@@ -1,4 +1,6 @@
 import importlib.util
+import hashlib
+import json
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -44,15 +46,45 @@ class OpenPRFrontierTest(unittest.TestCase):
             self.assertIsNone(open_pr_frontier.replay_run("org/repo", 44, sha))
             self.assertEqual(call.call_count, 1)
 
-        run = {"head_sha": sha, "pull_requests": [{"number": 44}], "id": 12}
+        run = {"head_sha": sha, "pull_requests": [{"number": 44}], "id": 12,
+               "conclusion": "success"}
         job = {"name": "benchmark", "html_url": "https://example.com/replay", "steps": [
             {"name": open_pr_frontier.REPLAY_STEP, "conclusion": "success",
-             "completed_at": "2026-11-24T12:00:00Z"}
+             "completed_at": "2026-11-24T12:00:00Z"},
+            {"name": open_pr_frontier.POST_SEARCH_STEP, "conclusion": "success",
+             "completed_at": "2026-11-24T12:03:00Z"},
         ]}
         with patch.object(open_pr_frontier, "api",
                           side_effect=[{"workflow_runs": [run]}, [{"jobs": [job]}]]):
-            self.assertEqual(open_pr_frontier.replay_run("org/repo", 44, sha)["url"],
-                             "https://example.com/replay")
+            evidence = open_pr_frontier.replay_run("org/repo", 44, sha)
+            self.assertEqual(evidence["url"], "https://example.com/replay")
+            self.assertTrue(evidence["post_search"])
+            self.assertEqual(evidence["run_id"], 12)
+
+    def test_artifact_requires_matching_concrete_witness(self):
+        sha = "1" * 40
+        script_hash = "a" * 56
+        witness = b"def replayInput := 1\n"
+        record = {script_hash: {"status": "verified",
+                                "checks": ["valid_context", "is_data_roundtrip", "cek_halt_fuel_1000"],
+                                "witness_sha256": hashlib.sha256(witness).hexdigest()}}
+
+        def download(command, **_):
+            root = Path(command[-1])
+            (root / "verified.json").write_text(json.dumps(record))
+            (root / "replay-summary.json").write_text(json.dumps({
+                "head_sha": sha, "revision": "2" * 40,
+            }))
+            (root / "replay-evidence.json").write_text(json.dumps({script_hash: witness.decode()}))
+            return type("Result", (), {"returncode": 0, "stderr": ""})()
+
+        with patch.object(open_pr_frontier.subprocess, "run", side_effect=download):
+            self.assertEqual(open_pr_frontier.artifact_verified_hashes("org/repo", 12, sha),
+                             {script_hash})
+        record[script_hash]["witness_sha256"] = "0" * 64
+        with patch.object(open_pr_frontier.subprocess, "run", side_effect=download):
+            with self.assertRaisesRegex(ValueError, "mismatched replay witness"):
+                open_pr_frontier.artifact_verified_hashes("org/repo", 12, sha)
 
     def test_solver_candidates_are_excluded(self):
         self.assertEqual(open_pr_frontier.verified_hashes({

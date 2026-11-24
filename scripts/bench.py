@@ -21,6 +21,8 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="Run only the first N cases for a local pilot")
     parser.add_argument("--timeout", type=int, default=25,
                         help="Whole-process seconds per case; SMT remains fixed at 10 seconds")
+    parser.add_argument("--result-path-file", type=Path,
+                        help="Write the JSONL path for a post-search replay step")
     args = parser.parse_args()
     if args.workers < 1 or args.timeout < 1 or (args.limit is not None and args.limit < 1):
         parser.error("workers, timeout, and limit must be positive")
@@ -34,6 +36,8 @@ def main() -> None:
         command.append("--skip-existing")
     if args.limit:
         command.extend(("--limit", str(args.limit)))
+    if args.result_path_file:
+        command.extend(("--result-path-file", str(args.result_path_file.resolve())))
     subprocess.run(command, cwd=BENCHMARK, check=True)
 
 
