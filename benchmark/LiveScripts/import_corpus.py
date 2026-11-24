@@ -65,11 +65,11 @@ def property_module(script_hash: str, script_type: str, purpose: str) -> str:
         "open PlutusCore.UPLC.CekMachine (cekExecuteProgram)\n"
         "open PlutusCore.UPLC.Utils (isSuccessful)\n\n"
         "-- A counterexample is a candidate until its concrete invocation is replayed.\n"
-        f"-- Search purpose: {purpose}; CEK fuel: 1000; SMT limit: 10 seconds.\n"
+        f"-- Search purpose: {purpose}; CEK fuel: 3000; SMT limit: 10 seconds.\n"
         "#blaster (timeout: 10) (verbose: 1) (solve-result: 1)\n"
         f"  [∀ {variable} : {variable_type},\n"
         f"    {valid} {variable} →\n"
-        f"      ¬ isSuccessful (cekExecuteProgram script_{script_hash}.script ({inputs} {variable}) 1000)]\n"
+        f"      ¬ isSuccessful (cekExecuteProgram script_{script_hash}.script ({inputs} {variable}) 3000)]\n"
     )
 
 

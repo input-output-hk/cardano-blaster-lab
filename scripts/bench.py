@@ -21,15 +21,16 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="Run only the first N cases for a local pilot")
     parser.add_argument("--timeout", type=int, default=25,
                         help="Whole-process seconds per case; SMT remains fixed at 10 seconds")
+    parser.add_argument("--cek-fuel", type=int, default=3000)
     parser.add_argument("--result-path-file", type=Path,
                         help="Write the JSONL path for a post-search replay step")
     args = parser.parse_args()
-    if args.workers < 1 or args.timeout < 1 or (args.limit is not None and args.limit < 1):
-        parser.error("workers, timeout, and limit must be positive")
+    if args.workers < 1 or args.timeout < 1 or not 1 <= args.cek_fuel <= 100000 or (args.limit is not None and args.limit < 1):
+        parser.error("workers, timeout, CEK fuel, and limit must be positive")
     cohort = "smoke-2026-11-23" if args.tier == "smoke" else "2026-11-23"
     command = [sys.executable, "LiveScripts/benchmark.py", "--cohort", cohort,
                "--z3", str(args.z3.resolve()), "--workers", str(args.workers),
-               "--timeout", str(args.timeout)]
+               "--timeout", str(args.timeout), "--cek-fuel", str(args.cek_fuel)]
     if args.tier == "clusters":
         command.append("--cluster-first")
     if args.tier == "clusters":

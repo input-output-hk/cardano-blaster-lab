@@ -20,10 +20,25 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 
 REPO = Path(__file__).resolve().parent.parent
 HASH = re.compile(r"[0-9a-f]{56}\Z")
+FUEL_CALL = re.compile(
+    r"(\bcekExecuteProgram\s+script_[0-9a-f]{56}\.script\s+\([^)]+\)\s+)(\d+)(\)\])"
+)
+
+
+def property_at_fuel(source: str, fuel: int) -> str:
+    """Change the one CEK bound in a generated property without editing the corpus."""
+    source, count = FUEL_CALL.subn(lambda match: match[1] + str(fuel) + match[3], source)
+    if count != 1:
+        raise ValueError(f"expected one generated CEK call, found {count}")
+    source, count = re.subn(r"(CEK fuel: )\d+", lambda match: match[1] + str(fuel), source)
+    if count != 1:
+        raise ValueError(f"expected one CEK fuel comment, found {count}")
+    return source
 
 
 def classify(code: int | None, output: str, timed_out: bool) -> str:
@@ -99,7 +114,7 @@ def run_command(command: list[str], timeout: float, env: dict[str, str]) -> tupl
             stderr.decode("utf-8", errors="replace"), timed_out)
 
 
-def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
+def run_case(script_hash: str, timeout: int, env: dict[str, str], cek_fuel: int = 3000) -> dict:
     started = time.monotonic()
     deadline = started + timeout
     module = f"LiveScripts.S_{script_hash}.Script"
@@ -115,16 +130,17 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
             code, output, errors, timed_out = None, "", "", True
             status, stage = "timeout", "script_build"
         else:
-            property_module = f"LiveScripts.S_{script_hash}.Properties"
-            property_olean = REPO / ".lake/build/lib/lean/LiveScripts" / f"S_{script_hash}" / "Properties.olean"
-            # Force a fresh solver run even when Lake has cached this module.
-            property_olean.unlink(missing_ok=True)
-            code, output, errors, timed_out = run_command(
-                ["lake", "build", property_module], remaining, env)
+            source = (REPO / "LiveScripts" / f"S_{script_hash}" / "Properties.lean").read_text()
+            with TemporaryDirectory(prefix="cardano-fuel-") as directory:
+                property_path = Path(directory) / "Properties.lean"
+                property_path.write_text(property_at_fuel(source, cek_fuel))
+                # A temporary module ensures that every search runs Blaster anew.
+                code, output, errors, timed_out = run_command(
+                    ["lake", "lean", str(property_path)], remaining, env)
             status = classify(code, output + errors, timed_out)
             stage = active_stage(output) if timed_out else None
     return {
-        "script_hash": script_hash, "status": status,
+        "script_hash": script_hash, "status": status, "cek_fuel": cek_fuel,
         "timeout_stage": stage,
         "seconds": round(time.monotonic() - started, 3),
         # A replay must use the complete model from this run, including its first line.
@@ -140,6 +156,8 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="Stop after this many cases")
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--timeout", type=int, default=25, help="Hard wall-clock seconds per case, including optimization")
+    parser.add_argument("--cek-fuel", type=int, default=3000,
+                        help="CEK step bound for each Blaster search (default: 3000)")
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--cluster-first", action="store_true", help="Try the smallest script in each structural family first")
     parser.add_argument("--skip-existing", action="store_true", help="Skip cases already run with this configuration")
@@ -147,8 +165,8 @@ def main() -> None:
     parser.add_argument("--result-path-file", type=Path,
                         help="Write the exact JSONL path for a post-search replay step")
     args = parser.parse_args()
-    if (args.limit is not None and args.limit < 1) or args.timeout < 1 or args.offset < 0 or args.workers < 1:
-        parser.error("limit, timeout and workers must be positive; offset cannot be negative")
+    if (args.limit is not None and args.limit < 1) or args.timeout < 1 or args.offset < 0 or args.workers < 1 or not 1 <= args.cek_fuel <= 100000:
+        parser.error("limit, timeout, workers and CEK fuel must be positive; offset cannot be negative")
     cohort = json.loads((REPO / "LiveScripts/cohorts" / f"{args.cohort}.json").read_text())
     hashes = cohort["script_hashes"]
     if args.cluster_first:
@@ -215,6 +233,7 @@ def main() -> None:
     config = hashlib.sha256(json.dumps({
         "packages": package_revs, "z3": version.strip(), "wall_timeout": args.timeout,
         "workers": args.workers,
+        "cek_fuel": args.cek_fuel,
         "generator": hashlib.sha256((REPO / "LiveScripts/import_corpus.py").read_bytes()).hexdigest(),
         "runner": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "lab": lab_fingerprint,
@@ -222,6 +241,7 @@ def main() -> None:
     (results_dir / "active-config.json").write_text(json.dumps({
         "config": config, "packages": package_revs, "z3": version.strip(),
         "wall_timeout": args.timeout, "workers": args.workers, "cohort": args.cohort,
+        "cek_fuel": args.cek_fuel,
     }, indent=2, sort_keys=True) + "\n")
     if args.skip_existing:
         hashes = [h for h in hashes if latest.get(h, {}).get("config") != config]
@@ -235,7 +255,7 @@ def main() -> None:
         args.result_path_file.write_text(str(output_path.resolve()) + "\n")
     with output_path.open("w") as sink:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            pending = {pool.submit(run_case, h, args.timeout, env): h for h in hashes}
+            pending = {pool.submit(run_case, h, args.timeout, env, args.cek_fuel): h for h in hashes}
             for index, task in enumerate(as_completed(pending), 1):
                 result = task.result()
                 script_hash = result["script_hash"]
@@ -252,10 +272,11 @@ def main() -> None:
                                                       ensure_ascii=False) + "\n")
                 latest[script_hash] = {
                     "status": result["status"], "seconds": result["seconds"],
+                    "cek_fuel": args.cek_fuel,
                     "timeout_stage": result["timeout_stage"], "config": config, "run_id": run_id,
                     "note": "Blaster returned a CardanoLedgerApi-valid context candidate; independent replay is pending."
                     if result["status"] == "candidate" else
-                    "No counterexample at CEK fuel 1000; a higher fuel limit may reveal one."
+                    f"No counterexample at CEK fuel {args.cek_fuel}; a higher fuel limit may reveal one."
                     if "❌ Unexpected Valid" in result["stdout"] + result["stderr"] else
                     f"Last run: {result['status']}"
                     + (f" during {result['timeout_stage']}" if result["timeout_stage"] else "")

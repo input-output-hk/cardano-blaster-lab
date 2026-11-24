@@ -10,6 +10,7 @@ import re
 import subprocess
 from pathlib import Path
 
+from benchmark import property_at_fuel
 from verify_replays import BENCHMARK, OUTPUT, ROOT, verify
 
 
@@ -23,7 +24,7 @@ def typed_model(output: str, binder: str, typ: str) -> str | None:
             continue
         expression = [line.split(marker, 1)[1]]
         for following in lines[i + 1:]:
-            if following.startswith(("info:", "error:", "warning:")):
+            if following.startswith(("info:", "error:", "warning:", "[Start]:", "[End]:")):
                 break
             expression.append(following)
         value = "\n".join(expression).strip()
@@ -111,15 +112,16 @@ def materialize(script_hash: str, wall_timeout: int, cek_fuel: int) -> str:
 
     property_source = (directory / "Properties.lean").read_text()
     old = "#blaster (timeout: 10)"
-    if property_source.count(old) != 1 or property_source.count(" 1000)]") != 1:
+    if property_source.count(old) != 1:
         raise ValueError(f"Unexpected property syntax for {script_hash}")
     search = directory / "ReplaySearch.lean"
     if search.exists():
         raise ValueError(f"Temporary search module already exists: {search}")
     replay_note = "not reported"
     try:
-        search.write_text(property_source.replace(old, "#blaster (backend: ffi) (replay: 1) (timeout: 10)")
-                          .replace(" 1000)]", f" {cek_fuel})]"))
+        search.write_text(property_at_fuel(
+            property_source.replace(old, "#blaster (backend: ffi) (replay: 1) (timeout: 10)"),
+            cek_fuel))
         module = f"LiveScripts.S_{script_hash}.ReplaySearch"
         try:
             run = subprocess.run(["lake", "build", module], cwd=BENCHMARK, env=os.environ.copy(),
@@ -152,7 +154,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=1, help="Smallest unverified candidates to attempt")
     parser.add_argument("--version", choices=["plutusV1", "plutusV2", "plutusV3"])
     parser.add_argument("--wall-timeout", type=int, default=120)
-    parser.add_argument("--cek-fuel", type=int, default=1000)
+    parser.add_argument("--cek-fuel", type=int, default=3000)
     args = parser.parse_args()
     catalog = json.loads((ROOT / "catalog.json").read_text())
     sizes = {item["script_hash"]: item["serialised_size"] for item in catalog["scripts"]}
