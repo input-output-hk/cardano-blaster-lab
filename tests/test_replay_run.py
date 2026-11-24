@@ -71,6 +71,23 @@ class ReplayRunTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "does not match"):
                     replay_run.replay(results, 12, 1000)
 
+    def test_empty_resumed_run_keeps_verified_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "results").mkdir()
+            (root / "results/active-config.json").write_text(json.dumps({"config": "current"}))
+            (root / "catalog.json").write_text('{"scripts": []}')
+            verified = root / "results/verified.json"
+            verified.write_text("{}")
+            results = root / "run.jsonl"
+            results.write_text("")
+            with patch.object(replay_run, "ROOT", root), \
+                 patch.object(replay_run, "OUTPUT", verified), \
+                 patch.object(replay_run.subprocess, "check_output", return_value="1" * 40):
+                summary = replay_run.replay(results, 12, 1000)
+            self.assertEqual(summary["candidates"], 0)
+            self.assertEqual(summary["newly_verified"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,12 +22,10 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
     revision = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT.parent, text=True).strip()
     rows = [json.loads(line) for line in results_file.read_text().splitlines() if line]
-    if not rows:
-        raise ValueError(f"No benchmark results in {results_file}")
     if any(row.get("config") != active or row.get("revision") != revision for row in rows):
         raise ValueError("Replay input does not match the current source revision and benchmark configuration")
     run_ids = {row.get("run_id") for row in rows}
-    if len(run_ids) != 1 or None in run_ids:
+    if len(run_ids) > 1 or None in run_ids:
         raise ValueError("Replay input must contain exactly one benchmark run")
     catalog = json.loads((ROOT / "catalog.json").read_text())
     sizes = {item["script_hash"]: item["serialised_size"] for item in catalog["scripts"]}
@@ -55,7 +53,7 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
         outcomes[script_hash] = result
         print(f"{script_hash}: {result}", flush=True)
     summary = {
-        "run_id": next(iter(run_ids)), "revision": revision, "head_sha": head_sha or revision,
+        "run_id": next(iter(run_ids), None), "revision": revision, "head_sha": head_sha or revision,
         "config": active,
         "candidates": len(ordered), "already_verified": len(ordered) - len([h for h in ordered if h not in existing]),
         "attempted": len(outcomes), "newly_verified": sum(v == "verified" for v in outcomes.values()),
