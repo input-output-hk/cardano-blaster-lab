@@ -16,6 +16,49 @@ spec.loader.exec_module(replay_run)
 
 
 class ReplayRunTest(unittest.TestCase):
+    def test_shards_cover_all_candidates_without_limit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "results").mkdir()
+            (root / "results/active-config.json").write_text('{"config":"config"}')
+            hashes = [f"{i:056x}" for i in range(5)]
+            (root / "catalog.json").write_text(json.dumps({"scripts": [
+                {"script_hash": h, "serialised_size": i} for i, h in enumerate(hashes)
+            ]}))
+            verified = root / "results/verified.json"
+            verified.write_text("{}")
+            for h in hashes:
+                directory = root / f"S_{h}"
+                directory.mkdir()
+                (directory / "metadata.json").write_text(json.dumps({
+                    "script_hash": h, "script_type": "plutusV2", "search_purpose": "mint",
+                }))
+            output = "✅ Expected Falsified\nCounterexample:\n - input: (example : MintingInput)\ninfo: done\n"
+            results = root / "run.jsonl"
+            results.write_text("".join(json.dumps({
+                "script_hash": h, "status": "candidate", "config": "config",
+                "revision": "1" * 40, "run_id": "run-1", "stdout": output,
+            }) + "\n" for h in hashes))
+            attempted = []
+
+            def save_model(h, *_args, **_kwargs):
+                attempted.append(h)
+                source = f"def witness := {h}\n"
+                (root / f"S_{h}/ReplayWitness.lean").write_text(source)
+                current = json.loads(verified.read_text())
+                current[h] = {"witness_sha256": hashlib.sha256(source.encode()).hexdigest()}
+                verified.write_text(json.dumps(current))
+                return "verified"
+
+            with patch.object(replay_run, "ROOT", root), \
+                 patch.object(replay_run, "OUTPUT", verified), \
+                 patch.object(replay_run.subprocess, "check_output", return_value="1" * 40), \
+                 patch.object(replay_run, "save_witness", side_effect=save_model):
+                summary = replay_run.replay(results, 0, 1000, shard_index=1, shard_count=2)
+            self.assertEqual(attempted, hashes[1::2])
+            self.assertEqual(summary["shard_pending"], 2)
+            self.assertEqual(summary["skipped_due_to_limit"], 0)
+
     def test_uses_model_from_same_run(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

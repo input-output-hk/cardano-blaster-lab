@@ -46,6 +46,9 @@ def main() -> None:
     in_cohort = len(set(cohort["script_hashes"]).intersection(verified))
     print(f"\nConcrete replay: **{in_cohort} verified witnesses in this cohort**, "
           f"including **{replay.get('newly_verified', 0)} newly verified in this run**.")
+    if replay.get("skipped_due_to_limit", 0):
+        print(f"**{replay['skipped_due_to_limit']} candidates were not replayed in this job.** "
+              "The complete full-sweep replay runs in a separate workflow.")
     print("Candidates without a passing concrete replay do not count toward the frontier.")
     if stages:
         print("\nTimeout stages: " + ", ".join(f"{name} {count}" for name, count in sorted(stages.items())))
