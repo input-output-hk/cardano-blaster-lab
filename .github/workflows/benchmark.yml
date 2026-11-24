@@ -115,7 +115,15 @@ jobs:
 
       - name: Verify concrete replay witnesses
         working-directory: benchmark
-        run: python3 LiveScripts/verify_replays.py --check
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ -n "$BASE_SHA" ]]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            python3 LiveScripts/verify_replays.py --check --changed-from "$BASE_SHA"
+          else
+            python3 LiveScripts/verify_replays.py --check
+          fi
 
       - name: Run selected tier
         env:
