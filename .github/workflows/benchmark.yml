@@ -61,7 +61,8 @@ jobs:
         run: python3 scripts/make_smoke_cohort.py --check
 
       - name: Restore shared package builds
-        uses: actions/cache@v4
+        id: shared-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             packages/Lean-blaster/.lake/build
@@ -88,6 +89,30 @@ jobs:
         working-directory: benchmark
         run: lake build CardanoLedgerApi
 
+      - name: Check imported Z3 shim PIC
+        run: |
+          for unit in context solver sorts terms datatypes; do
+            trace="packages/Lean-blaster/.lake/build/ffi/z3_shim_${unit}.o.trace"
+            if ! grep -Fq -- ' -fPIC' "$trace"; then
+              echo "Z3 shim object was not compiled with -fPIC: $trace" >&2
+              exit 1
+            fi
+          done
+          if readelf -rW packages/Lean-blaster/.lake/build/ffi/z3_shim_*.o | grep -Eq 'R_X86_64_(32|32S)[[:space:]]'; then
+            echo 'An imported Z3 shim object contains a non-PIC x86_64 relocation' >&2
+            exit 1
+          fi
+
+      - name: Save successful shared package build
+        if: steps.shared-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            packages/Lean-blaster/.lake/build
+            packages/PlutusCoreBlaster/.lake/build
+            packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-shared-build-${{ runner.os }}-${{ hashFiles('benchmark/lean-toolchain', 'benchmark/lake-manifest.json', 'packages/**/*.lean', 'packages/**/lakefile.lean') }}
+
       - name: Check indexed CEK blocks
         if: github.event_name == 'pull_request'
         working-directory: benchmark
@@ -95,14 +120,15 @@ jobs:
 
       - name: Verify concrete replay witnesses
         working-directory: benchmark
-        run: python3 LiveScripts/verify_replays.py --check
-
-      - name: Reuse cluster results for full run
-        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'full'
-        uses: actions/cache/restore@v4
-        with:
-          path: benchmark/LiveScripts/results/latest.json
-          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-${{ inputs.workers }}w-25s-z3-5.4.1
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ -n "$BASE_SHA" ]]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            python3 LiveScripts/verify_replays.py --check --changed-from "$BASE_SHA"
+          else
+            python3 LiveScripts/verify_replays.py --check
+          fi
 
       - name: Run selected tier
         env:
@@ -111,18 +137,21 @@ jobs:
           BENCH_LIMIT: ${{ github.event_name == 'pull_request' && '0' || inputs.limit }}
         run: |
           args=(--z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
-                --workers "$BENCH_WORKERS" --timeout 25)
+                --workers "$BENCH_WORKERS" --timeout 25
+                --result-path-file "$RUNNER_TEMP/cardano-result-path")
           if [[ "$BENCH_LIMIT" -gt 0 ]]; then
             args+=(--limit "$BENCH_LIMIT")
           fi
           python3 scripts/bench.py "$BENCH_TIER" "${args[@]}"
 
-      - name: Save cluster results for full run
-        if: github.event_name == 'workflow_dispatch' && inputs.tier == 'clusters' && inputs.limit == 0
-        uses: actions/cache/save@v4
-        with:
-          path: benchmark/LiveScripts/results/latest.json
-          key: cardano-clusters-${{ runner.os }}-${{ github.sha }}-${{ inputs.workers }}w-25s-z3-5.4.1
+      - name: Replay new counterexamples
+        working-directory: benchmark
+        env:
+          REPLAY_LIMIT: ${{ github.event_name == 'pull_request' && '0' || '12' }}
+        run: |
+          python3 LiveScripts/replay_run.py \
+            --results-file "$(cat "$RUNNER_TEMP/cardano-result-path")" --limit "$REPLAY_LIMIT" \
+            --head-sha "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Summarize results
         if: always()
@@ -139,4 +168,7 @@ jobs:
             benchmark/LiveScripts/results/*.jsonl
             benchmark/LiveScripts/results/latest.json
             benchmark/LiveScripts/results/active-config.json
+            benchmark/LiveScripts/results/verified.json
+            benchmark/LiveScripts/results/replay-summary.json
+            benchmark/LiveScripts/results/replay-evidence.json
           if-no-files-found: warn

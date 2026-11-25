@@ -149,7 +149,8 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str],
         "script_hash": script_hash, "status": status,
         "timeout_stage": stage,
         "seconds": round(time.monotonic() - started, 3),
-        "exit_code": code, "stdout": output[-16000:],
+        # A replay must use the complete model from this run, including its first line.
+        "exit_code": code, "stdout": output if status == "candidate" else output[-16000:],
         "stderr": errors[-4000:],
     }
     if cek_blocks is not None:
@@ -173,6 +174,8 @@ def main() -> None:
     parser.add_argument("--cek-blocks", choices=("baseline", "generated", "indexed"),
                         help="Compare the three CEK runners using isolated experiment results")
     parser.add_argument("--z3", type=Path, help="Path to Z3 5.4 or newer")
+    parser.add_argument("--result-path-file", type=Path,
+                        help="Write the exact JSONL path for a post-search replay step")
     args = parser.parse_args()
     if (args.limit is not None and args.limit < 1) or args.timeout < 1 or args.offset < 0 or args.workers < 1:
         parser.error("limit, timeout and workers must be positive; offset cannot be negative")
@@ -264,6 +267,8 @@ def main() -> None:
                               capture_output=True, text=True, check=True).stdout.strip()
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + "-" + revision[:8]
     output_path = results_dir / f"{run_id}.jsonl"
+    if args.result_path_file:
+        args.result_path_file.write_text(str(output_path.resolve()) + "\n")
     with output_path.open("w") as sink:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
             pending = {pool.submit(run_case, h, args.timeout, env, args.cek_blocks): h for h in hashes}
@@ -272,7 +277,9 @@ def main() -> None:
                 script_hash = result["script_hash"]
                 result.update({"run_id": run_id, "revision": revision, "config": config,
                                "timestamp": datetime.now(timezone.utc).isoformat()})
-                sink.write(json.dumps(result, ensure_ascii=False) + "\n")
+                # Keep each JSONL record on one physical line even if a solver
+                # diagnostic contains Unicode separators such as U+0085.
+                sink.write(json.dumps(result) + "\n")
                 sink.flush()
                 if result["status"] == "error":
                     report_path = results_dir / "errors" / f"{script_hash}.json"

@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from scripts import upstream_handoff as handoff
 
@@ -88,6 +89,33 @@ class UpstreamHandoffTests(unittest.TestCase):
     def test_rejects_unapproved_target(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "unapproved upstream URL"):
             handoff.target_repo({"url": "https://github.com/another-owner/repo.git"})
+
+    def test_posts_result_with_app_comment_token(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory)
+            (source / "upstreams.json").write_text('{"sources":{"one":{"path":"packages/One"}}}')
+
+            def fake_api(method: str, path: str, token: str) -> dict:
+                if path.endswith("/permission"):
+                    self.assertEqual(token, "source-token")
+                    return {"permission": "admin"}
+                self.assertEqual(token, "source-token")
+                return {"state": "open", "head": {"sha": "head"},
+                        "base": {"sha": "base"}, "title": "Example"}
+
+            with (patch.dict(os.environ, {
+                      "SOURCE_TOKEN": "source-token", "BOT_TOKEN": "target-token",
+                      "COMMENT_TOKEN": "comment-token"}),
+                  patch("sys.argv", ["upstream_handoff.py", "--repo", "owner/lab", "--pr", "7",
+                                     "--commenter", "admin", "--source", str(source)]),
+                  patch.object(handoff, "api", side_effect=fake_api),
+                  patch.object(handoff, "git", return_value=b"head\n"),
+                  patch.object(handoff, "source_commits", return_value=["commit"]),
+                  patch.object(handoff, "mirror_target", return_value="https://github.com/owner/target/pull/1") as mirror,
+                  patch.object(handoff, "source_comment") as comment):
+                self.assertEqual(handoff.main(), 0)
+                self.assertEqual(mirror.call_args.args[8], "target-token")
+                self.assertEqual(comment.call_args.args[:3], ("owner/lab", 7, "comment-token"))
 
 
 if __name__ == "__main__":

@@ -83,6 +83,15 @@ is built from `benchmark/cardano-dashboard/`. Its grid reads the committed
 `active-config.json`. A push to `main` that changes those files redeploys the
 site through GitHub Pages.
 
+The benchmark workflow now checks typed counterexamples from its own run with
+the independent ledger-context, Plutus data round-trip, and CEK replay guards.
+It uploads new witnesses and `verified.json` as an artifact; a solver candidate
+that fails a guard stays a candidate. An open lab PR gets a hollow point when
+its current head matches or exceeds the published verified count for the same
+frozen cohort. Only a strict gain raises the frontier. Select the point to see
+the PR and replay check. The green line follows published results. Completed
+benchmarks, new PR commits, and closures refresh the open-PR points.
+
 ## Sending a lab PR upstream
 
 The **Upstream handoff** GitHub Action lets a lab repository admin comment
@@ -100,8 +109,10 @@ To enable the action after its workflow is merged into the default branch:
 
 1. Create a GitHub App with **Contents: Read and write** and **Pull requests:
    Read and write** repository permissions. Install it on `Lean-blaster`,
-   `PlutusCoreBlaster`, `CardanoLedgerApiBlaster`, and `Blaster-benchmarking`
-   in `input-output-hk`. No webhook or HTTPS callback is needed.
+   `PlutusCoreBlaster`, `CardanoLedgerApiBlaster`, `Blaster-benchmarking`,
+   and `cardano-blaster-lab` in `input-output-hk`. The lab installation lets
+   the bot post draft links back to the source PR. No webhook or HTTPS callback
+   is needed.
 2. In `cardano-blaster-lab` → **Settings → Secrets and variables → Actions**,
    set the repository **variable** `UPSTREAM_APP_CLIENT_ID` to the App's client
    ID and the repository **secret** `UPSTREAM_APP_PRIVATE_KEY` to its generated
@@ -109,10 +120,11 @@ To enable the action after its workflow is merged into the default branch:
 3. As a repository admin, comment exactly `/upstream` on the lab PR. Review
    the draft upstream PRs and their CI before merging them.
 
-The workflow checks admin permission before minting the App token. It runs code
+The workflow checks admin permission before minting App tokens. It runs code
 from the lab's default branch; PR contents are read as Git patches and are not
-executed with the write token. The App token is limited to the four target
-repositories and the two required permissions.
+executed with a write token. One App token is limited to the four upstream
+repositories for commits and draft PRs; a second is limited to the lab
+repository for posting the result comment.
 
 ## Automatic error reports
 

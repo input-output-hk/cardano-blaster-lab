@@ -1,0 +1,262 @@
+name: Replay every full-sweep candidate
+
+on:
+  workflow_run:
+    workflows: ["Cardano script benchmark"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Completed full benchmark run ID whose candidate models should be replayed
+        type: number
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  plan:
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' ||
+          (github.event.workflow_run.event == 'workflow_dispatch' &&
+           github.event.workflow_run.head_branch == 'main' &&
+           (github.event.workflow_run.conclusion == 'success' ||
+            github.event.workflow_run.conclusion == 'failure')) }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      pending: ${{ steps.plan.outputs.pending }}
+      eligible: ${{ steps.plan.outputs.eligible }}
+      search_run_id: ${{ steps.plan.outputs.search_run_id }}
+      sha: ${{ steps.source.outputs.sha }}
+      run_id: ${{ steps.source.outputs.run_id }}
+    steps:
+      - id: source
+        name: Validate benchmark run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id || inputs.source_run_id }}
+        run: |
+          [[ "$SOURCE_RUN_ID" =~ ^[0-9]+$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" > "$RUNNER_TEMP/source-run.json"
+          python3 - "$RUNNER_TEMP/source-run.json" "$GITHUB_OUTPUT" "$GITHUB_REPOSITORY" <<'PY'
+          import json, re, sys
+          from pathlib import Path
+
+          run = json.loads(Path(sys.argv[1]).read_text())
+          if (run.get("event") != "workflow_dispatch" or run.get("head_branch") != "main"
+                  or run.get("status") != "completed"
+                  or run.get("conclusion") not in {"success", "failure"}
+                  or run.get("path") != ".github/workflows/benchmark.yml"
+                  or run.get("repository", {}).get("full_name") != sys.argv[3]
+                  or not re.fullmatch(r"[0-9a-f]{40}", run.get("head_sha", ""))):
+              raise SystemExit("Source must be a completed benchmark dispatch on this repository's main branch")
+          with Path(sys.argv[2]).open("a") as output:
+              output.write(f"sha={run['head_sha']}\nrun_id={run['id']}\n")
+          PY
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.sha }}
+          path: source
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: workflow-tools
+          persist-credentials: false
+      - name: Install replay planner
+        run: cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: cardano-benchmark-${{ steps.source.outputs.run_id }}
+          run-id: ${{ steps.source.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/search-results
+      - id: plan
+        working-directory: source
+        run: |
+          python3 scripts/replay_batches.py plan \
+            --search-dir "${{ runner.temp }}/search-results" \
+            --revision "${{ steps.source.outputs.sha }}" \
+            --output "$GITHUB_OUTPUT"
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.eligible == '1' && needs.plan.outputs.pending != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+          path: source
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: source/benchmark
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+      - id: shared-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            source/packages/Lean-blaster/.lake/build
+            source/packages/PlutusCoreBlaster/.lake/build
+            source/packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-replay-shared-build-${{ runner.os }}-${{ hashFiles('source/benchmark/lean-toolchain', 'source/benchmark/lake-manifest.json', 'source/packages/**/*.lean', 'source/packages/**/lakefile.lean') }}
+          restore-keys: cardano-replay-shared-build-${{ runner.os }}-
+      - name: Install pinned Z3
+        working-directory: source
+        run: |
+          mkdir -p .tools
+          curl -fL --retry 3 --silent --show-error -o .tools/z3.zip \
+            https://github.com/Z3Prover/z3/releases/download/z3-5.4.1/z3-5.4.1-x64-glibc-2.39.zip
+          echo 'b548bac48ef2452b4e09ea2945cf4b011d5f43fcf39e4799df268ee7e0769d85  .tools/z3.zip' | sha256sum -c -
+          unzip -q .tools/z3.zip -d .tools
+          z3_root="$GITHUB_WORKSPACE/source/.tools/z3-5.4.1-x64-glibc-2.39"
+          echo "Z3_LIB_PATH=$z3_root/bin" >> "$GITHUB_ENV"
+          echo "Z3_INC_PATH=$z3_root/include" >> "$GITHUB_ENV"
+      - name: Build shared Lean dependencies
+        working-directory: source/benchmark
+        run: lake build CardanoLedgerApi
+      - name: Cache successful shared build for later replay runs
+        if: github.event_name == 'workflow_dispatch' && steps.shared-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            source/packages/Lean-blaster/.lake/build
+            source/packages/PlutusCoreBlaster/.lake/build
+            source/packages/CardanoLedgerApiBlaster/.lake/build
+          key: cardano-replay-shared-build-${{ runner.os }}-${{ hashFiles('source/benchmark/lean-toolchain', 'source/benchmark/lake-manifest.json', 'source/packages/**/*.lean', 'source/packages/**/lakefile.lean') }}
+      - name: Package shared build for replay shards
+        run: |
+          tar -C source/packages -I 'zstd -T0 -3' -cf "$RUNNER_TEMP/cardano-replay-build.tar.zst" \
+            Lean-blaster/.lake/build \
+            PlutusCoreBlaster/.lake/build \
+            CardanoLedgerApiBlaster/.lake/build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardano-replay-build-${{ github.run_id }}
+          path: ${{ runner.temp }}/cardano-replay-build.tar.zst
+          compression-level: 0
+          if-no-files-found: error
+
+  replay:
+    needs: [plan, build]
+    if: needs.build.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+          path: source
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: workflow-tools
+          persist-credentials: false
+      - name: Install replay tools
+        run: |
+          cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
+          cp workflow-tools/benchmark/LiveScripts/replay_run.py source/benchmark/LiveScripts/replay_run.py
+          cp workflow-tools/benchmark/LiveScripts/materialize_replays.py source/benchmark/LiveScripts/materialize_replays.py
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: source/benchmark
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: cardano-replay-build-${{ github.run_id }}
+          path: ${{ runner.temp }}/shared-build
+      - name: Restore the single shared build
+        run: tar -C source/packages -I zstd -xf "$RUNNER_TEMP/shared-build/cardano-replay-build.tar.zst"
+      - name: Install pinned Z3
+        working-directory: source
+        run: |
+          mkdir -p .tools
+          curl -fL --retry 3 --silent --show-error -o .tools/z3.zip \
+            https://github.com/Z3Prover/z3/releases/download/z3-5.4.1/z3-5.4.1-x64-glibc-2.39.zip
+          echo 'b548bac48ef2452b4e09ea2945cf4b011d5f43fcf39e4799df268ee7e0769d85  .tools/z3.zip' | sha256sum -c -
+          unzip -q .tools/z3.zip -d .tools
+          z3_root="$GITHUB_WORKSPACE/source/.tools/z3-5.4.1-x64-glibc-2.39"
+          echo "Z3_LIB_PATH=$z3_root/bin" >> "$GITHUB_ENV"
+          echo "Z3_INC_PATH=$z3_root/include" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@v4
+        with:
+          name: cardano-benchmark-${{ needs.plan.outputs.run_id }}
+          run-id: ${{ needs.plan.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/search-results
+      - name: Replay assigned candidates
+        working-directory: source/benchmark
+        run: |
+          cp "${{ runner.temp }}/search-results/active-config.json" LiveScripts/results/active-config.json
+          python3 LiveScripts/replay_run.py \
+            --results-file "${{ runner.temp }}/search-results/${{ needs.plan.outputs.search_run_id }}.jsonl" \
+            --limit 0 --shard-index ${{ matrix.index }} --shard-count ${{ matrix.count }} \
+            --head-sha "${{ needs.plan.outputs.sha }}"
+      - name: Stage shard evidence
+        working-directory: source
+        run: |
+          python3 scripts/replay_batches.py stage \
+            --summary benchmark/LiveScripts/results/replay-summary.json \
+            --verified benchmark/LiveScripts/results/verified.json \
+            --evidence benchmark/LiveScripts/results/replay-evidence.json \
+            --output "${{ runner.temp }}/shard-artifact"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardano-replay-shard-${{ needs.plan.outputs.run_id }}-${{ matrix.index }}
+          path: ${{ runner.temp }}/shard-artifact
+          if-no-files-found: error
+
+  aggregate:
+    needs: [plan, replay]
+    if: needs.replay.result == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+          path: source
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: workflow-tools
+          persist-credentials: false
+      - run: cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: cardano-benchmark-${{ needs.plan.outputs.run_id }}
+          run-id: ${{ needs.plan.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/search-results
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cardano-replay-shard-${{ needs.plan.outputs.run_id }}-*
+          path: ${{ runner.temp }}/shards
+      - name: Check complete replay coverage and combine evidence
+        working-directory: source
+        run: |
+          python3 scripts/replay_batches.py aggregate \
+            --search-dir "${{ runner.temp }}/search-results" \
+            --shards-dir "${{ runner.temp }}/shards" \
+            --revision "${{ needs.plan.outputs.sha }}" \
+            --output "${{ runner.temp }}/complete-replay"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardano-complete-replay-${{ needs.plan.outputs.run_id }}
+          path: ${{ runner.temp }}/complete-replay
+          if-no-files-found: error

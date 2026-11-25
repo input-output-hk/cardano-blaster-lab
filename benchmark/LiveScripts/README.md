@@ -51,6 +51,14 @@ then produced a candidate at fuel 10000. Its concrete replay passed at fuel
 10000, giving 51 verified scripts. This higher-fuel result is recorded as a
 separate frontier event so its changed search bound remains visible.
 
+A bounded fuel-5000 pilot revisited eight scripts previously reported unknown
+at fuel 1000. One 883-byte V1 script produced a candidate after 170 seconds;
+its typed context passed the ledger validity, data round-trip, and CEK replay
+checks at fuel 5000. The other seven hit a 180-second wall limit, including a
+265-byte V2 script. The local timings and selected hashes are in
+`results/fuel5000-pilot-20261124.json`. This pilot does not imply that the
+seven timed-out scripts lack valid contexts.
+
 The first verified V3 witness is
 `S_186e32faa80a26810392fda6d559c7ed4721a65ce1c9d4ef3e1c87b4/ReplayWitness.lean`.
 It came from a fresh native Z3 run of the same property with
@@ -105,11 +113,29 @@ limits only SMT solving; the runner also kills the whole Lean process group
 after 25 wall-clock seconds, including elaboration and optimization. It writes
 raw results under `results/` and classifies which stage timed out.
 `--cluster-first` tries the smallest member of each structural family before
-the full exact-hash sweep. `--skip-existing` resumes a run for the same
-dependency and runner configuration. `results/latest.json` feeds
+the full exact-hash sweep. Cluster diagnostics can resume with
+`--skip-existing`; a full run reruns every exact hash so its raw artifact
+contains every candidate model. `results/latest.json` feeds
 candidate, timeout, unknown, and error states to the dashboard. A benchmark
 run does not automatically produce a green result or a frontier point.
 `run_all.py` performs both passes in sequence and resumes completed cases.
+PR smoke checks replay every new candidate. A completed full GitHub Actions
+sweep starts a separate matrix workflow that replays every new candidate in
+batches of up to 16 and checks that every candidate was attempted before
+uploading the combined evidence artifact. It builds the shared Lean
+dependencies once, then passes that build artifact to every replay batch.
+To rerun only the replay from an existing complete full-sweep artifact,
+including a run whose post-search replay step failed, use the Actions **Replay every full-sweep
+candidate** workflow's **Run workflow** button and enter the benchmark run ID,
+or run:
+
+```sh
+gh workflow run full-replay.yml -R input-output-hk/cardano-blaster-lab -f source_run_id=RUN_ID
+```
+
+The replay jobs restore the shared Lean build cache and download the exact
+candidate models from that benchmark run. The completed replay artifact
+contains every attempted outcome and all newly verified witnesses.
 
 ### Compare CEK block runners
 

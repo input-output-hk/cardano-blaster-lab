@@ -7,7 +7,7 @@
       "ref": "blaster-extension",
       "rev": "e029d8d3d5f795f1e35d5190448f356202aac169",
       "merged_ref": "codex/libz3-typed-cex",
-      "merged_rev": "0b488511a8f4e618dfeeab704def70a2df855b0b",
+      "merged_rev": "a1dfdbef8932068de44d6fc83625e6e832b56620",
       "integration_rev": "9cc2dfcd6cee0dd9966b176125b384d6778a7a06"
     },
     "PlutusCoreBlaster": {

@@ -34,11 +34,22 @@ def main() -> None:
                      if item["status"] == "timeout")
     print(f"## Cardano benchmark: {args.tier}\n")
     print(f"Cohort `{cohort_name}`: {len(entries)} attempted of {len(cohort['script_hashes'])} scripts.\n")
-    print("| Result | Count |")
+    print("| Solver result | Count |")
     print("| --- | ---: |")
     for status in ("verified", "candidate", "timeout", "unknown", "error"):
         print(f"| {status.capitalize()} | {counts[status]} |")
-    print("\nCandidates require concrete model reconstruction and independent replay before verified credit.")
+    verified_path = LIVE / "results/verified.json"
+    verified = json.loads(verified_path.read_text()) if verified_path.exists() else {}
+    replay_path = LIVE / "results/replay-summary.json"
+    replay = json.loads(replay_path.read_text()) if replay_path.exists() else {}
+    replay = replay if replay.get("config") == active else {}
+    in_cohort = len(set(cohort["script_hashes"]).intersection(verified))
+    print(f"\nConcrete replay: **{in_cohort} verified witnesses in this cohort**, "
+          f"including **{replay.get('newly_verified', 0)} newly verified in this run**.")
+    if replay.get("skipped_due_to_limit", 0):
+        print(f"**{replay['skipped_due_to_limit']} candidates were not replayed in this job.** "
+              "The complete full-sweep replay runs in a separate workflow.")
+    print("Candidates without a passing concrete replay do not count toward the frontier.")
     if stages:
         print("\nTimeout stages: " + ", ".join(f"{name} {count}" for name, count in sorted(stages.items())))
 
