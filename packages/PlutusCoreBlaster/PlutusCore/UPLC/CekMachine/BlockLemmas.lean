@@ -115,4 +115,78 @@ theorem runSteps_evalPrefix_exhausted (sv : BuiltinSemanticsVariant) (stack : St
     runSteps sv (.Eval stack env (prefixTerm instrs term)) fuel = .BudgetExhausted := by
   rw [runSteps_evalPrefix, if_pos bound]
 
+/-- A well-typed conditional returns its selected value in the same stack. -/
+theorem evalBuiltin_ifThenElse (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (cond : Bool) (whenTrue whenFalse : CekValue) :
+    evalBuiltin sv stack .IfThenElse [whenFalse, whenTrue, .VCon (.Bool cond)] =
+      .Return stack (if cond then whenTrue else whenFalse) := by
+  cases cond <;> rfl
+
+theorem evalBuiltin_chooseList_const (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (items : List PlutusCore.UPLC.Term.Const) (whenEmpty whenNonempty : CekValue) :
+    evalBuiltin sv stack .ChooseList [whenNonempty, whenEmpty, .VCon (.ConstList items)] =
+      .Return stack (if items.isEmpty then whenEmpty else whenNonempty) := by
+  cases items <;> rfl
+
+theorem evalBuiltin_chooseList_data (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (items : List PlutusCore.Data.Data) (whenEmpty whenNonempty : CekValue) :
+    evalBuiltin sv stack .ChooseList [whenNonempty, whenEmpty, .VCon (.ConstDataList items)] =
+      .Return stack (if items.isEmpty then whenEmpty else whenNonempty) := by
+  cases items <;> rfl
+
+theorem evalBuiltin_chooseList_pair (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (items : List (PlutusCore.Data.Data × PlutusCore.Data.Data)) (whenEmpty whenNonempty : CekValue) :
+    evalBuiltin sv stack .ChooseList [whenNonempty, whenEmpty, .VCon (.ConstPairDataList items)] =
+      .Return stack (if items.isEmpty then whenEmpty else whenNonempty) := by
+  cases items <;> rfl
+
+theorem runSteps_return_choice (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (cond : Bool) (whenTrue whenFalse : CekValue) (fuel : Nat) :
+    runSteps sv (.Return stack (if cond then whenTrue else whenFalse)) fuel =
+      if cond then runSteps sv (.Return stack whenTrue) fuel
+      else runSteps sv (.Return stack whenFalse) fuel := by
+  cases cond <;> rfl
+
+/-- Selecting a delayed branch and forcing it consumes one step after the builtin. -/
+theorem runSteps_force_choice (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (cond : Bool) (yes no : Term) (yesEnv noEnv : Environment) (fuel : Nat) :
+    runSteps sv (.Return (.ForceFrame :: stack)
+      (if cond then .VDelay yes yesEnv else .VDelay no noEnv)) (fuel + 1) =
+      if cond then runSteps sv (.Eval stack yesEnv yes) fuel
+      else runSteps sv (.Eval stack noEnv no) fuel := by
+  cases cond <;> rfl
+
+/-- `UnConstrData` exposes the tag and fields of a constructor and rejects other data. -/
+theorem evalBuiltin_unConstrData (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (d : PlutusCore.Data.Data) :
+    evalBuiltin sv stack .UnConstrData [.VCon (.Data d)] =
+      match d with
+      | .Constr tag fields => .Return stack (.VCon (.Pair (.Integer tag, .ConstDataList fields)))
+      | _ => .Error := by
+  cases d <;> rfl
+
+theorem evalBuiltin_headList_const (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (items : List PlutusCore.UPLC.Term.Const) :
+    evalBuiltin sv stack .HeadList [.VCon (.ConstList items)] =
+      match items with
+      | [] => .Error
+      | head :: _ => .Return stack (.VCon head) := by
+  cases items <;> rfl
+
+theorem evalBuiltin_headList_data (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (items : List PlutusCore.Data.Data) :
+    evalBuiltin sv stack .HeadList [.VCon (.ConstDataList items)] =
+      match items with
+      | [] => .Error
+      | head :: _ => .Return stack (.VCon (.Data head)) := by
+  cases items <;> rfl
+
+theorem evalBuiltin_headList_pair (sv : BuiltinSemanticsVariant) (stack : Stack)
+    (items : List (PlutusCore.Data.Data × PlutusCore.Data.Data)) :
+    evalBuiltin sv stack .HeadList [.VCon (.ConstPairDataList items)] =
+      match items with
+      | [] => .Error
+      | head :: _ => .Return stack (.VCon (.PairData head)) := by
+  cases items <;> rfl
+
 end PlutusCore.UPLC.CekMachine.Blocks

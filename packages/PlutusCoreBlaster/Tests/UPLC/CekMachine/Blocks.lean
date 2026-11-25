@@ -75,3 +75,100 @@ example : cekExecuteProgram closure [] 12 =
     .Halt (.VLam (.Apply (.Var 0) (.Var 1)) [.VCon (.Integer 41)]) := by blaster
 
 end ReturnedClosure
+
+section BuiltinChoice
+
+open PlutusCore.Data (Data)
+open PlutusCore.UPLC.CekValue (CekValue)
+open PlutusCore.UPLC.Term (Const)
+
+#cek_blocks
+
+private def chooseListState (arg : CekValue) : State :=
+  .Return
+    [.RightApplicationOfValue
+      (.VBuiltin .ChooseList [.VDelay (.Const (.Integer 11)) [], arg] (.One .ArgV)),
+      .ForceFrame]
+    (.VDelay (.Const (.Integer 13)) [])
+
+set_option warn.sorry false in
+example : ∀ items : List Data,
+    runSteps default (chooseListState (.VCon (.ConstDataList items))) 1 = .BudgetExhausted ∧
+    runSteps default (chooseListState (.VCon (.ConstDataList items))) 3 = .BudgetExhausted ∧
+    haltedInteger (runSteps default (chooseListState (.VCon (.ConstDataList items))) 4) =
+      some (if items.isEmpty then 11 else 13) := by blaster
+
+set_option warn.sorry false in
+example : runSteps default (chooseListState (.VCon (.Integer 7))) 0 = .BudgetExhausted ∧
+    runSteps default (chooseListState (.VCon (.Integer 7))) 1 = .Error := by blaster
+
+set_option warn.sorry false in
+example : ∀ (constants : List Const) (pairs : List (Data × Data)),
+    haltedInteger (runSteps default (chooseListState (.VCon (.ConstList constants))) 4) =
+      some (if constants.isEmpty then 11 else 13) ∧
+    haltedInteger (runSteps default (chooseListState (.VCon (.ConstPairDataList pairs))) 4) =
+      some (if pairs.isEmpty then 11 else 13) := by blaster
+
+end BuiltinChoice
+
+section StrictChoiceArguments
+
+open PlutusCore.UPLC.Term (Term)
+
+private def divideByZero : Term :=
+  .Apply (.Apply (.Builtin .DivideInteger) (.Const (.Integer 1))) (.Const (.Integer 0))
+
+private def strictChoice : Program :=
+  .Program (.Version 1 0 0) <|
+    .Apply (.Apply (.Apply (.Force (.Builtin .IfThenElse)) (.Const (.Bool true)))
+      (.Const (.Integer 1))) divideByZero
+
+example : cekExecuteProgram strictChoice [] 100 = .Error := rfl
+
+#index_uplc strictChoice
+
+set_option warn.sorry false in
+example : cekExecuteProgram strictChoice [] 100 = .Error := by blaster
+
+end StrictChoiceArguments
+
+section ConstructorBuiltins
+
+open PlutusCore.Data (Data)
+open PlutusCore.Integer (Integer)
+open PlutusCore.UPLC.CekMachine
+open PlutusCore.UPLC.CekValue (CekValue)
+open PlutusCore.UPLC.Term (BuiltinFun Const)
+
+#cek_blocks
+
+private def builtinWithFinalArgument (builtin : BuiltinFun) (arg : Const) : State :=
+  .Return [.RightApplicationOfValue (.VBuiltin builtin [] (.One .ArgV))] (.VCon arg)
+
+set_option warn.sorry false in
+example : ∀ (tag : Integer) (fields : List Data),
+    runSteps default (builtinWithFinalArgument .UnConstrData (.Data (.Constr tag fields))) 1 =
+      .BudgetExhausted ∧
+    runSteps default (builtinWithFinalArgument .UnConstrData (.Data (.Constr tag fields))) 2 =
+      .Halt (.VCon (.Pair (.Integer tag, .ConstDataList fields))) := by blaster
+
+set_option warn.sorry false in
+example : ∀ (fields : List Data),
+    runSteps default (builtinWithFinalArgument .UnConstrData (.Data (.List fields))) 0 =
+      .BudgetExhausted ∧
+    runSteps default (builtinWithFinalArgument .UnConstrData (.Data (.List fields))) 1 =
+      .Error ∧
+    runSteps default (builtinWithFinalArgument .HeadList (.ConstDataList [])) 1 =
+      .Error := by blaster
+
+set_option warn.sorry false in
+example : ∀ (item : Data) (tail : List Data) (const : Const) (consts : List Const)
+    (pair : Data × Data) (pairs : List (Data × Data)),
+    runSteps default (builtinWithFinalArgument .HeadList (.ConstDataList (item :: tail))) 2 =
+      .Halt (.VCon (.Data item)) ∧
+    runSteps default (builtinWithFinalArgument .HeadList (.ConstList (const :: consts))) 2 =
+      .Halt (.VCon const) ∧
+    runSteps default (builtinWithFinalArgument .HeadList (.ConstPairDataList (pair :: pairs))) 2 =
+      .Halt (.VCon (.PairData pair)) := by blaster
+
+end ConstructorBuiltins
