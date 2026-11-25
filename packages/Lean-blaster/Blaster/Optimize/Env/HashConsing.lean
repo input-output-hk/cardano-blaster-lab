@@ -29,7 +29,8 @@ def saveHashCons (old : Expr) (new : Expr) : TranslateEnvT Expr := do
   else return new
 
 
-private unsafe def hashconsAux (cur : Expr) (isResult : Bool) (stk : Array HashConsStack) : TranslateEnvT Expr := do
+private unsafe def hashconsAux (cur : Expr) (isResult : Bool) (stk : Array HashConsStack)
+    (aliases : HashMap PtrExpr Expr) : TranslateEnvT Expr := do
   if isResult then
     if stk.usize > 0 then
       let topIdx := stk.usize - 1
@@ -37,69 +38,77 @@ private unsafe def hashconsAux (cur : Expr) (isResult : Bool) (stk : Array HashC
       match next with
       | .WaitAppFun e a =>
            let stk := stk.uset topIdx (.WaitAppArg e cur) lcProof
-           hashconsAux a false stk
+           hashconsAux a false stk aliases
       | .WaitAppArg e f =>
            let r' ← saveHashCons e (← e.updateAppExpr! f cur)
-           hashconsAux r' true stk.pop
+           let aliases := if exprEq e r' then aliases else aliases.insert e r'
+           hashconsAux r' true stk.pop aliases
       | .WaitForallType e b =>
            let stk := stk.uset topIdx (.WaitForallBody e cur) lcProof
-           hashconsAux b false stk
+           hashconsAux b false stk aliases
       | .WaitForallBody e t =>
            let r' ← saveHashCons e (← e.updateForallExpr! t cur)
-           hashconsAux r' true stk.pop
+           let aliases := if exprEq e r' then aliases else aliases.insert e r'
+           hashconsAux r' true stk.pop aliases
       | .WaitLambdaType e b =>
            let stk := stk.uset topIdx (.WaitLambdaBody e cur) lcProof
-           hashconsAux b false stk
+           hashconsAux b false stk aliases
       | .WaitLambdaBody e t =>
            let r' ← saveHashCons e (← e.updateLambdaExpr! t cur)
-           hashconsAux r' true stk.pop
+           let aliases := if exprEq e r' then aliases else aliases.insert e r'
+           hashconsAux r' true stk.pop aliases
       | .WaitLetType e v b =>
            let stk := stk.uset topIdx (.WaitLetValue e cur b) lcProof
-           hashconsAux v false stk
+           hashconsAux v false stk aliases
       | .WaitLetValue e t b =>
            let stk := stk.uset topIdx (.WaitLetBody e t cur) lcProof
-           hashconsAux b false stk
+           hashconsAux b false stk aliases
       | .WaitLetBody e t v =>
            let r' ← saveHashCons e (← e.updateLetExpr! t v cur)
-           hashconsAux r' true stk.pop
+           let aliases := if exprEq e r' then aliases else aliases.insert e r'
+           hashconsAux r' true stk.pop aliases
       | .WaitMData e =>
            let r' ← saveHashCons e (← e.updateMDataExpr! cur)
-           hashconsAux r' true stk.pop
+           let aliases := if exprEq e r' then aliases else aliases.insert e r'
+           hashconsAux r' true stk.pop aliases
       | .WaitProjExpr e =>
            let r' ← saveHashCons e (← e.updateProjExpr! cur)
-           hashconsAux r' true stk.pop
+           let aliases := if exprEq e r' then aliases else aliases.insert e r'
+           hashconsAux r' true stk.pop aliases
     else return cur
   else
     let cached := (← get).optEnv.hashConsCache.getD cur instCacheMiss
-    if !exprEq cached.expr instCacheMiss then hashconsAux cached.expr true stk
+    if !exprEq cached.expr instCacheMiss then hashconsAux cached.expr true stk aliases
+    else if let some shared := aliases.get? cur then hashconsAux shared true stk aliases
     else
        match cur with
        | .bvar .. | .mvar .. | .const .. | .fvar .. | .sort .. | .lit .. =>
            updateHashConsCache cur
-           hashconsAux cur true stk
+           hashconsAux cur true stk aliases
        | .app f a =>
             let stk := stk.push (.WaitAppFun cur a)
-            hashconsAux f false stk
+            hashconsAux f false stk aliases
        | .letE _ t v b _ =>
             let stk := stk.push (.WaitLetType cur v b)
-            hashconsAux t false stk
+            hashconsAux t false stk aliases
        | .forallE _ t b _ =>
             let stk := stk.push (.WaitForallType cur b)
-            hashconsAux t false stk
+            hashconsAux t false stk aliases
        | .lam _ t b _ =>
             let stk := stk.push (.WaitLambdaType cur b)
-            hashconsAux t false stk
+            hashconsAux t false stk aliases
        | .mdata _ b =>
             let stk := stk.push (.WaitMData cur)
-            hashconsAux b false stk
+            hashconsAux b false stk aliases
        | .proj _ _ b =>
             let stk := stk.push (.WaitProjExpr cur)
-            hashconsAux b false stk
+            hashconsAux b false stk aliases
 
-/-- Apply hashconsing on an expression. -/
+/-- Canonicalize a whole expression. The per-call map remembers the shared result
+of rebuilding an original node, so another edge to that node can reuse it. -/
 @[always_inline, inline]
 def hashcons (e : Expr) : TranslateEnvT Expr :=
-  unsafe hashconsAux e false (Array.emptyWithCapacity e.approxDepth.toNat)
+  unsafe hashconsAux e false (Array.emptyWithCapacity e.approxDepth.toNat) (HashMap.emptyWithCapacity 16)
 
 @[always_inline, inline]
 def getMVarAssignment! (mvar : Expr) : TranslateEnvT Expr := do
