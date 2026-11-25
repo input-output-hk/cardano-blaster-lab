@@ -137,6 +137,24 @@ The replay jobs restore the shared Lean build cache and download the exact
 candidate models from that benchmark run. The completed replay artifact
 contains every attempted outcome and all newly verified witnesses.
 
+### Compare CEK block runners
+
+From the lab root, use the same worker count and limits for each arm.
+
+```sh
+for mode in baseline generated indexed; do
+  python3 scripts/bench.py smoke --z3 /path/to/z3 --workers 1 --cek-blocks "$mode"
+done
+```
+
+The comparison elaborates the existing properties in temporary files.
+`baseline` uses the ordinary Blaster runner. `generated` enables blocks
+generated from the CEK step equations. `indexed` enables the same runner
+with a program-counter table for the imported script. The script, property,
+fuel, and solver settings are shared by all three modes. Raw results,
+including phase timings from Blaster, go under `results/cek-blocks/<mode>/`.
+The usual corpus command continues to write the dashboard's result files.
+
 ## Contributing
 
 PRs can improve the context generator, symbolic execution, replay, or ledger
