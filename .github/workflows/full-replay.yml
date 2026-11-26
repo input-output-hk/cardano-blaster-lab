@@ -169,6 +169,7 @@ jobs:
           cp workflow-tools/scripts/replay_batches.py source/scripts/replay_batches.py
           cp workflow-tools/benchmark/LiveScripts/replay_run.py source/benchmark/LiveScripts/replay_run.py
           cp workflow-tools/benchmark/LiveScripts/materialize_replays.py source/benchmark/LiveScripts/materialize_replays.py
+          cp workflow-tools/benchmark/LiveScripts/fuel_budgets.py source/benchmark/LiveScripts/fuel_budgets.py
       - uses: leanprover/lean-action@v1
         with:
           lake-package-directory: source/benchmark

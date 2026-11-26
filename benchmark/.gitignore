@@ -2,6 +2,7 @@
 .tools/
 cardano-dashboard/dist/
 LiveScripts/results/*.jsonl
+!LiveScripts/results/fuel-budget-probes.jsonl
 LiveScripts/results/*.log
 LiveScripts/results/*.pid
 .env

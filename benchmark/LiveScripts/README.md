@@ -18,7 +18,22 @@ own directories and share a structural `cluster_id` only for exploration.
 
 The Lean property asks Blaster for a successful CEK execution under the
 version-specific `CardanoLedgerApi` validity predicate for one observed
-script purpose. It uses CEK fuel 1000 and a 10-second SMT limit. Scripts
+script purpose. Each script has its own CEK budget in `fuel-budgets.json`.
+Search runs use a 20-second SMT limit. The generated source files retain their
+original 10-second setting. Budgets began at 1000 for all 2,250 scripts. The current
+plan keeps 1000 for the 316 cases with a candidate at that fuel and uses a
+measured higher fuel for five more candidates. Every case that returned
+`Unexpected Valid` at 1000 receives a higher fuel budget, starting at 2000 and
+doubling after another explicit no-counterexample result. A wall timeout does
+not lower the fuel budget; it leaves sufficiency unresolved. Other unknown
+and error results do not establish a CEK fuel limit.
+`results/fuel-budget-plan.json` records the basis and current counts for
+every script; its probe values are not claims of sufficiency. The runner applies
+each value to a temporary Lean property and records it in the search result.
+`results/fuel-budget-probes.jsonl` preserves raw solver output from higher-fuel
+probes, including the five candidates found during planning.
+Previously completed cases at unchanged budgets remain eligible for
+`--skip-existing`. New corpus imports receive a 1000-fuel entry. Scripts
 observed at several purposes currently search the first of spending, minting,
 rewarding, or certifying; `search_purpose` records the selection in metadata.
 Falsification produces a **candidate** model, not a verified script context.
@@ -82,7 +97,7 @@ For a baseline candidate, the bounded materializer runs the same property
 through native Z3, saves the typed model, and invokes the replay verifier:
 
 ```sh
-python3 LiveScripts/materialize_replays.py --hash <script-hash> --cek-fuel 10000 --wall-timeout 90
+python3 LiveScripts/materialize_replays.py --hash <script-hash> --cek-fuel 10000 --wall-timeout 60
 ```
 
 The verifier generates a temporary Lean module containing the three mandatory
@@ -104,14 +119,33 @@ preserves prior cases when the rolling window changes.
 python3 LiveScripts/import_corpus.py --corpus /path/to/recent-export --cohort YYYY-MM-DD
 python3 -m unittest discover -s LiveScripts -p 'test_*.py'
 lake build LiveScripts.S_<hash>.Script
-python3 LiveScripts/run_all.py --workers 4 --z3 /path/to/z3 --timeout 25
+python3 LiveScripts/run_all.py --workers 4 --z3 /path/to/z3 --timeout 60 --smt-timeout 20
 python3 cardano-dashboard/build.py
 ```
 
-The search runner requires Z3 5.4 or newer. The 10-second Blaster setting
+The search runner requires Z3 5.4 or newer. The 20-second Blaster setting
 limits only SMT solving; the runner also kills the whole Lean process group
-after 25 wall-clock seconds, including elaboration and optimization. It writes
+within 60 wall-clock seconds, including elaboration and optimization. It writes
 raw results under `results/` and classifies which stage timed out.
+Use `python3 LiveScripts/plan_fuel_budgets.py --check` to validate the current
+plan, or `--write` to recompute it after a new run. `--budget-changed` selects
+only scripts whose planned fuel differs from their last recorded search. Fuel
+above 1000 can require longer than the 60-second cap; an earlier fuel-5000
+pilot needed 170 seconds for one candidate on a cold build.
+`python3 LiveScripts/probe_fuel_budgets.py --limit 10 --timeout 60 --smt-timeout 20 --z3 /path/to/z3`
+probes the full `Unexpected Valid` set, prioritizing scripts with fewer probes
+and smaller serialized size. Size only orders the work; it is not used to
+infer a CEK fuel bound. The probe saves raw solver output
+and updates each script's planned fuel after its result. Probe wall time is
+capped at 60 seconds. A timed-out case stays unresolved at its raised fuel;
+retry it only with a limit up to 60 seconds.
+Probes use the same 20-second Z3 solve limit as ordinary benchmark runs. A
+prior `Undetermined` at 10 seconds can be retried at 20 seconds.
+For a script whose fuel-2000 run hit the wall cap, `--script <hash> --fuel 1250`
+can test an intermediate bound. Only a candidate establishes sufficiency; an
+intermediate timeout leaves the required fuel unresolved.
+Use `--max-probes-per-script 3` to continue doubling within one run after an
+explicit `Unexpected Valid` result, stopping on a candidate or wall timeout.
 `--cluster-first` tries the smallest member of each structural family before
 the full exact-hash sweep. Cluster diagnostics can resume with
 `--skip-existing`; a full run reruns every exact hash so its raw artifact
@@ -119,8 +153,13 @@ contains every candidate model. `results/latest.json` feeds
 candidate, timeout, unknown, and error states to the dashboard. A benchmark
 run does not automatically produce a green result or a frontier point.
 `run_all.py` performs both passes in sequence and resumes completed cases.
-PR smoke checks replay every new candidate. A completed full GitHub Actions
-sweep starts a separate matrix workflow that replays every new candidate in
+The GitHub Actions `full` tier partitions the 2,250 exact hashes across 16
+runners. Each runner uploads its own search results. A final job validates
+that the shards cover the cohort exactly once and publishes a single combined
+search artifact; a diagnostic `limit` keeps that artifact incomplete and
+ineligible for exhaustive replay. PR smoke checks replay every new candidate.
+A completed full GitHub Actions sweep starts a separate matrix workflow that
+replays every new candidate in
 batches of up to 16 and checks that every candidate was attempted before
 uploading the combined evidence artifact. It builds the shared Lean
 dependencies once, then passes that build artifact to every replay batch.

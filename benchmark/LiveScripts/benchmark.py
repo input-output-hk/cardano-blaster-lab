@@ -20,10 +20,19 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from fuel_budgets import load_budgets, property_at_fuel, property_at_smt_timeout
 
 
 REPO = Path(__file__).resolve().parent.parent
 HASH = re.compile(r"[0-9a-f]{56}\Z")
+
+
+def shard_hashes(hashes: list[str], index: int, count: int) -> list[str]:
+    if count < 1 or not 0 <= index < count:
+        raise ValueError("shard index must be in 0..shard-count-1")
+    return hashes[index::count]
 
 
 def classify(code: int | None, output: str, timed_out: bool) -> str:
@@ -99,12 +108,14 @@ def run_command(command: list[str], timeout: float, env: dict[str, str]) -> tupl
             stderr.decode("utf-8", errors="replace"), timed_out)
 
 
-def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
+def run_case(script_hash: str, timeout: int, env: dict[str, str], cek_fuel: int,
+             smt_timeout: int = 20) -> dict:
     started = time.monotonic()
-    deadline = started + timeout
+    # Reserve one second for process-group cleanup inside the wall cap.
+    deadline = started + timeout - 1
     module = f"LiveScripts.S_{script_hash}.Script"
     code, build_output, build_errors, build_timeout = run_command(
-        ["lake", "build", module], timeout, env)
+        ["lake", "build", module], max(0, deadline - time.monotonic()), env)
     if build_timeout or code != 0:
         output, errors, timed_out = build_output, build_errors, build_timeout
         status = "timeout" if build_timeout else "error"
@@ -115,16 +126,19 @@ def run_case(script_hash: str, timeout: int, env: dict[str, str]) -> dict:
             code, output, errors, timed_out = None, "", "", True
             status, stage = "timeout", "script_build"
         else:
-            property_module = f"LiveScripts.S_{script_hash}.Properties"
-            property_olean = REPO / ".lake/build/lib/lean/LiveScripts" / f"S_{script_hash}" / "Properties.olean"
-            # Force a fresh solver run even when Lake has cached this module.
-            property_olean.unlink(missing_ok=True)
-            code, output, errors, timed_out = run_command(
-                ["lake", "build", property_module], remaining, env)
+            source = (REPO / "LiveScripts" / f"S_{script_hash}" / "Properties.lean").read_text()
+            with TemporaryDirectory(prefix="cardano-fuel-") as directory:
+                property_path = Path(directory) / "Properties.lean"
+                property_path.write_text(property_at_smt_timeout(
+                    property_at_fuel(source, cek_fuel), smt_timeout))
+                # A temporary module forces a fresh solver run for each case.
+                code, output, errors, timed_out = run_command(
+                    ["lake", "lean", str(property_path)], remaining, env)
             status = classify(code, output + errors, timed_out)
             stage = active_stage(output) if timed_out else None
     return {
-        "script_hash": script_hash, "status": status,
+        "script_hash": script_hash, "status": status, "cek_fuel": cek_fuel,
+        "smt_timeout_seconds": smt_timeout,
         "timeout_stage": stage,
         "seconds": round(time.monotonic() - started, 3),
         # A replay must use the complete model from this run, including its first line.
@@ -139,18 +153,31 @@ def main() -> None:
     parser.add_argument("--script", help="Run a single script hash from the cohort")
     parser.add_argument("--limit", type=int, help="Stop after this many cases")
     parser.add_argument("--offset", type=int, default=0)
-    parser.add_argument("--timeout", type=int, default=25, help="Hard wall-clock seconds per case, including optimization")
+    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--shard-count", type=int, default=1)
+    parser.add_argument("--timeout", type=int, default=60, help="Hard wall-clock seconds per case, including optimization; maximum 60")
+    parser.add_argument("--smt-timeout", type=int, default=20,
+                        help="Z3 solve limit in seconds; default 20")
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--cluster-first", action="store_true", help="Try the smallest script in each structural family first")
     parser.add_argument("--skip-existing", action="store_true", help="Skip cases already run with this configuration")
+    parser.add_argument("--budget-changed", action="store_true",
+                        help="Run only scripts whose selected fuel differs from their last result")
     parser.add_argument("--z3", type=Path, help="Path to Z3 5.4 or newer")
     parser.add_argument("--result-path-file", type=Path,
                         help="Write the exact JSONL path for a post-search replay step")
     args = parser.parse_args()
-    if (args.limit is not None and args.limit < 1) or args.timeout < 1 or args.offset < 0 or args.workers < 1:
-        parser.error("limit, timeout and workers must be positive; offset cannot be negative")
+    if ((args.limit is not None and args.limit < 1) or not 2 <= args.timeout <= 60 or
+            not 1 <= args.smt_timeout <= args.timeout or args.offset < 0 or args.workers < 1 or
+            args.shard_count < 1 or not 0 <= args.shard_index < args.shard_count):
+        parser.error("limit and workers must be positive; offset cannot be negative; "
+                     "timeout must be 2..60 seconds; smt-timeout must be 1..timeout; "
+                     "shard index must be in 0..shard-count-1")
+    if args.script and args.shard_count > 1:
+        parser.error("--script cannot be combined with multiple shards")
     cohort = json.loads((REPO / "LiveScripts/cohorts" / f"{args.cohort}.json").read_text())
     hashes = cohort["script_hashes"]
+    budgets = load_budgets(REPO / "LiveScripts")
     if args.cluster_first:
         catalog = json.loads((REPO / "LiveScripts/catalog.json").read_text())
         members = {item["script_hash"]: item for item in catalog["scripts"]}
@@ -167,6 +194,8 @@ def main() -> None:
         if not HASH.fullmatch(args.script) or args.script not in hashes:
             parser.error("--script must be a hash in the selected cohort")
         hashes = [args.script]
+    elif args.shard_count > 1:
+        hashes = shard_hashes(hashes, args.shard_index, args.shard_count)
     env = os.environ.copy()
     if args.z3:
         z3 = args.z3.resolve()
@@ -204,27 +233,37 @@ def main() -> None:
     lab_root = REPO.parent if (REPO.parent / "upstreams.json").is_file() else None
     lab_fingerprint = None
     if lab_root:
-        lab_revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=lab_root,
-                                      capture_output=True, text=True, check=True).stdout.strip()
-        lab_diff = subprocess.run(
-            ["git", "diff", "--binary", "HEAD", "--", "packages", "benchmark/lakefile.lean",
-             "benchmark/LiveScripts", ":(exclude)benchmark/LiveScripts/results"],
+        paths = ["packages", "benchmark/lakefile.lean", "benchmark/LiveScripts",
+                 ":(exclude)benchmark/LiveScripts/results",
+                 ":(exclude)benchmark/LiveScripts/fuel-budgets.json",
+                 ":(exclude)benchmark/LiveScripts/plan_fuel_budgets.py"]
+        tracked_sources = subprocess.run(
+            ["git", "ls-files", "-s", "-z", "--", *paths],
             cwd=lab_root, capture_output=True, check=True).stdout
-        lab_fingerprint = {"revision": lab_revision,
+        lab_diff = subprocess.run(
+            ["git", "diff", "--binary", "HEAD", "--", *paths],
+            cwd=lab_root, capture_output=True, check=True).stdout
+        lab_fingerprint = {"source_tree": hashlib.sha256(tracked_sources).hexdigest(),
                            "tracked_diff": hashlib.sha256(lab_diff).hexdigest()}
     config = hashlib.sha256(json.dumps({
         "packages": package_revs, "z3": version.strip(), "wall_timeout": args.timeout,
+        "smt_timeout": args.smt_timeout,
         "workers": args.workers,
         "generator": hashlib.sha256((REPO / "LiveScripts/import_corpus.py").read_bytes()).hexdigest(),
         "runner": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "fuel_logic": hashlib.sha256((REPO / "LiveScripts/fuel_budgets.py").read_bytes()).hexdigest(),
         "lab": lab_fingerprint,
     }, sort_keys=True).encode()).hexdigest()
     (results_dir / "active-config.json").write_text(json.dumps({
         "config": config, "packages": package_revs, "z3": version.strip(),
-        "wall_timeout": args.timeout, "workers": args.workers, "cohort": args.cohort,
+        "wall_timeout": args.timeout, "smt_timeout": args.smt_timeout,
+        "workers": args.workers, "cohort": args.cohort,
     }, indent=2, sort_keys=True) + "\n")
     if args.skip_existing:
-        hashes = [h for h in hashes if latest.get(h, {}).get("config") != config]
+        hashes = [h for h in hashes if latest.get(h, {}).get("config") != config
+                  or latest[h].get("cek_fuel", 1000) != budgets[h]]
+    if args.budget_changed:
+        hashes = [h for h in hashes if latest.get(h, {}).get("cek_fuel", 1000) != budgets[h]]
     if not args.script:
         hashes = hashes[args.offset:][:args.limit]
     revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO,
@@ -235,7 +274,8 @@ def main() -> None:
         args.result_path_file.write_text(str(output_path.resolve()) + "\n")
     with output_path.open("w") as sink:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            pending = {pool.submit(run_case, h, args.timeout, env): h for h in hashes}
+            pending = {pool.submit(run_case, h, args.timeout, env, budgets[h], args.smt_timeout): h
+                       for h in hashes}
             for index, task in enumerate(as_completed(pending), 1):
                 result = task.result()
                 script_hash = result["script_hash"]
@@ -253,9 +293,11 @@ def main() -> None:
                 latest[script_hash] = {
                     "status": result["status"], "seconds": result["seconds"],
                     "timeout_stage": result["timeout_stage"], "config": config, "run_id": run_id,
+                    "cek_fuel": result["cek_fuel"],
+                    "smt_timeout_seconds": result["smt_timeout_seconds"],
                     "note": "Blaster returned a CardanoLedgerApi-valid context candidate; independent replay is pending."
                     if result["status"] == "candidate" else
-                    "No counterexample at CEK fuel 1000; a higher fuel limit may reveal one."
+                    f"No counterexample at CEK fuel {result['cek_fuel']}; a higher fuel limit may reveal one."
                     if "❌ Unexpected Valid" in result["stdout"] + result["stderr"] else
                     f"Last run: {result['status']}"
                     + (f" during {result['timeout_stage']}" if result["timeout_stage"] else "")
@@ -263,7 +305,8 @@ def main() -> None:
                 }
                 latest_path.write_text(json.dumps(latest, indent=2, sort_keys=True) + "\n")
                 print(f"{index}/{len(hashes)} {script_hash} {result['status']}"
-                      f" {result['seconds']}s {result['timeout_stage'] or ''}", flush=True)
+                      f" fuel={result['cek_fuel']} {result['seconds']}s"
+                      f" {result['timeout_stage'] or ''}", flush=True)
     print(f"Results: {output_path}")
 
 

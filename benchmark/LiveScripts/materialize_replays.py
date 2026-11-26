@@ -10,6 +10,7 @@ import re
 import subprocess
 from pathlib import Path
 
+from fuel_budgets import load_budgets, property_at_fuel, valid_fuel
 from verify_replays import BENCHMARK, OUTPUT, ROOT, verify
 
 
@@ -101,7 +102,9 @@ def save_witness(script_hash: str, model: str, cek_fuel: int, *, source_revision
     return "verified"
 
 
-def materialize(script_hash: str, wall_timeout: int, cek_fuel: int) -> str:
+def materialize(script_hash: str, wall_timeout: int, cek_fuel: int | None = None) -> str:
+    if cek_fuel is None:
+        cek_fuel = load_budgets(ROOT)[script_hash]
     directory = ROOT / f"S_{script_hash}"
     metadata = json.loads((directory / "metadata.json").read_text())
     typ, binder, _ = witness_type(metadata)
@@ -111,15 +114,15 @@ def materialize(script_hash: str, wall_timeout: int, cek_fuel: int) -> str:
 
     property_source = (directory / "Properties.lean").read_text()
     old = "#blaster (timeout: 10)"
-    if property_source.count(old) != 1 or property_source.count(" 1000)]") != 1:
+    if property_source.count(old) != 1:
         raise ValueError(f"Unexpected property syntax for {script_hash}")
     search = directory / "ReplaySearch.lean"
     if search.exists():
         raise ValueError(f"Temporary search module already exists: {search}")
     replay_note = "not reported"
     try:
-        search.write_text(property_source.replace(old, "#blaster (backend: ffi) (replay: 1) (timeout: 10)")
-                          .replace(" 1000)]", f" {cek_fuel})]"))
+        search.write_text(property_at_fuel(property_source, cek_fuel).replace(
+            old, "#blaster (backend: ffi) (replay: 1) (timeout: 10)"))
         module = f"LiveScripts.S_{script_hash}.ReplaySearch"
         try:
             run = subprocess.run(["lake", "build", module], cwd=BENCHMARK, env=os.environ.copy(),
@@ -152,7 +155,8 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=1, help="Smallest unverified candidates to attempt")
     parser.add_argument("--version", choices=["plutusV1", "plutusV2", "plutusV3"])
     parser.add_argument("--wall-timeout", type=int, default=120)
-    parser.add_argument("--cek-fuel", type=int, default=1000)
+    parser.add_argument("--cek-fuel", type=int,
+                        help="Override this script's fuel budget for an exploratory replay")
     args = parser.parse_args()
     catalog = json.loads((ROOT / "catalog.json").read_text())
     sizes = {item["script_hash"]: item["serialised_size"] for item in catalog["scripts"]}
@@ -165,7 +169,7 @@ def main() -> None:
     hashes = sorted(set(hashes), key=lambda key: (sizes.get(key, 10**12), key))
     if not args.hash and args.limit > 0:
         hashes = hashes[:args.limit]
-    if not 1 <= args.cek_fuel <= 100000:
+    if args.cek_fuel is not None and not valid_fuel(args.cek_fuel):
         parser.error("--cek-fuel must be between 1 and 100000")
     for script_hash in hashes:
         if not re.fullmatch(r"[0-9a-f]{56}", script_hash):
