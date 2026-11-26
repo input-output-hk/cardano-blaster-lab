@@ -23,7 +23,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cohort", default="2026-11-23")
     parser.add_argument("--z3", type=Path, required=True)
-    parser.add_argument("--timeout", type=int, default=25)
+    parser.add_argument("--timeout", type=int, default=60)
+    parser.add_argument("--smt-timeout", type=int, default=20)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--wait-pid", type=int,
                         help="Wait for an already-running cluster pass before resuming")
@@ -34,6 +35,7 @@ def main() -> None:
             time.sleep(15)
     base = [sys.executable, "LiveScripts/benchmark.py", "--cohort", args.cohort,
             "--z3", str(args.z3), "--timeout", str(args.timeout),
+            "--smt-timeout", str(args.smt_timeout),
             "--workers", str(args.workers), "--skip-existing"]
     for name, extra in (("cluster representatives", ["--cluster-first"]),
                         ("remaining exact scripts", [])):

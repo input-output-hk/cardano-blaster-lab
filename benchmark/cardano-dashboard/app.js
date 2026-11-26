@@ -197,6 +197,20 @@ function openScript(script) {
   const resultLinks = [contextLink, provenanceLink, errorLink].filter(Boolean).join(" · ");
   const errorMessage = script.result?.error_message ? `<pre class="error-message">${esc(script.result.error_message)}</pre>` : "";
   const note = script.result?.note || (script.status === "unrun" ? "No benchmark run has been published for this script yet." : script.status);
+  const resultAge = script.result?.config_changed ? "This result used an earlier benchmark configuration." :
+    script.result?.budget_changed ? "The planned fuel has changed since this search." : "";
+  const fuelBasis = {
+    observed_candidate: "Counterexample found at this fuel; replay may still be pending.",
+    next_probe: "Next fuel to test; sufficiency has not been established.",
+    structural_peer_probe: "Estimated from a related script; this script has not produced a counterexample at this fuel.",
+    unknown_result: "Retained because the last result does not identify a CEK fuel limit.",
+    unknown_at_probe: "This fuel was tried without a counterexample; the result needs inspection.",
+    wall_timeout: "Retained because the last run hit its wall time limit.",
+    higher_fuel_timeout: "The raised fuel hit its wall time limit; retry with more wall time.",
+    higher_fuel_error: "The raised fuel produced a Lean or SMT error that needs investigation.",
+    lean_or_smt_error: "Retained while the Lean or SMT error is investigated.",
+    unrun: "Initial budget; this script has not been benchmarked yet."
+  }[script.fuel_plan_basis] || "Fuel plan pending.";
   detail.innerHTML = `
     <div class="detail-eyebrow">${esc(script.script_type)} · ${esc(script.status)}</div>
     <h2 id="dialog-title">Script detail</h2>
@@ -208,8 +222,9 @@ function openScript(script) {
       <div><span>Last observed</span><strong>${esc(formatTime(script.last_seen))}</strong></div>
     </div>
     <div class="detail-section"><h3>UPLC family</h3><p>${esc(script.cluster_id || "No structural family recorded")}</p></div>
+    <div class="detail-section"><h3>CEK fuel plan</h3><p>${Number(script.planned_cek_fuel).toLocaleString()} steps · ${esc(fuelBasis)}</p><p>Last search used ${Number(script.last_search_fuel).toLocaleString()} steps.</p><a href="${repoBase}LiveScripts/results/fuel-budget-plan.json" target="_blank" rel="noopener noreferrer">Fuel plan evidence</a></div>
     <div class="detail-section"><h3>Observed transaction examples</h3><ul>${examples || "<li>No example recorded</li>"}</ul></div>
-    <div class="detail-section"><h3>Blaster result</h3><p>${esc(note)}</p>${errorMessage}${resultLinks ? `<p class="result-links">${resultLinks}</p>` : ""}</div>
+    <div class="detail-section"><h3>Blaster result</h3><p>${esc(note)}</p>${resultAge ? `<p>${esc(resultAge)}</p>` : ""}${errorMessage}${resultLinks ? `<p class="result-links">${resultLinks}</p>` : ""}</div>
     <div class="detail-section"><a href="${repoBase}LiveScripts/S_${esc(script.script_hash)}/Properties.lean" target="_blank" rel="noopener noreferrer">Open Lean property</a> · <a href="${repoBase}LiveScripts/S_${esc(script.script_hash)}/script.cbor.hex" target="_blank" rel="noopener noreferrer">Original script CBOR</a></div>`;
   $("#script-dialog").showModal();
 }

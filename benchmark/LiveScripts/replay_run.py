@@ -10,6 +10,7 @@ import re
 import subprocess
 from pathlib import Path
 
+from fuel_budgets import DEFAULT_FUEL, valid_fuel
 from materialize_replays import ROOT, save_witness, typed_model, witness_type
 from verify_replays import OUTPUT
 
@@ -17,7 +18,7 @@ from verify_replays import OUTPUT
 HASH = re.compile(r"[0-9a-f]{56}\Z")
 
 
-def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None = None,
+def replay(results_file: Path, limit: int, cek_fuel: int | None = None, head_sha: str | None = None,
            *, shard_index: int = 0, shard_count: int = 1) -> dict:
     active = json.loads((ROOT / "results/active-config.json").read_text())["config"]
     revision = subprocess.check_output(
@@ -27,6 +28,10 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
     rows = [json.loads(line) for line in results_file.read_text().split("\n") if line]
     if any(row.get("config") != active or row.get("revision") != revision for row in rows):
         raise ValueError("Replay input does not match the current source revision and benchmark configuration")
+    if any(not valid_fuel(row.get("cek_fuel", DEFAULT_FUEL)) for row in rows):
+        raise ValueError("Replay input contains an invalid CEK fuel")
+    if cek_fuel is not None and any(row.get("cek_fuel", DEFAULT_FUEL) != cek_fuel for row in rows):
+        raise ValueError("--cek-fuel must match the fuel recorded in every benchmark result")
     run_ids = {row.get("run_id") for row in rows}
     if len(run_ids) > 1 or None in run_ids:
         raise ValueError("Replay input must contain exactly one benchmark run")
@@ -51,7 +56,7 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
             result = "no typed model in benchmark result"
         else:
             result = save_witness(
-                script_hash, model, cek_fuel, source_revision=revision,
+                script_hash, model, row.get("cek_fuel", DEFAULT_FUEL), source_revision=revision,
                 baseline_run_id=row["run_id"], source="native Z3 model from benchmark JSONL",
                 replay_note="not requested during benchmark search",
             )
@@ -60,6 +65,7 @@ def replay(results_file: Path, limit: int, cek_fuel: int, head_sha: str | None =
     summary = {
         "run_id": next(iter(run_ids), None), "revision": revision, "head_sha": head_sha or revision,
         "config": active,
+        "cek_fuels": sorted({row.get("cek_fuel", DEFAULT_FUEL) for row in rows}),
         "candidates": len(ordered), "already_verified": len(ordered) - len([h for h in ordered if h not in existing]),
         "pending_total": len(all_pending), "shard_index": shard_index,
         "shard_count": shard_count, "shard_pending": shard_pending,
@@ -86,12 +92,13 @@ def main() -> None:
     parser.add_argument("--results-file", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=12,
                         help="Maximum new witnesses to check; 0 checks all")
-    parser.add_argument("--cek-fuel", type=int, default=1000)
+    parser.add_argument("--cek-fuel", type=int,
+                        help="Optional check that every result used this fuel")
     parser.add_argument("--head-sha", help="PR head SHA; the checked-out revision may be a merge commit")
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--shard-count", type=int, default=1)
     args = parser.parse_args()
-    if args.limit < 0 or not 1 <= args.cek_fuel <= 100000:
+    if args.limit < 0 or (args.cek_fuel is not None and not valid_fuel(args.cek_fuel)):
         parser.error("limit must be nonnegative and CEK fuel must be 1..100000")
     if args.head_sha and not re.fullmatch(r"[0-9a-f]{40}", args.head_sha):
         parser.error("--head-sha must be a 40-character Git SHA")

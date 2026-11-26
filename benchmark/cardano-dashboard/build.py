@@ -54,14 +54,24 @@ def build(open_pr_entries: list[dict] | None = None) -> dict:
     runs = json.loads(runs_path.read_text()) if runs_path.exists() else {"events": [], "results": {}}
     latest_path = REPO / "LiveScripts/results/latest.json"
     latest = json.loads(latest_path.read_text()) if latest_path.exists() else {}
+    budgets = json.loads((REPO / "LiveScripts/fuel-budgets.json").read_text())["scripts"]
+    fuel_plan = json.loads((REPO / "LiveScripts/results/fuel-budget-plan.json").read_text())["scripts"]
     config_path = REPO / "LiveScripts/results/active-config.json"
     if config_path.exists():
         active_config = json.loads(config_path.read_text())["config"]
-        latest = {key: result for key, result in latest.items()
-                  if result.get("config") == active_config}
+        latest = {
+            key: {**result, "planned_cek_fuel": budgets.get(key),
+                  "budget_changed": result.get("cek_fuel", 1000) != budgets.get(key),
+                  "config_changed": result.get("config") != active_config}
+            for key, result in latest.items()
+        }
     verified_path = REPO / "LiveScripts/results/verified.json"
     verified = json.loads(verified_path.read_text()) if verified_path.exists() else {}
     scripts = catalog["scripts"]
+    script_hashes = {item["script_hash"] for item in scripts}
+    if set(budgets) != script_hashes or set(fuel_plan) != script_hashes or any(
+            fuel_plan[script_hash]["cek_fuel"] != budgets[script_hash] for script_hash in script_hashes):
+        raise ValueError("Fuel budget plan does not match the script catalog")
     statuses = {**latest, **runs.get("results", {}), **verified}
     cohort_hashes = {entry["name"]: set(entry["script_hashes"]) for entry in cohorts}
     for event in runs.get("events", []):
@@ -82,6 +92,9 @@ def build(open_pr_entries: list[dict] | None = None) -> dict:
     for record in scripts:
         item = dict(record)
         script_hash = record["script_hash"]
+        item["planned_cek_fuel"] = budgets[script_hash]
+        item["fuel_plan_basis"] = fuel_plan[script_hash]["basis"]
+        item["last_search_fuel"] = fuel_plan[script_hash]["last_fuel"]
         result = dict(statuses.get(script_hash, {}))
         item["status"] = result.get("status", "unrun")
         if item["status"] == "error":

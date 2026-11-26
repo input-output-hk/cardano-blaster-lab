@@ -47,6 +47,13 @@ class ImportCorpusTests(unittest.TestCase):
             self.assertIn("validMintingContext ctx", (
                 repo / f"LiveScripts/S_{script_hash}/Properties.lean").read_text())
             self.assertEqual(import_corpus(corpus, repo, "pilot"), result)
+            budgets_path = repo / "LiveScripts/fuel-budgets.json"
+            budgets = json.loads(budgets_path.read_text())
+            self.assertEqual(budgets["scripts"], {script_hash: 1000})
+            budgets["scripts"][script_hash] = 3000
+            budgets_path.write_text(json.dumps(budgets))
+            import_corpus(corpus, repo, "pilot")
+            self.assertEqual(json.loads(budgets_path.read_text())["scripts"][script_hash], 3000)
             cohort = json.loads((repo / "LiveScripts/cohorts/pilot.json").read_text())
             self.assertEqual(cohort["script_hashes"], [script_hash])
 

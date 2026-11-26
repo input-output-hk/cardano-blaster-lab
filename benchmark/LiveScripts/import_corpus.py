@@ -16,6 +16,8 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
+from fuel_budgets import DEFAULT_FUEL, valid_fuel
+
 
 HASH = re.compile(r"[0-9a-f]{56}\Z")
 TX_HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -189,6 +191,23 @@ def import_corpus(corpus: Path, repo: Path, cohort_name: str | None) -> dict:
 
     catalog = {"schema_version": 1, "scripts": [records[h] for h in sorted(records)]}
     write_if_changed(catalog_path, json_text(catalog))
+    budgets_path = scripts_root / "fuel-budgets.json"
+    if budgets_path.exists():
+        budget_document = json.loads(budgets_path.read_text())
+        if budget_document.get("schema_version") != 1 or not isinstance(budget_document.get("scripts"), dict):
+            raise ValueError("Invalid fuel-budgets.json schema")
+        budgets = budget_document["scripts"]
+    else:
+        budgets = {}
+    if set(budgets) - set(records):
+        raise ValueError("Fuel budgets contain a script missing from the catalog")
+    for script_hash in records:
+        budgets.setdefault(script_hash, DEFAULT_FUEL)
+        if not valid_fuel(budgets[script_hash]):
+            raise ValueError(f"Invalid CEK fuel for {script_hash}: {budgets[script_hash]}")
+    write_if_changed(budgets_path, json_text({
+        "schema_version": 1, "scripts": {h: budgets[h] for h in sorted(records)}
+    }))
     if cohort_name:
         if not re.fullmatch(r"[A-Za-z0-9_-]+", cohort_name):
             raise ValueError("Invalid cohort name")

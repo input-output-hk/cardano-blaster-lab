@@ -21,7 +21,7 @@ on:
           - clusters
           - full
       workers:
-        description: Concurrent script processes (PR checks always use one)
+        description: Concurrent script processes per runner (PR checks always use one)
         type: choice
         required: true
         default: '1'
@@ -43,11 +43,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  search_plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - id: matrix
+        env:
+          BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          count = 16 if os.environ["BENCH_TIER"] == "full" else 1
+          print("matrix=" + json.dumps({"include": [
+              {"index": index, "count": count} for index in range(count)
+          ]}, separators=(",", ":")))
+          PY
+
   benchmark:
+    needs: search_plan
     runs-on: ubuntu-24.04
     timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix: ${{ fromJSON(needs.search_plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check search sharding
+        if: matrix.index == 0
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
 
       - uses: leanprover/lean-action@v1
         with:
@@ -104,7 +130,7 @@ jobs:
           fi
 
       - name: Save successful shared package build
-        if: steps.shared-cache.outputs.cache-hit != 'true'
+        if: matrix.index == 0 && steps.shared-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: |
@@ -132,7 +158,8 @@ jobs:
           BENCH_LIMIT: ${{ github.event_name == 'pull_request' && '0' || inputs.limit }}
         run: |
           args=(--z3 "$GITHUB_WORKSPACE/.tools/z3-5.4.1-x64-glibc-2.39/bin/z3"
-                --workers "$BENCH_WORKERS" --timeout 25
+                --workers "$BENCH_WORKERS" --timeout 60 --smt-timeout 20
+                --shard-index "${{ matrix.index }}" --shard-count "${{ matrix.count }}"
                 --result-path-file "$RUNNER_TEMP/cardano-result-path")
           if [[ "$BENCH_LIMIT" -gt 0 ]]; then
             args+=(--limit "$BENCH_LIMIT")
@@ -140,6 +167,7 @@ jobs:
           python3 scripts/bench.py "$BENCH_TIER" "${args[@]}"
 
       - name: Replay new counterexamples
+        if: matrix.count == 1
         working-directory: benchmark
         env:
           REPLAY_LIMIT: ${{ github.event_name == 'pull_request' && '0' || '12' }}
@@ -149,7 +177,7 @@ jobs:
             --head-sha "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Summarize results
-        if: always()
+        if: always() && matrix.count == 1
         env:
           BENCH_TIER: ${{ github.event_name == 'pull_request' && 'smoke' || inputs.tier }}
         run: python3 scripts/summary.py "$BENCH_TIER" >> "$GITHUB_STEP_SUMMARY"
@@ -158,7 +186,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cardano-benchmark-${{ github.run_id }}
+          name: ${{ matrix.count == 1 && format('cardano-benchmark-{0}', github.run_id) || format('cardano-benchmark-shard-{0}-{1}', github.run_id, matrix.index) }}
           path: |
             benchmark/LiveScripts/results/*.jsonl
             benchmark/LiveScripts/results/latest.json
@@ -167,3 +195,34 @@ jobs:
             benchmark/LiveScripts/results/replay-summary.json
             benchmark/LiveScripts/results/replay-evidence.json
           if-no-files-found: warn
+
+  combine_full:
+    needs: benchmark
+    if: github.event_name == 'workflow_dispatch' && inputs.tier == 'full' && needs.benchmark.result == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cardano-benchmark-shard-${{ github.run_id }}-*
+          path: ${{ runner.temp }}/search-shards
+      - name: Validate and combine the complete search
+        env:
+          BENCH_LIMIT: ${{ inputs.limit }}
+        run: |
+          python3 scripts/combine_search_shards.py \
+            --shards-dir "$RUNNER_TEMP/search-shards" \
+            --workflow-run-id "${{ github.run_id }}" \
+            --revision "${{ github.sha }}" \
+            --shard-count 16 --limit "$BENCH_LIMIT" \
+            --output "$RUNNER_TEMP/combined-search"
+      - name: Summarize full search
+        run: |
+          cp "$RUNNER_TEMP/combined-search/latest.json" benchmark/LiveScripts/results/latest.json
+          cp "$RUNNER_TEMP/combined-search/active-config.json" benchmark/LiveScripts/results/active-config.json
+          python3 scripts/summary.py full >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardano-benchmark-${{ github.run_id }}
+          path: ${{ runner.temp }}/combined-search
+          if-no-files-found: error
